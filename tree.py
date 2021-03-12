@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from os import path
 from binance.client import Client
 from interface_binance import *
 
@@ -33,11 +34,45 @@ class Header:
     
     def __repr__(self):
         attributes_list = [attributes for attributes in dir(self) if not attributes.startswith('__') and not callable(getattr(self, attributes))]
-        #print(attributes_list)
         out = str()
         for attributes in attributes_list:
-            out += "{0} = {1}\n".format(attributes, self.__dict__[attributes]) if attributes != attributes_list[-1] else "{0} = {1}".format(attributes, self.__dict__[attributes])
+            out += "{0} = {1}\n".format(attributes, self.__dict__[attributes])
         return (out)
+
+    def check_header(self):
+        out_message = " {} header file is ".format(self.client_name)
+        
+        if (self.nb_keys <=  0):
+            out_message += "incorrect ! \nReason: Number of keys = {}. Should be stricly superior 0.\n".format(self.nb_keys)
+            return 1
+        elif (self.cpt_strategies != self.nb_keys):
+            out_message += "incorrect ! \nReason: Number of strategies = {}. Should be equal to the number of keys ({}).\n".format(self.cpt_strategies, self.nb_keys)
+            return 2
+        elif (self.all_strategies_nb < self.cpt_strategies):
+            out_message += "incorrect ! \nReason: Number of strategies = {}.Should be inferior or equal to {} o equal or less than 0.\n".format(self.cpt_strategies, self.all_strategies_nbs)
+            return 3
+        elif (self.all_strategies_nb < self.nb_keys):
+            out_message += "incorrect ! \nReason: Number of keys = {}. Should be inferior or equal to {} o equal or less than 0.\n".format(self.nb_keys, self.all_strategies_nb)
+            return 3
+        #python file does not exist
+        #elif (os.path.exists(self.header.path))
+        elif (0):
+            out_message += "incorrect ! \nReason: File {} does not exist.\n".format(self.client_file_path)
+            #elif self.header.client_file_path
+        else:
+            out_message += "correct !\n"
+            return 0  
+
+    def check_keys_list(self):
+        ret = 1
+        err_flag = 0
+        for key in self.key_list:
+            ret = key.check_key()
+            if ret != 0:
+                print("Strategie index {} credentials for {} are invalid ! \n".format(key.strategie_idx, self.client_name))
+                err_flag = 1
+        
+        return err_flag
 
 class History:
     """
@@ -59,8 +94,12 @@ class History:
         attributes_list = [attributes for attributes in dir(self) if not attributes.startswith('__') and not callable(getattr(self, attributes))]
         out = str()
         for attributes in attributes_list:
-            out += "{0} = {1}\n".format(attributes, self.__dict__[attributes]) if attributes != attributes_list[-1] else "{0} = {1}".format(attributes, self.__dict__[attributes])
+            out += "{0} = {1}\n".format(attributes, self.__dict__[attributes])
         return (out)
+    
+    def check_history(self):
+        print("tata")
+        return 0
 
 class ApiKeyClass:
     """
@@ -91,11 +130,21 @@ class ApiKeyClass:
 
     def __repr__(self):
         out = str()
+        out += "\n**********************\n"
         out += "STRATEGY NUMBER : {}\n".format(self.strategie_idx)
         out += "API KEY : {}\n".format(self.api_key)
         out += "API KEY SECRET : {}\n".format(self.api_secret_key)
-        out += "API KEY VALIDITY FLAG : {}".format(self.api_validity)
+        out += "API KEY VALIDITY FLAG : {}\n".format(self.api_validity)
+        out += "**********************\n"
         return out
+    
+    def check_key(self):
+        
+        client = Client(self.api_key, self.api_secret_key)
+        
+        self.api_validity = I__GET_SYSTEM_STATUS(client)
+
+        return self.api_validity
 
 class ClientFile:
     """
@@ -123,24 +172,21 @@ class ClientFile:
         self.client_file_path = client_file
         self.header           = Header()
         self.history          = History()
-        self.return_tuple     = (1,1,1,1) #(read_file_return, check_file_header_return, check_file_keys_return, check_file_history_return)
+        self.return_tuple     = (1,1,1,1,1) #(check_filepath, read_file_return, check_file_header_return, check_file_keys_return, check_file_history_return)
         self.init_status      = self.ClientFile__Init()
-        
-        if (self.init_status != 0):
-            print("KO")
-            #send_mail
-        else:
-            print("OK")
 
-    """
+    
     def __repr__(self):
-        attributes_list = [attributes for attributes in dir(self) if not attributes.startswith('__') and not callable(getattr(self, attributes))]
-        #print(attributes_list)
+        #TODO: A modifier pour que l'affichage soit automatique
         out = str()
-        for attributes in attributes_list:
-            out += "{0} = {1}\n".format(attributes, self.__dict__[attributes]) if attributes != attributes_list[-1] else "{0} = {1}".format(attributes, self.__dict__[attributes])
+        out += "client_file_path = {}\n".format(self.client_file_path)
+        out += self.header.__repr__()
+        #out += self.history.__repr__()
+        out += "return_tuple = {}\n".format(str(self.return_tuple))
+        out += "init_status = {}\n".format(self.init_status)
+
         return (out)
-    """
+    
     def read_file(self):
         cpt_strategies = 0
         try:
@@ -166,73 +212,21 @@ class ClientFile:
         except:
             return 1 
 
-    def check_header_info(self):
-        #liste de verif:
-            #verifier que fichier existe
-            #verifier que client existe ?
-            #verifier que liste des cles est non vide
-            #verifier que nb_key > 0 et < nb_strategies
-            #verifier que toutes les paires de cles permettent de se connecter à Binance
-            # Ajouter : clé unique
-        out_message = " {} header file is ".format(self.header.client_name)
-        
-        if (self.header.nb_keys <=  0):
-            out_message += "incorrect ! \nReason: Number of keys = {}. Should be stricly superior 0.\n".format(self.header.nb_keys)
-            return 1
-        elif (self.header.cpt_strategies != self.header.nb_keys):
-            out_message += "incorrect ! \nReason: Number of strategies = {}. Should be equal to the number of keys ({}).\n".format(self.header.cpt_strategies, self.header.nb_keys)
-            return 2
-        elif (self.header.all_strategies_nb < self.header.cpt_strategies):
-            out_message += "incorrect ! \nReason: Number of strategies = {}.Should be inferior or equal to {} o equal or less than 0.\n".format(self.header.cpt_strategies, self.header.all_strategies_nbs)
-            return 3
-        elif (self.header.all_strategies_nb < self.header.nb_keys):
-            out_message += "incorrect ! \nReason: Number of keys = {}. Should be inferior or equal to {} o equal or less than 0.\n".format(self.header.nb_keys, self.header.all_strategies_nb)
-            return 3
-        #python file does not exist
-        elif (0):
-            out_message += "incorrect ! \nReason: File {} does not exist.\n".format(self.client_file_path)
-            #elif self.header.client_file_path
+    def check_filepath(self):
+        if os.path.exists(self.client_file_path):
+            return 0
         else:
-            out_message += "correct !\n"
-            return 0  
-
-    def check_header_keys(self):
-        validity_out = []
-        ping_ret = 1
-        for api_keys in self.header.key_list:
-            #print(api_keys[0][0])
-            client = Client(api_keys.api_key, api_keys.api_secret_key)
-            ping_ret = I__GET_SYSTEM_STATUS(client)
-            api_keys.api_validity = ping_ret
-            validity_out.append(ping_ret)
-        
-        # TODO: Ajouter message pour dire quelles clés sont incorrectes
-        for value in validity_out:
-            if (value != 0):
-                return 1
-        
-        return 0
-            
-    
-    def check_history(self):
-        print("tata")
-        return 0
-
-    """
-    1 - Lecture du fichier client
-    2 - Si pas d'erreur, verification de l'intégrité des données ; Si erreur, on sort
-    3 - Verification du header - Si header OK, on passe à la suite, sinon on arrete
-    4 - Verification de l'historique - Si historique OK, on passe à la suite, sinon on arrete
-    """
+            return 1
         
     def ClientFile__Init(self):
         #(read_file_return, check_file_header_return, check_file_keys_return, check_file_history_return)
-        self.return_tuple = (self.read_file(), self.check_header_info(), self.check_header_keys(),self.check_history())
+        #self.check_header_keys()
+
+        self.return_tuple = (self.check_filepath(), self.read_file(), self.header.check_header(), self.header.check_keys_list(), self.history.check_history())
         if ( (self.return_tuple[0] != 0) or (self.return_tuple[1] != 0) or (self.return_tuple[2] != 0) or (self.return_tuple[3] != 0)):
             #send mail 
             #TODO ici, si jamais une clé est mauvaise, il faut envoyer un mail avec le nombre de clé mauvaises et les stratégies correspondantes
             print("KO")
-            print(self.return_tuple)
             return 1
         else:
             print("OK")
