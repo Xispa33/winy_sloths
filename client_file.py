@@ -4,6 +4,8 @@
 import os
 from binance.client import Client
 from interface_binance import *
+from header import *
+from history import *
 
 class ClientFile:
     """
@@ -34,7 +36,6 @@ class ClientFile:
         self.return_tuple     = (1,1,1,1,1) #(check_filepath, read_file_return, check_file_header_return, check_file_keys_return, check_file_history_return)
         self.init_status      = self.ClientFile__Init()
 
-    
     def __repr__(self):
         #TODO: A modifier pour que l'affichage soit automatique
         out = str()
@@ -97,19 +98,23 @@ class ClientFile:
             print("OK")
             return 0
 
-    def ClientFile__ReadHistory(self):
+    def read_file_history(self):
         self.history.clear()
-        with open(self.client_file_path, 'r') as txt_file:
-            info = txt_file.readlines()    
-            #read history
-            for i in range(0,self.header.all_strategies_nb):
-                strategy_history = info[2+self.header.all_strategies_nb+i+1].rstrip('\n').split(';')
-                last_transaction = Transaction(strategy_history)
-                print(last_transaction)
-                self.history.history_list.append(last_transaction)
-                #print(strategy_history)
-                    
-            txt_file.close()
+        try:
+            with open(self.client_file_path, 'r') as txt_file:
+                info = txt_file.readlines()    
+                #read history
+                for i in range(0,self.header.all_strategies_nb):
+                    strategy_history = info[2+self.header.all_strategies_nb+i+1].rstrip('\n').split(';')
+                    last_transaction = Transaction(strategy_history)
+                    print(last_transaction)
+                    self.history.history_list.append(last_transaction)
+                    #print(strategy_history)
+                        
+                txt_file.close()
+            return 0
+        except:
+            return 1
 
     def ClientFile__WriteHistory(self):
         self.history.clear()
@@ -120,40 +125,90 @@ class ClientFile:
                 strategy_history = info[2+self.header.all_strategies_nb+i+1].rstrip('\n').split(';')
                 last_transaction = Transaction(strategy_history)
                 print(last_transaction)
-                self.history.history_list.append(last_transaction)
+                #self.history.history_list.append(last_transaction)
                 #print(strategy_history)
                     
             txt_file.close()
     
     def is_strategy_idx_valid(self, strategy_idx):
         for key in self.header.key_list:
-            if key.strategie_idx == strategy_idx:
+            if key.strategy_idx == strategy_idx:
                 return True
         return False
 
     def find_strategy_api_key(self, strategy_idx):
         if (self.is_strategy_idx_valid(strategy_idx)):
             for key in self.header.key_list:
-                if key.strategie_idx == strategy_idx:
-                    return (key.header.api_key, key.header.api_secret_key)
+                if key.strategy_idx == strategy_idx:
+                    return (key.api_key, key.api_secret_key)
         else:
             return 1
 
-    def get_last_futures_trade(self, strategy_idx):
+    def get_futures_trade(self, strategy_idx):
         credentials = self.find_strategy_api_key(strategy_idx)
         client = Client(credentials[0], credentials[1])
-        trades_list = I__FUTURES_ACCOUNT_TRADES(client)
-        
-        if (trades_list != 1):
-            return trades_list[-1]
+        #transaction_list = I__FUTURES_ACCOUNT_TRADES(client)
+        transaction_list = [{'symbol': 'ETHUSDT', 'id': 384187499, 'orderId': 8389765493651748878, 'side': 'SELL', 'price': '1535.45', 'qty': '1.474', 'realizedPnl': '0', 'marginAsset': 'USDT', 'quoteQty': '2263.25330', 'commission': '0.45265066', 'commissionAsset': 'USDT', 'time': 1614974810111, 'positionSide': 'BOTH', 'maker': True, 'buyer': False}, {'symbol': 'ETHUSDT', 'id': 384498527, 'orderId': 8389765493659577085, 'side': 'BUY', 'price': '1546.11', 'qty': '1.474', 'realizedPnl': '-15.71284000', 'marginAsset': 'USDT', 'quoteQty': '2278.96614', 'commission': '0.45579322', 'commissionAsset': 'USDT', 'time': 1614991360231, 'positionSide': 'BOTH', 'maker': True, 'buyer': True}, {'symbol': 'ETHUSDT', 'id': 386113569, 'orderId': 8389765493693917332, 'side': 'BUY', 'price': '1636.07', 'qty': '1.386', 'realizedPnl': '0', 'marginAsset': 'USDT', 'quoteQty': '2267.59302', 'commission': '0.45351860', 'commissionAsset': 'USDT', 'time': 1615061346339, 'positionSide': 'BOTH', 'maker': True, 'buyer': True}]
+
+        if (transaction_list != 1):
+            return transaction_list
         else:
-            return 2
+            return 1
 
-    def ClientFile__GetLastTrade(self):
+    def get_last_futures_trade(self, transaction_list):
+        if (transaction_list != 1):
+            return transaction_list[-1]
+        else:
+            return 1
 
+    def ClientFile__GetBinanceHistory(self, strategy_idx):
+        
+        ret_last_futures_read = 1
 
-if __name__ == "__main__":
-    tree = ClientFile("history.txt")
-    print(tree)
+        ret_last_futures_read = self.get_last_futures_trade(self.get_futures_trade(strategy_idx))
 
-    while (1):
+        if (isinstance(ret_last_futures_read, int)):
+            return 1
+        else:
+            return (convert_raw_trade_to_transaction(ret_last_futures_read))
+    
+    def ClientFile__GetFileHistory(self):
+        return self.read_file_history()
+    
+    def ClientFile__GetStrategyHistory(self, strategy_idx):
+        return (self.history.history_list[strategy_idx-1])
+
+    # Ici, on compare l'historique d'une stratégie de l'objet avec l'historique passé en paramètre
+    def ClientFile__CompareStrategy(self, strategy_idx, last_trade):
+        #return (self.history.history_list[strategy_idx-1] == last_trade.history.history_list[strategy_idx-1])
+        return (self.history.history_list[strategy_idx-1] == last_trade)
+
+    def ClientFile__Act(self):
+        #ecriture dans le fichier .txt
+        #ClientFile__ReadHistory
+        print("toto")
+
+def convert_raw_trade_to_transaction(raw_trade):
+        #(time, id, orderId, symbol, symbol_price, initial_side, side, new_side, quantity, realized_pnl)
+        transaction = [raw_trade['time'], raw_trade['id'],raw_trade['orderId'], raw_trade['symbol'], raw_trade['price'], \
+        "NEUTRE", raw_trade['side'], "NEUTRE", raw_trade['qty'], raw_trade['realizedPnl']]
+
+        return Transaction(transaction)
+
+def run(tree):
+        strategy_idx = 1
+        tree.ClientFile__GetFileHistory()
+        #READ FUTURE HISTORY
+        file_last_trade = tree.ClientFile__GetStrategyHistory(strategy_idx)
+        future_last_trade_binance = tree.ClientFile__GetBinanceHistory(strategy_idx)
+        
+        #COMPARE WITH CURRENT
+        if (isinstance(future_last_trade_binance, Transaction) and isinstance(file_last_trade, Transaction)): 
+            if not future_last_trade_binance == file_last_trade:
+                #ACT = MAJ fichier .txt + MAJ historique de l'objet
+                tree.ClientFile__Act()
+                print("DIFFERENT HISTORY\n")
+            else:
+                print("SAME HISTORY\n")
+        else:
+            return 1
