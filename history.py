@@ -24,7 +24,23 @@ class Transaction:
         for attributes in attributes_list:
             out += "{0} = {1}\n".format(attributes, self.__dict__[attributes])
         return (out)
-
+    
+    def __str__(self):
+        # time | id | orderId | symbol | symbol_price | side | quantity | realized_pnl
+        out = "{};{};{};{};{};{};{};{}\n".format(str(self.time), str(self.id), str(self.orderId), str(self.symbol), \
+            str(self.symbol_price), str(self.side), str(self.quantity), str(self.realized_pnl))
+        return out
+        """
+        self.id = transaction_info_list[1]
+        self.orderId = transaction_info_list[2]
+        self.symbol = transaction_info_list[3]
+        self.symbol_price = transaction_info_list[4]
+        self.initial_side = "NEUTRE"
+        self.side = transaction_info_list[5]
+        self.quantity = transaction_info_list[6]
+        self.realized_pnl = transaction_info_list[7]
+        self.new_side = self.compute_new_side()
+        """
     def __eq__(self,other_history):
         return ((self.orderId == other_history.orderId) and (self.symbol == other_history.symbol) and (self.symbol_price == other_history.symbol_price) and (self.side == other_history.side))
 

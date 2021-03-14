@@ -84,15 +84,20 @@ class ApiKeyClass:
     
     api_validity : int
         For indicating the validity of the API key pair. If the pair allowed to access binance, the flag is equal to 0, else 1
+    
+    account_type : str
+        A formatted string, either SPOT/FUTURE indicating the type of account
+
     Methods
     -------
     
     """
-    def __init__(self, strategy_idx, api_key, api_secret_key, api_validity):
+    def __init__(self, strategy_idx, api_key, api_secret_key, api_validity, account_type):
         self.strategy_idx = strategy_idx
         self.api_key = api_key
         self.api_secret_key = api_secret_key
         self.api_validity = api_validity
+        self.account_type = account_type
 
     def __repr__(self):
         out = str()
@@ -101,6 +106,7 @@ class ApiKeyClass:
         out += "API KEY : {}\n".format(self.api_key)
         out += "API KEY SECRET : {}\n".format(self.api_secret_key)
         out += "API KEY VALIDITY FLAG : {}\n".format(self.api_validity)
+        out += "API KEY ACCOUNT TYPE : {}\n".format(self.account_type)
         out += "**********************\n"
         return out
     
