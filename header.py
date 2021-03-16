@@ -3,6 +3,7 @@
 
 from binance.client import Client
 from interface_binance import *
+from constants import *
 
 class Header:
     """
@@ -86,7 +87,7 @@ class ApiKeyClass:
         For indicating the validity of the API key pair. If the pair allowed to access binance, the flag is equal to 0, else 1
     
     account_type : str
-        A formatted string, either SPOT/FUTURE indicating the type of account
+        A formatted string, either SPOT/FUTURES indicating the type of account
 
     Methods
     -------
