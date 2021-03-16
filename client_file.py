@@ -166,13 +166,13 @@ class ClientFile:
         api_key = self.find_strategy_api_key(strategy_idx)
         client = Client(api_key.api_key, api_key.api_secret_key)
         if (api_key.api_validity == VALID_KEY):
-            #transaction_list = I__GET_ACCOUNT_HISTORY(client, api_key.account_type, self.history.history_list[strategy_idx].symbol)
-            if api_key.account_type == FUTURES:
+            transaction_list = I__GET_ACCOUNT_HISTORY(client, api_key.account_type, self.history.history_list[strategy_idx].symbol)
+            #if api_key.account_type == FUTURES:
                 #Futures account example
-                transaction_list = [{'symbol': 'ETHUSDT', 'id': 384187499, 'orderId': 8389765493651748878, 'side': 'SELL', 'price': '1535.45', 'qty': '1.474', 'realizedPnl': '0', 'marginAsset': 'USDT', 'quoteQty': '2263.25330', 'commission': '0.45265066', 'commissionAsset': 'USDT', 'time': 1614974810111, 'positionSide': 'BOTH', 'maker': True, 'buyer': False}, {'symbol': 'ETHUSDT', 'id': 384498527, 'orderId': 8389765493659577085, 'side': 'BUY', 'price': '1546.11', 'qty': '1.474', 'realizedPnl': '-15.71284000', 'marginAsset': 'USDT', 'quoteQty': '2278.96614', 'commission': '0.45579322', 'commissionAsset': 'USDT', 'time': 1614991360231, 'positionSide': 'BOTH', 'maker': True, 'buyer': True}, {'symbol': 'ETHUSDT', 'id': 386113569, 'orderId': 8389765493693917332, 'side': 'BUY', 'price': '1636.07', 'qty': '1.386', 'realizedPnl': '0', 'marginAsset': 'USDT', 'quoteQty': '2267.59302', 'commission': '0.45351860', 'commissionAsset': 'USDT', 'time': 1615061346339, 'positionSide': 'BOTH', 'maker': True, 'buyer': True}]
-            else:
+            #    transaction_list = [{'symbol': 'ETHUSDT', 'id': 384187499, 'orderId': 8389765493651748878, 'side': 'SELL', 'price': '1535.45', 'qty': '1.474', 'realizedPnl': '0', 'marginAsset': 'USDT', 'quoteQty': '2263.25330', 'commission': '0.45265066', 'commissionAsset': 'USDT', 'time': 1614974810111, 'positionSide': 'BOTH', 'maker': True, 'buyer': False}, {'symbol': 'ETHUSDT', 'id': 384498527, 'orderId': 8389765493659577085, 'side': 'BUY', 'price': '1546.11', 'qty': '1.474', 'realizedPnl': '-15.71284000', 'marginAsset': 'USDT', 'quoteQty': '2278.96614', 'commission': '0.45579322', 'commissionAsset': 'USDT', 'time': 1614991360231, 'positionSide': 'BOTH', 'maker': True, 'buyer': True}, {'symbol': 'ETHUSDT', 'id': 386113569, 'orderId': 8389765493693917332, 'side': 'BUY', 'price': '1636.07', 'qty': '1.386', 'realizedPnl': '0', 'marginAsset': 'USDT', 'quoteQty': '2267.59302', 'commission': '0.45351860', 'commissionAsset': 'USDT', 'time': 1615061346339, 'positionSide': 'BOTH', 'maker': True, 'buyer': True}]
+            #else:
                 #Spot account example
-                transaction_list = [{'symbol': 'BTCUSDT', 'orderId': 5211308012, 'orderListId': -1, 'clientOrderId': 'x-K309V22B-km7ojj23ybr0kzjtq6m', 'price': '59800.76000000', 'origQty': '0.02100000', 'executedQty': '0.02100000', 'cummulativeQuoteQty': '1255.81596000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'LIMIT', 'side': 'BUY', 'stopPrice': '0.00000000', 'icebergQty': '0.00000000', 'time': 1615636978951, 'updateTime': 1615637009689, 'isWorking': True, 'origQuoteOrderQty': '0.00000000'}]
+            #    transaction_list = [{'symbol': 'BTCUSDT', 'orderId': 5211308012, 'orderListId': -1, 'clientOrderId': 'x-K309V22B-km7ojj23ybr0kzjtq6m', 'price': '59800.76000000', 'origQty': '0.02100000', 'executedQty': '0.02100000', 'cummulativeQuoteQty': '1255.81596000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'LIMIT', 'side': 'BUY', 'stopPrice': '0.00000000', 'icebergQty': '0.00000000', 'time': 1615636978951, 'updateTime': 1615637009689, 'isWorking': True, 'origQuoteOrderQty': '0.00000000'}]
         else:
             return 1
 
@@ -197,9 +197,9 @@ class ClientFile:
         else:
             
             if (self.header.key_list[strategy_idx].account_type == FUTURES):
-                return (convert_raw_trade_to_transaction(ret_last_futures_read))
+                return (convert_raw_trade_to_transaction(ret_last_futures_read, Client(self.header.key_list[strategy_idx].api_key, self.header.key_list[strategy_idx].api_secret_key)))
             elif (self.header.key_list[strategy_idx].account_type == SPOT):
-                return (convert_raw_trade_to_transaction(ret_last_futures_read))
+                return (convert_raw_trade_to_transaction(ret_last_futures_read, Client(self.header.key_list[strategy_idx].api_key, self.header.key_list[strategy_idx].api_secret_key)))
             else:
                 return 1
     
@@ -228,12 +228,12 @@ class ClientFile:
         else:
             return 0
 
-def convert_raw_trade_to_transaction(raw_trade):
+def convert_raw_trade_to_transaction(raw_trade, client):
         # time | id | orderId | symbol | symbol_price | side | quantity | realized_pnl
         if isinstance(raw_trade, dict):
             if 'realizedPnl' in raw_trade:
                 """ Futures transaction """
-                return TransactionFutures(raw_trade, None)
+                return TransactionFutures(raw_trade, client)
             else:
                 """ Spot transaction """
                 #[{'symbol': 'BTCUSDT', 'orderId': 5211308012, 'orderListId': -1, 'clientOrderId': 'x-K309V22B-km7ojj23ybr0kzjtq6m', 'price': '59800.76000000', 'origQty': '0.02100000', 'executedQty': '0.02100000', 'cummulativeQuoteQty': '1255.81596000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'LIMIT', 'side': 'BUY', 'stopPrice': '0.00000000', 'icebergQty': '0.00000000', 'time': 1615636978951, 'updateTime': 1615637009689, 'isWorking': True, 'origQuoteOrderQty': '0.00000000'}]

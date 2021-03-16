@@ -98,9 +98,10 @@ def I__GET_FUTURES_POSITION(client, symbol):
                   Client contains the API key credentials allowing to connect to Binance server
     """
     try:
-        #ret = client.futures_position_information(symbol=symbol, timestamp=client.futures_time())
-        #ret = (ret['positionSide'], float(ret['positionSide']))
-        ret = ('BOTH', 0.0)
+        a = client.futures_time()
+        ret = client.futures_position_information(symbol=symbol, timestamp=a)
+        ret = (ret[0]['positionSide'], float(ret[0]['entryPrice']))
+        #ret = ('BOTH', 0.0)
     except:
         ret = 1
     
