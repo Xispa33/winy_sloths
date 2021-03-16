@@ -19,10 +19,16 @@ class Header:
         Maximum number of strategies a client can register to
     key_list : list
         List of all the keys provided by the client
+    cpt_strategies : int
+        Number of strategies. Should be equal to the number of keys
 
     Methods
     -------
+    check_header()
+        Checks that all header fields are correct and pertinent
     
+    check_keys_list()
+        Verifes that the list of API keys provided are all correct and allow to connect to Binance server
     """
     def __init__(self):
         self.client_name = str()
@@ -39,6 +45,13 @@ class Header:
         return (out)
     
     def check_header(self):
+        """
+        Name : check_header()
+    
+        Parameters : 
+    
+        Description : Checks that all header fields are correct and pertinent
+        """
         out_message = " {} header file is ".format(self.client_name)
         
         if (self.nb_keys <=  0):
@@ -58,6 +71,13 @@ class Header:
             return 0  
 
     def check_keys_list(self):
+        """
+        Name : check_keys_list()
+    
+        Parameters : 
+    
+        Description : Verifes that the list of API keys provided are all correct and allow to connect to Binance server
+        """
         ret = 1
         err_flag = 0
         for key in self.key_list:
@@ -91,7 +111,9 @@ class ApiKeyClass:
 
     Methods
     -------
-    
+    check_key()
+        Checks that an API key allows to connect to Binance server
+
     """
     def __init__(self, strategy_idx, api_key, api_secret_key, api_validity, account_type):
         self.strategy_idx = strategy_idx
@@ -109,10 +131,17 @@ class ApiKeyClass:
         out += "API KEY VALIDITY FLAG : {}\n".format(self.api_validity)
         out += "API KEY ACCOUNT TYPE : {}\n".format(self.account_type)
         out += "**********************\n"
+        
         return out
     
     def check_key(self):
-        
+        """
+        Name : check_key()
+    
+        Parameters : 
+    
+        Description : Checks that an API key allows to connect to Binance server
+        """
         client = Client(self.api_key, self.api_secret_key)
         
         self.api_validity = I__GET_SYSTEM_STATUS(client)

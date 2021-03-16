@@ -34,7 +34,7 @@ class ClientFile:
         self.client_file_path = client_file
         self.header           = Header()
         self.history          = History()
-        self.return_tuple     = (1,1,1,1,1) #(check_filepath, read_file_return, check_file_header_return, check_file_keys_return, check_file_history_return)
+        self.return_tuple     = (1,1,1,1) #(check_filepath, read_file_return, check_file_header_return, check_file_keys_return)
         self.init_status      = self.ClientFile__Init()
 
     def __repr__(self):
@@ -106,8 +106,8 @@ class ClientFile:
         #(read_file_return, check_file_header_return, check_file_keys_return, check_file_history_return)
         #self.check_header_keys()
 
-        self.return_tuple = (self.check_filepath(), self.read_file(), self.header.check_header(), self.header.check_keys_list(), self.history.check_history())
-        if ( (self.return_tuple[0] != 0) or (self.return_tuple[1] != 0) or (self.return_tuple[2] != 0) or (self.return_tuple[3] != 0) or (self.return_tuple[4] != 0)):
+        self.return_tuple = (self.check_filepath(), self.read_file(), self.header.check_header(), self.header.check_keys_list())
+        if ( (self.return_tuple[0] != 0) or (self.return_tuple[1] != 0) or (self.return_tuple[2] != 0) or (self.return_tuple[3] != 0)):
             #send mail 
             #TODO ici, si jamais une clé est mauvaise, il faut envoyer un mail avec le nombre de clé mauvaises et les stratégies correspondantes
             print("KO")
