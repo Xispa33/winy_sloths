@@ -40,6 +40,9 @@ class Transaction:
     
     convert_raw_trade_to_transaction(raw_trade, client)
         Converts the dictionnary returned by Binance into a Transaction object 
+    
+    create_transaction(account_type, strategy_history, client)
+        Creates a Transaction object from the last trade of a strategy written in the client file
     """
     def __init__(self, transaction_info_dict):
         self.type = UNDEFINED
@@ -91,6 +94,15 @@ class Transaction:
     
     @staticmethod
     def create_transaction(account_type, strategy_history, client):
+        """
+        Name : create_transaction(account_type, strategy_history, client)
+    
+        Parameters : account_type : Account type, either SPOT or FUTURES
+                     strategy_history : Last trade of a strategy written in the client file
+                     client : Client used to connect to Binance server
+    
+        Description : Converts the dictionnary returned by Binance into a Transaction object (either FUTURES or SPOT)
+        """
         if (account_type == FUTURES):
             dict_keys_list = [TYPE, TIME, ID, ORDER_ID, SYMBOL, PRICE, SIDE, QTY, REALIZED_PNL, CURRENT_SIDE]
             strategy_history_dict = {dict_keys_list[i]:strategy_history[i] for i in range(0, len(dict_keys_list))}
