@@ -38,28 +38,19 @@ class ClientFile:
         self.init_status      = self.ClientFile__Init()
 
     def __repr__(self):
-        #TODO: A modifier pour que l'affichage soit automatique
         out = str()
         out += "client_file_path = {}\n".format(self.client_file_path)
         out += self.header.__repr__()
-        #out += self.history.__repr__()
         out += "return_tuple = {}\n".format(str(self.return_tuple))
         out += "init_status = {}\n".format(self.init_status)
 
         return (out)
     
     def return_transaction(self, strategy_history, transaction_idx):
-        #type | time | id | orderId | symbol | symbol_price | side | quantity | realized_pnl | current_side
-        if (self.header.key_list[transaction_idx].account_type == FUTURES):
-            dict_keys_list = ['type', 'time', 'id', 'orderId', 'symbol', 'price', 'side', 'qty', 'realizedPnl', 'current_side']
-            strategy_history_dict = {dict_keys_list[i]:strategy_history[i] for i in range(0, len(dict_keys_list))}
-            return (TransactionFutures(strategy_history_dict, Client(self.header.key_list[transaction_idx].api_key, self.header.key_list[transaction_idx].api_secret_key)))
-        elif (self.header.key_list[transaction_idx].account_type == SPOT):
-            dict_keys_list = ['type', 'time', 'orderId', 'symbol', 'price', 'side', 'origQty', 'current_side']
-            strategy_history_dict = {dict_keys_list[i]:strategy_history[i] for i in range(0, len(dict_keys_list))}
-            return (TransactionSpot(strategy_history_dict))
-        else:
-            return 1
+        return Transaction.create_transaction(self.header.key_list[transaction_idx].account_type, \
+                                                   strategy_history, \
+                                                   Client(self.header.key_list[transaction_idx].api_key, \
+                                                          self.header.key_list[transaction_idx].api_secret_key))
     
     def read_file(self):
         cpt_strategies = 0
@@ -71,7 +62,7 @@ class ClientFile:
                 self.header.nb_keys = int(info[1].rstrip('\n'))
                 for i in range(0,self.header.all_strategies_nb):
                     key_pair = info[2+i].rstrip('\n')
-                    if key_pair != "NA":
+                    if key_pair != NA:
                         api_key = info[2+i].split()[0]
                         api_code_key = info[2+i].split()[1]
                         account_type = info[2+i].split()[2]
@@ -86,7 +77,8 @@ class ClientFile:
                     
                     #last_transaction = Transaction(strategy_history)
                     print(last_transaction)
-                    self.history.history_list.append(last_transaction)
+                    #self.history.history_list.append(last_transaction)
+                    self.history.add_transaction(last_transaction)
                     #print(strategy_history)
                     
                 txt_file.close()
@@ -126,7 +118,8 @@ class ClientFile:
                     strategy_history = info[2+self.header.all_strategies_nb+transaction_idx+1].rstrip('\n').split(';')
                     last_transaction = self.return_transaction(strategy_history, transaction_idx)
                     print(last_transaction)
-                    self.history.history_list.append(last_transaction)
+                    self.history.add_transaction(last_transaction)
+                    #self.history.history_list.append(last_transaction)
                 txt_file.close()
             return 0
         except:
@@ -166,13 +159,16 @@ class ClientFile:
         api_key = self.find_strategy_api_key(strategy_idx)
         client = Client(api_key.api_key, api_key.api_secret_key)
         if (api_key.api_validity == VALID_KEY):
-            transaction_list = I__GET_ACCOUNT_HISTORY(client, api_key.account_type, self.history.history_list[strategy_idx].symbol)
-            #if api_key.account_type == FUTURES:
+            #transaction_list = I__GET_ACCOUNT_HISTORY(client, api_key.account_type, self.history.history_list[strategy_idx].symbol)
+            transaction_list = I__GET_ACCOUNT_HISTORY(client, api_key.account_type, self.history[strategy_idx].symbol)
+            """
+            if api_key.account_type == FUTURES:
                 #Futures account example
-            #    transaction_list = [{'symbol': 'ETHUSDT', 'id': 384187499, 'orderId': 8389765493651748878, 'side': 'SELL', 'price': '1535.45', 'qty': '1.474', 'realizedPnl': '0', 'marginAsset': 'USDT', 'quoteQty': '2263.25330', 'commission': '0.45265066', 'commissionAsset': 'USDT', 'time': 1614974810111, 'positionSide': 'BOTH', 'maker': True, 'buyer': False}, {'symbol': 'ETHUSDT', 'id': 384498527, 'orderId': 8389765493659577085, 'side': 'BUY', 'price': '1546.11', 'qty': '1.474', 'realizedPnl': '-15.71284000', 'marginAsset': 'USDT', 'quoteQty': '2278.96614', 'commission': '0.45579322', 'commissionAsset': 'USDT', 'time': 1614991360231, 'positionSide': 'BOTH', 'maker': True, 'buyer': True}, {'symbol': 'ETHUSDT', 'id': 386113569, 'orderId': 8389765493693917332, 'side': 'BUY', 'price': '1636.07', 'qty': '1.386', 'realizedPnl': '0', 'marginAsset': 'USDT', 'quoteQty': '2267.59302', 'commission': '0.45351860', 'commissionAsset': 'USDT', 'time': 1615061346339, 'positionSide': 'BOTH', 'maker': True, 'buyer': True}]
-            #else:
+                transaction_list = [{'symbol': 'ETHUSDT', 'id': 384187499, 'orderId': 8389765493651748878, 'side': 'SELL', 'price': '1535.45', 'qty': '1.474', 'realizedPnl': '0', 'marginAsset': 'USDT', 'quoteQty': '2263.25330', 'commission': '0.45265066', 'commissionAsset': 'USDT', 'time': 1614974810111, 'positionSide': 'BOTH', 'maker': True, 'buyer': False}, {'symbol': 'ETHUSDT', 'id': 384498527, 'orderId': 8389765493659577085, 'side': 'BUY', 'price': '1546.11', 'qty': '1.474', 'realizedPnl': '-15.71284000', 'marginAsset': 'USDT', 'quoteQty': '2278.96614', 'commission': '0.45579322', 'commissionAsset': 'USDT', 'time': 1614991360231, 'positionSide': 'BOTH', 'maker': True, 'buyer': True}, {'symbol': 'ETHUSDT', 'id': 386113569, 'orderId': 8389765493693917332, 'side': 'BUY', 'price': '1636.07', 'qty': '1.386', 'realizedPnl': '0', 'marginAsset': 'USDT', 'quoteQty': '2267.59302', 'commission': '0.45351860', 'commissionAsset': 'USDT', 'time': 1615061346339, 'positionSide': 'BOTH', 'maker': True, 'buyer': True}]
+            else:
                 #Spot account example
-            #    transaction_list = [{'symbol': 'BTCUSDT', 'orderId': 5211308012, 'orderListId': -1, 'clientOrderId': 'x-K309V22B-km7ojj23ybr0kzjtq6m', 'price': '59800.76000000', 'origQty': '0.02100000', 'executedQty': '0.02100000', 'cummulativeQuoteQty': '1255.81596000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'LIMIT', 'side': 'BUY', 'stopPrice': '0.00000000', 'icebergQty': '0.00000000', 'time': 1615636978951, 'updateTime': 1615637009689, 'isWorking': True, 'origQuoteOrderQty': '0.00000000'}]
+                transaction_list = [{'symbol': 'BTCUSDT', 'orderId': 5211308012, 'orderListId': -1, 'clientOrderId': 'x-K309V22B-km7ojj23ybr0kzjtq6m', 'price': '59800.76000000', 'origQty': '0.02100000', 'executedQty': '0.02100000', 'cummulativeQuoteQty': '1255.81596000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'LIMIT', 'side': 'BUY', 'stopPrice': '0.00000000', 'icebergQty': '0.00000000', 'time': 1615636978951, 'updateTime': 1615637009689, 'isWorking': True, 'origQuoteOrderQty': '0.00000000'}]
+            """
         else:
             return 1
 
@@ -195,66 +191,46 @@ class ClientFile:
         if (isinstance(ret_last_futures_read, int)):
             return 1
         else:
-            
-            if (self.header.key_list[strategy_idx].account_type == FUTURES):
-                return (convert_raw_trade_to_transaction(ret_last_futures_read, Client(self.header.key_list[strategy_idx].api_key, self.header.key_list[strategy_idx].api_secret_key)))
-            elif (self.header.key_list[strategy_idx].account_type == SPOT):
-                return (convert_raw_trade_to_transaction(ret_last_futures_read, Client(self.header.key_list[strategy_idx].api_key, self.header.key_list[strategy_idx].api_secret_key)))
+            if (self.header.key_list[strategy_idx].account_type == FUTURES) or (self.header.key_list[strategy_idx].account_type == SPOT):
+                return (Transaction.convert_raw_trade_to_transaction(ret_last_futures_read, Client(self.header.key_list[strategy_idx].api_key, self.header.key_list[strategy_idx].api_secret_key)))
             else:
                 return 1
     
     def ClientFile__GetFileHistory(self):
         return (self.read_file_history())
     
+    def ClientFile__ModifyClientFileHistory(self, strategy_history, last_trade):
+        return (self.write_file_history(strategy_history, last_trade))
+    
     def ClientFile__GetStrategyHistory(self, strategy_idx):
         return (self.history.history_list[strategy_idx])
 
-    # Ici, on compare l'historique d'une stratégie de l'objet avec l'historique passé en paramètre
-    def ClientFile__CompareStrategy(self, strategy_idx, last_trade):
-        #return (self.history.history_list[strategy_idx] == last_trade.history.history_list[strategy_idx])
-        return (self.history.history_list[strategy_idx] == last_trade)
-
-    def ClientFile__Act(self, strategy_history, last_trade):
-        #ecriture dans le fichier .txt
-        #ClientFile__ReadHistory
+    def ClientFile__UpdateHistory(self, strategy_history, last_trade):
+ 
         write_ret = 1
         update_ret = 1
 
-        write_ret = self.write_file_history(strategy_history, last_trade)
-        update_ret = self.read_file_history()
+        write_ret = self.ClientFile__ModifyClientFileHistory(strategy_history, last_trade)
+        update_ret = self.ClientFile__GetFileHistory()
 
         if ((write_ret == 1) or (update_ret == 1)):
-            return 1
-        else:
+            return 1 
+        else: 
             return 0
-
-def convert_raw_trade_to_transaction(raw_trade, client):
-        # time | id | orderId | symbol | symbol_price | side | quantity | realized_pnl
-        if isinstance(raw_trade, dict):
-            if 'realizedPnl' in raw_trade:
-                """ Futures transaction """
-                return TransactionFutures(raw_trade, client)
-            else:
-                """ Spot transaction """
-                #[{'symbol': 'BTCUSDT', 'orderId': 5211308012, 'orderListId': -1, 'clientOrderId': 'x-K309V22B-km7ojj23ybr0kzjtq6m', 'price': '59800.76000000', 'origQty': '0.02100000', 'executedQty': '0.02100000', 'cummulativeQuoteQty': '1255.81596000', 'status': 'FILLED', 'timeInForce': 'GTC', 'type': 'LIMIT', 'side': 'BUY', 'stopPrice': '0.00000000', 'icebergQty': '0.00000000', 'time': 1615636978951, 'updateTime': 1615637009689, 'isWorking': True, 'origQuoteOrderQty': '0.00000000'}]
-                return TransactionSpot(raw_trade)
-        else:
-            return 1
 
 def run(tree):
     for strategy_idx in range(0,tree.header.nb_keys):
-        #READ FUTURES HISTORY
+        """ READ HISTORY IN CLIENT FILE """
         file_last_trade = tree.ClientFile__GetStrategyHistory(strategy_idx)
+        """ READ HISTORY IN BINANCE """
         future_last_trade_binance = tree.ClientFile__GetBinanceHistory(strategy_idx)
-        
-        #COMPARE WITH CURRENT
+        """ COMPARE """
         if (type(future_last_trade_binance) == type(file_last_trade)):
             if not future_last_trade_binance == file_last_trade:
-                #ACT = MAJ fichier .txt + MAJ historique de l'objet
-                tree.ClientFile__Act(strategy_idx, future_last_trade_binance)
-                # LECTURE FICHIER TXT APRES MODIF : DEJA FAIT DANS ClientFile__Act
-                #tree.ClientFile__GetFileHistory()
+                """ UPDATE CLIENT FILE AND tree's HISTORY LIST """
+                tree.ClientFile__UpdateHistory(strategy_idx, future_last_trade_binance)
             else:
                 print("SAME HISTORY\n")
         else:
+            """ In case the 2 transactions do not have the same type """
             return 1
