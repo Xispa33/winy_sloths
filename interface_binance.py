@@ -33,10 +33,15 @@ def I__FUTURES_ACCOUNT_TRADES(client, symbol):
     
     Description : Gets a symbol's trade history of a futures account. Client contains the API key credentials allowing to connect to Binance server
     """
-    try:
-        ret = client.futures_account_trades(symbol=symbol, limit='1')
-    except:
-        ret = 1
+    err_cpt = 0
+    ret = 1
+
+    while (err_cpt < MAX_RETRY) and (ret == 1):
+        try:
+            ret = client.futures_account_trades(symbol=symbol, limit='1')
+        except:
+            ret = 1
+            err_cpt += 1
 
     return ret
 
@@ -52,10 +57,15 @@ def I__SPOT_ACCOUNT_TRADES(client, symbol):
     
     Description : Gets a symbol's trade history of a SPOT account. Client contains the API key credentials allowing to connect to Binance server
     """
-    try:
-        ret = client.get_all_orders(symbol=symbol, limit='1')
-    except:
-        ret = 1
+    err_cpt = 0
+    ret = 1
+
+    while (err_cpt < MAX_RETRY) and (ret == 1):
+        try:
+            ret = client.get_all_orders(symbol=symbol, limit='1')
+        except:
+            ret = 1
+            err_cpt += 1
     
     return ret
 

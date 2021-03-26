@@ -4,6 +4,7 @@
 from binance.client import Client
 from interface_binance import *
 from constants import *
+from errors import *
 
 class Header:
     """
@@ -24,7 +25,7 @@ class Header:
 
     Methods
     -------
-    check_header()
+    check_header(file_validity, error_objet)
         Checks that all header fields are correct and pertinent
     
     check_keys_list()
@@ -44,49 +45,60 @@ class Header:
             out += "{0} = {1}\n".format(attributes, self.__dict__[attributes])
         return (out)
     
-    def check_header(self):
+    def check_header(self, file_validity, error_objet):
         """
         Name : check_header()
     
-        Parameters : 
+        Parameters : file_validity ; Flag indicating if the reading of the client file worked properly
+                     error_objet ; Object of class Errors gathering errors information
     
         Description : Checks that all header fields are correct and pertinent
         """
-        out_message = " {} header file is ".format(self.client_name)
-        
-        if (self.nb_keys <=  0):
-            out_message += "incorrect ! \nReason: Number of keys = {}. Should be stricly superior 0.\n".format(self.nb_keys)
-            return 1
-        elif (self.cpt_strategies != self.nb_keys):
-            out_message += "incorrect ! \nReason: Number of strategies = {}. Should be equal to the number of keys ({}).\n".format(self.cpt_strategies, self.nb_keys)
-            return 2
-        elif (self.all_strategies_nb < self.cpt_strategies):
-            out_message += "incorrect ! \nReason: Number of strategies = {}.Should be inferior or equal to {} o equal or less than 0.\n".format(self.cpt_strategies, self.all_strategies_nbs)
-            return 3
-        elif (self.all_strategies_nb < self.nb_keys):
-            out_message += "incorrect ! \nReason: Number of keys = {}. Should be inferior or equal to {} o equal or less than 0.\n".format(self.nb_keys, self.all_strategies_nb)
-            return 4
+        if (file_validity == 0):
+            out_message = " {} header file is ".format(self.client_name)
+            
+            if (self.nb_keys <=  0):
+                out_message += "incorrect ! \nReason: Number of keys = {}. Should be stricly superior 0.\n".format(self.nb_keys)
+                return error_objet.Errors__FillErrors("check_header()", out_message, HIGH_C)
+            elif (self.cpt_strategies != self.nb_keys):
+                out_message += "incorrect ! \nReason: Number of strategies = {}. Should be equal to the number of keys ({}).\n".format(self.cpt_strategies, self.nb_keys)
+                return error_objet.Errors__FillErrors("check_header()", out_message, HIGH_C)
+            elif (self.all_strategies_nb < self.cpt_strategies):
+                out_message += "incorrect ! \nReason: Number of strategies = {}.Should be inferior or equal to {} o equal or less than 0.\n".format(self.cpt_strategies, self.all_strategies_nbs)
+                return error_objet.Errors__FillErrors("check_header()", out_message, HIGH_C)
+            elif (self.all_strategies_nb < self.nb_keys):
+                out_message += "incorrect ! \nReason: Number of keys = {}. Should be inferior or equal to {} o equal or less than 0.\n".format(self.nb_keys, self.all_strategies_nb)
+                return error_objet.Errors__FillErrors("check_header()", out_message, HIGH_C)
+            else:
+                #out_message += "correct !\n"
+                return 0
         else:
-            out_message += "correct !\n"
-            return 0  
+            return 1  
 
-    def check_keys_list(self):
+    def check_keys_list(self, header_validity, error_objet):
         """
         Name : check_keys_list()
     
-        Parameters : 
+        Parameters : header_validity ; Flag indicating if the reading of the header was properly filled
+                     error_objet ; Object of class Errors gathering errors information
     
         Description : Verifes that the list of API keys provided are all correct and allow to connect to Binance server
         """
-        ret = 1
-        err_flag = 0
-        for key in self.key_list:
-            ret = key.check_key()
-            if ret != 0:
-                print("Strategy index {} credentials for {} are invalid ! \n".format(key.strategy_idx, self.client_name))
-                err_flag = 1
-        
-        return err_flag
+        #TODO : MECANISME PARTICULIER ICI
+        if (header_validity == 0):
+            ret = 1
+            err_flag = 0
+            for key in self.key_list:
+                ret = key.check_key()
+                if ret != 0:
+                    #print("Strategy index {} credentials for {} are invalid ! \n".format(key.strategy_idx, self.client_name))
+                    out_message = "Strategy index {} credentials for {} are invalid ! \n".format(key.strategy_idx, self.client_name)
+                    error_objet.Errors__FillErrors("check_keys_list()", out_message, HIGH_C)
+                    err_flag = 1
+            
+            return err_flag
+        else:
+            return 1
 
 class ApiKeyClass:
     """
