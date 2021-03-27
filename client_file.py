@@ -168,7 +168,7 @@ class ClientFile:
         if (api_key != 1):
             client = Client(api_key.api_key, api_key.api_secret_key)
             if (api_key.api_validity == VALID_KEY):
-                transaction_list = I__GET_ACCOUNT_HISTORY(client, api_key.account_type, self.history[strategy_idx].symbol)
+                transaction_list = I__GET_ACCOUNT_HISTORY(client, api_key.account_type, self.history.history_list[strategy_idx].symbol)
                 """
                 if api_key.account_type == FUTURES:
                     #Futures account example
@@ -196,17 +196,17 @@ class ClientFile:
     def ClientFile__GetBinanceHistory(self, strategy_idx):
         #TODO: Mettre peut etre un retry pour tester les datas recues
         FUNCTION = "ClientFile__GetBinanceHistory()"
-        ret_last_futures_read = 1
+        ret_last_transaction_read = 1
 
-        ret_last_futures_read = self.get_last_futures_trade(self.get_futures_trade(strategy_idx))
+        ret_last_transaction_read = self.get_last_futures_trade(self.get_futures_trade(strategy_idx))
 
-        if (isinstance(ret_last_futures_read, int)):
-            self.errors.Errors__FillErrors(FUNCTION, "Strategy index : " + strategy_idx + " failed to retrieve information from Binance !\n", MEDIUM_C)
+        if (isinstance(ret_last_transaction_read, int)):
+            self.errors.Errors__FillErrors(FUNCTION, "Strategy index : " + str(strategy_idx) + " failed to retrieve information from Binance !\n", MEDIUM_C)
             self.header.key_list[strategy_idx].api_validity = NOT_VALID_KEY
             return 1
         else:
             if (self.header.key_list[strategy_idx].account_type == FUTURES) or (self.header.key_list[strategy_idx].account_type == SPOT):
-                return (Transaction.convert_raw_trade_to_transaction(ret_last_futures_read, Client(self.header.key_list[strategy_idx].api_key, self.header.key_list[strategy_idx].api_secret_key)))
+                return (Transaction.convert_raw_trade_to_transaction(ret_last_transaction_read, Client(self.header.key_list[strategy_idx].api_key, self.header.key_list[strategy_idx].api_secret_key)))
             else:
                 self.errors.Errors__FillErrors(FUNCTION, "Strategy index : " + strategy_idx + " transaction information retrieved from Binance is incorrect !\n", MEDIUM_C)
                 self.header.key_list[strategy_idx].api_validity = NOT_VALID_KEY

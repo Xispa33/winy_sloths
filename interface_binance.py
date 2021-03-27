@@ -38,7 +38,8 @@ def I__FUTURES_ACCOUNT_TRADES(client, symbol):
 
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
-            ret = client.futures_account_trades(symbol=symbol, limit='1')
+            #ret = client.futures_account_trades(symbol=symbol, limit='1')
+            ret = client.futures_position_information(symbol=symbol, timestamp=client.futures_time())
         except:
             ret = 1
             err_cpt += 1
@@ -107,11 +108,17 @@ def I__GET_FUTURES_POSITION(client, symbol):
     Description : Gets the position side of a futures account (supposing that the account only trades on 1 symbol) 
                   Client contains the API key credentials allowing to connect to Binance server
     """
-    try:
-        ret = client.futures_position_information(symbol=symbol, timestamp=client.futures_time())
-        ret = (ret[0]['positionSide'], float(ret[0]['entryPrice']))
-        #ret = ('BOTH', 0.0)
-    except:
-        ret = 1
+    err_cpt = 0
+    ret = 1
+
+    while (err_cpt < MAX_RETRY) and (ret == 1):
+        try:
+            ret = client.futures_position_information(symbol=symbol, timestamp=client.futures_time())
+            
+            #ret = (ret[0]['positionSide'], float(ret[0]['entryPrice']))
+            #ret = ('BOTH', 0.0)
+        except:
+            ret = 1
+            err_cpt += 1
     
     return ret

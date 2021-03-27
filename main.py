@@ -1,16 +1,18 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
+"""
 from client_file import *
 from constants import *
+"""
+from winy_sloth import *
 
 if __name__ == "__main__":
+    
     """
-    Main function
+    Init
+    1 - On va dans STRATEGIES dossier, et on compte le nombre de fichier .txt
+    2 - Pour chaque fichier .txt, on créé un objet de type StrategyFile
+    3 - On stocke chacun des StrategyFile dans une liste
     """
-    tree = ClientFile(TREE_FILE)
-    run(tree)
-    """
-    while (1):
-        run(tree)
-    """
+    a = WinySloth(STRATEGIES_FOLDER)
+    b = 0

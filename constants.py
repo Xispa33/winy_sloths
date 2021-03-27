@@ -23,6 +23,7 @@ SYMBOL = 'symbol'
 PRICE = 'price'
 SIDE = 'side'
 TYPE = 'type'
+ENTRY_PRICE = 'entry_price'
 CURRENT_SIDE = 'current_side'
 NA = 'NA'
 NO_C = 0
@@ -35,6 +36,7 @@ ERROR = "ERROR"
 CORRESPONDANCE_DICT = {INFO_C:"INFO", MEDIUM_C:"WARNING", HIGH_C: "ERROR"}
 MAX_RETRY = 5
 MAX_KO_STRATEGY = 3
+POSITION_AMT = 'positionAmt'
 
 #EMAIL CONSTANTS
 PORT = 465
@@ -47,3 +49,7 @@ SUBJECT = 'Subject'
 FROM = 'From'
 TO = 'To'
 PLAIN = 'plain'
+
+
+
+STRATEGIES_FOLDER = "STRATEGIES/"

@@ -46,11 +46,15 @@ class Transaction:
     """
     def __init__(self, transaction_info_dict):
         self.type = UNDEFINED
-        self.time = int(transaction_info_dict[TIME])
-        self.orderId = transaction_info_dict[ORDER_ID]
+        #self.time = int(transaction_info_dict[TIME])
+        self.time = 0
+        self.orderId = 0
+        #self.orderId = transaction_info_dict[ORDER_ID]
         self.symbol = transaction_info_dict[SYMBOL]
-        self.symbol_price = float(transaction_info_dict[PRICE])
-        self.side = transaction_info_dict[SIDE]
+        #self.symbol_price = float(transaction_info_dict[PRICE])
+        self.symbol_price = 0
+        #self.side = transaction_info_dict[SIDE]
+        self.side = 0
         self.current_side = UNDEFINED
 
     def compute_current_side(self):
@@ -71,7 +75,8 @@ class Transaction:
         return (out)
     
     def __eq__(self,other_history):
-        return ((self.orderId == other_history.orderId) and (self.symbol == other_history.symbol) and (self.symbol_price == other_history.symbol_price) and (self.side == other_history.side))
+        #return ((self.symbol == other_history.symbol) and (self.symbol_price == other_history.symbol_price) and (self.side == other_history.side))
+        return ((self.current_side == other_history.current_side))
 
     @staticmethod
     def convert_raw_trade_to_transaction(raw_trade, client):
@@ -83,7 +88,7 @@ class Transaction:
         Description : Converts the dictionnary returned by Binance into a Transaction object (either FUTURES or SPOT)
         """
         if isinstance(raw_trade, dict):
-            if REALIZED_PNL in raw_trade:
+            if (len(raw_trade) == 3) or ('unRealizedProfit' in raw_trade):
                 """ Futures transaction """
                 return TransactionFutures.convert_to_futures(raw_trade, client)
             else:
@@ -146,6 +151,8 @@ class TransactionSpot(Transaction):
     """
     def __init__(self, transaction_info_dict):
         super().__init__(transaction_info_dict)
+     
+        self.side = transaction_info_dict[SIDE]
         self.type = SPOT
         self.quantity = float(transaction_info_dict[ORIGQTY])
         self.current_side = self.compute_current_side()
@@ -159,7 +166,7 @@ class TransactionSpot(Transaction):
         Description : Computes the current position of an account (FUTURE or SPOT).
         """
         if self.side == BUY: 
-            return BUY
+            return LONG
         elif self.side == SELL:
             return OUT
         else:
@@ -224,9 +231,9 @@ class TransactionFutures(Transaction):
     """
     def __init__(self, transaction_info_dict, client):
         super().__init__(transaction_info_dict)
-        self.id = transaction_info_dict[ID]
-        self.realized_pnl = float(transaction_info_dict[REALIZED_PNL])
-        self.quantity = float(transaction_info_dict[QTY])
+        self.id = 0
+        self.realized_pnl = float(transaction_info_dict['unRealizedProfit'])
+        self.quantity = 0
         self.type = FUTURES
         self.current_side = self.compute_current_side(client)
         self.client = client
@@ -239,17 +246,31 @@ class TransactionFutures(Transaction):
     
         Description : Computes the current position of an account (FUTURE or SPOT).
         """
-        (positionSide, entryPrice)  = I__GET_FUTURES_POSITION(client, self.symbol)
-        
-        if (positionSide == SHORT):
-            return SELL
+        #(positionSide, entryPrice)  = I__GET_FUTURES_POSITION(client, self.symbol)
+        position_info_ret = I__GET_FUTURES_POSITION(client, self.symbol)
+        if (isinstance(position_info_ret, int)):
+            return 1
         else:
-            if (positionSide == BOTH) and (entryPrice != float(0)): 
-                return BUY
-            elif (positionSide == BOTH) and (entryPrice == float(0)):
-                return OUT 
+            if (len(position_info_ret) > 1):
+                entry_price_1 = position_info_ret[0][ENTRY_PRICE] 
+                entry_price_2 = position_info_ret[1][ENTRY_PRICE]
+                entry_price_3 = position_info_ret[2][ENTRY_PRICE]
+                if (entry_price_1 != float(0)) or (entry_price_2 != float(0)):
+                    return LONG
+                elif (entry_price_1 == float(0) and entry_price_2 == float(0) and entry_price_3 == float(0)):
+                    return OUT
+                elif (entry_price_3 != float(0)):
+                    return SHORT
+                else:
+                    return 1
             else:
-                return 1
+                pos_amt = float(position_info_ret[0][POSITION_AMT])
+                if (pos_amt == float(0)):
+                    return OUT
+                elif (pos_amt < 0):
+                    return SHORT
+                else: 
+                    return LONG
 
     def __str__(self):
         out = "{};{};{};{};{};{};{};{};{};{}\n".format(str(self.type), str(self.time), str(self.id), str(self.orderId), str(self.symbol), \

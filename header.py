@@ -127,12 +127,12 @@ class ApiKeyClass:
         Checks that an API key allows to connect to Binance server
 
     """
-    def __init__(self, strategy_idx, api_key, api_secret_key, api_validity, account_type):
-        self.strategy_idx = strategy_idx
+    def __init__(self, api_key, api_secret_key, api_validity, account_type, side):
         self.api_key = api_key
         self.api_secret_key = api_secret_key
         self.api_validity = api_validity
         self.account_type = account_type
+        self.side = side
 
     def __repr__(self):
         out = str()
