@@ -6,6 +6,7 @@ from constants import *
 """
 from winy_sloth import *
 
+
 if __name__ == "__main__":
     
     """
@@ -15,4 +16,3 @@ if __name__ == "__main__":
     3 - On stocke chacun des StrategyFile dans une liste
     """
     a = WinySloth(STRATEGIES_FOLDER)
-    b = 0

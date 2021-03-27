@@ -16,8 +16,6 @@ class ApiKey:
         self.api_secret_key = info_strategy_file[1]
         self.side = info_strategy_file[2]
 
-    def ApiKey__CreateApiKey():
-        return 0
 
 class ApiKeyMaster(ApiKey):
     def __init__(self, info_strategy_file):
