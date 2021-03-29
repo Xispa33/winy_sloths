@@ -70,7 +70,7 @@ class Errors():
             print("Starting to send")
             with smtplib.SMTP_SSL(STMP_URL, PORT, context=context) as server:
                 server.login(EMITTOR, EMITTOR_PASSWORD)
-                #server.sendmail(EMITTOR, receiver, msg.as_string())
+                server.sendmail(EMITTOR, receiver, msg.as_string())
 
             print("sent email!")
         

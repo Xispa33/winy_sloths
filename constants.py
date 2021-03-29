@@ -23,7 +23,7 @@ SYMBOL = 'symbol'
 PRICE = 'price'
 SIDE = 'side'
 TYPE = 'type'
-ENTRY_PRICE = 'entry_price'
+ENTRY_PRICE = 'entryPrice'
 CURRENT_SIDE = 'current_side'
 NA = 'NA'
 NO_C = 0
@@ -40,7 +40,7 @@ POSITION_AMT = 'positionAmt'
 
 #EMAIL CONSTANTS
 PORT = 465
-RECEIVERS = ['briceleal@hotmail.fr'] 
+RECEIVERS = ['briceleal@hotmail.fr', 'axel.berthier3@gmail.com'] 
 EMITTOR = 'towardsecolonomy@gmail.com'
 STMP_URL = "smtp.gmail.com"
 EMITTOR_PASSWORD = 'ricqltndktzitayp'
