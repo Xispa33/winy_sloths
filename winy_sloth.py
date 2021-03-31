@@ -73,9 +73,9 @@ class WinySloth:
                         return 1
                 else:
                     # Store needed information for FUTURES account
-                    master_api.markPrice = round(float(binance_response[0]['markPrice']), 0)
+                    master_api.markPrice = round(float(binance_response[0][MARK_PRICE]), 0)
                     master_api.entryPrice = round(float(binance_response[0][ENTRY_PRICE]), 0)
-                    master_api.leverage = binance_response[0]['leverage']
+                    master_api.leverage = binance_response[0][LEVERAGE]
                     master_api.positionAmt = float(binance_response[0][POSITION_AMT])
                     #TODO: A modifier pour grer les cas derreur
                     master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(Client(master_api.api_key, master_api.api_secret_key))[0]['balance'])
