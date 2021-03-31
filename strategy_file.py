@@ -5,8 +5,6 @@ import os
 import sys
 from binance.client import Client
 from interface_binance import *
-from header import *
-from history import *
 from constants import *
 from errors import *
 
