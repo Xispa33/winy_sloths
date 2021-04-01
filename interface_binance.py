@@ -178,7 +178,7 @@ def I__OPEN_LONG_SPOT(client, symbol):
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
             usdt_asset = client.get_asset_balance(asset=USDT)[FREE]
-            asset_round=round(usdt_asset-0.05,1)
+            asset_round=round(float(usdt_asset)-0.05,1)
 
             client.create_order(symbol=symbol, side=BUY, type=MARKET, quoteOrderQty=asset_round, timestamp=client.get_server_time())
             ret = 0

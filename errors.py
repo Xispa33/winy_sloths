@@ -5,9 +5,7 @@ import smtplib, ssl
 import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from history import *
 from constants import *
-from header import *
 
 
 class Errors():
