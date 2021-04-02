@@ -16,6 +16,7 @@ def I__FUTURES_ACCOUNT_TRADES(client, symbol):
     
     Description : Gets a symbol's trade history of a futures account. 
                   Client contains the API key credentials allowing to connect to Binance server
+                  If this function fails MAX_RETRY times, an error is returned
     """
     err_cpt = 0
     ret = 1
@@ -39,7 +40,9 @@ def I__SPOT_ACCOUNT_TRADES(client, symbol):
         symbol : str
             Currency traded 
     
-    Description : Gets a symbol's trade history of a SPOT account. Client contains the API key credentials allowing to connect to Binance server
+    Description : Gets a symbol's trade history of a SPOT account. 
+                  Client contains the API key credentials allowing to connect to Binance server
+                  If this function fails MAX_RETRY times, an error is returned
     """
     err_cpt = 0
     ret = 1
@@ -77,7 +80,6 @@ def I__GET_ACCOUNT_HISTORY(client, account_type, symbol):
     
     return ret
 
-
 def I__CLOSE_LONG_SPOT(client, symbol):
     """
     Name : I__CLOSE_LONG_SPOT()
@@ -88,7 +90,8 @@ def I__CLOSE_LONG_SPOT(client, symbol):
         symbol : str
             Currency traded
     
-    Description : ...
+    Description : Function closing an open trade on a SPOT account.
+                  If this function fails MAX_RETRY times, an error is returned
     """
     err_cpt = 0
     ret = 1
@@ -122,9 +125,11 @@ def I__CLOSE_LONG_FUTURES(client, symbol):
         symbol : str
             Currency traded
     
-    Description : ...
+    Description : Function closing an open trade on a FUTURES account.
+                  If this function fails MAX_RETRY times, an error is returned
     """
-    err_cpt = 1
+    #TODO: To test
+    err_cpt = 0
     ret = 1
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
@@ -149,7 +154,8 @@ def I__CLOSE_LONG(client, master_api):
         master_api : ApiKeyMaster
             ...
     
-    Description : ...
+    Description : Function closing an open trade depending on the accounts type (SPOT/FUTURES).
+                  Client contains the API key credentials allowing to connect to Binance server.
     """
     if (master_api.account_type == SPOT):
         ret = I__CLOSE_LONG_SPOT(client, master_api.symbol)
@@ -170,7 +176,8 @@ def I__OPEN_LONG_SPOT(client, symbol):
         symbol : str
             Currency traded
     
-    Description : ...
+    Description : Function opening a trade on a SPOT account
+                  If this function fails MAX_RETRY times, an error is returned
     """
     err_cpt = 0
     ret = 1
@@ -190,7 +197,7 @@ def I__OPEN_LONG_SPOT(client, symbol):
 
 def I__OPEN_LONG_FUTURES(client, symbol, leverage, engaged_balance, entryPrice):
     """
-    Name : I__OPEN_LONG_SPOT()
+    Name : I__OPEN_LONG_FUTURES()
     
     Parameters : 
         client : binance.client
@@ -198,8 +205,10 @@ def I__OPEN_LONG_FUTURES(client, symbol, leverage, engaged_balance, entryPrice):
         master_api : ApiKeyMaster
             ...
     
-    Description : ...
+    Description : Function opening a trade on a FUTURES account
+                  If this function fails MAX_RETRY times, an error is returned
     """
+    #TODO: To test
     err_cpt = 0
     ret = 1
 
@@ -244,18 +253,16 @@ def I__OPEN_LONG(client, master_api):
 
     return ret
 
-
-
-
 def I__GET_FUTURES_ACCOUNT_BALANCE(client):
     """
-    Name : I__GET_FUTURES_ACCOUNT()
+    Name : I__GET_FUTURES_ACCOUNT_BALANCE()
     
     Parameters : 
         client : binance.client
             Client used to connect to Binance server
     
-    Description : ...
+    Description : Function returning a futures account information
+                  If this function fails MAX_RETRY times, an error is returned
     """
     err_cpt = 0
     ret = 1
@@ -276,11 +283,13 @@ def I__CLOSE_SHORT(client, symbol):
     Parameters : 
         client : binance.client
             Client used to connect to Binance server
-        master_api : ApiKeyMaster
-            ...
+        symbol : str
+            Currency traded
     
-    Description : ...
+    Description : Function closing a short position for a FUTURES account
+                  If this function fails MAX_RETRY times, an error is returned
     """
+    #TODO: To test
     err_cpt = 0
     ret = 1
 
@@ -307,8 +316,10 @@ def I__OPEN_SHORT(client, master_api, leverage, engaged_balance, entryPrice):
         master_api : ApiKeyMaster
             ...
     
-    Description : ...
+    Description : Function opening a short position for a FUTURES account
+                  If this function fails MAX_RETRY times, an error is returned
     """
+    #TODO: To test
     err_cpt = 0
     ret = 1
 

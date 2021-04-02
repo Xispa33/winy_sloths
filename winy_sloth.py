@@ -5,6 +5,24 @@ from strategy_file import *
 from errors import *
 
 class WinySloth:
+    """
+    A class used to ...
+    Attributes
+    ----------
+    client_file_path : list
+        List of the last 5 trades made for each and every API key
+    header : Header
+        List of the last 5 trades made for each and every API key
+    
+    history : History
+        List of the last 5 trades made for each and every API key
+    
+    init_status : list
+        List of the last 5 trades made for each and every API key
+    Methods
+    -------
+    
+    """
     def __init__(self, strategies_folder_path):
         self.strategies_folder_path = strategies_folder_path
         self.strategies_nb = self.WinySloth__FindNbStrategies()
@@ -17,14 +35,35 @@ class WinySloth:
             self.WinySloth__Main()
 
     def WinySloth__FindNbStrategies(self):
+        """
+        Name : WinySloth__FindNbStrategies()
+    
+        Parameters : 
+    
+        Description : ...
+        """
         shell_command = subprocess.run("ls " + self.strategies_folder_path + " | wc -l", shell=True, capture_output=True)
         number_files = shell_command.stdout.decode("utf-8").rstrip('\n')
         return number_files
     
     def WinySloth__FindAllStrategiesFiles(self):
+        """
+        Name : 
+    
+        Parameters : 
+    
+        Description : 
+        """
         return (os.listdir(self.strategies_folder_path))
     
     def WinySloth__Init(self):
+        """
+        Name : 
+    
+        Parameters : 
+    
+        Description : 
+        """
         try:
             strategies_files_list = self.WinySloth__FindAllStrategiesFiles()
 
@@ -46,6 +85,13 @@ class WinySloth:
             return 1
     
     def WinySloth__ComputeAccountSide(self, master_api, binance_response):
+        """
+        Name : 
+    
+        Parameters : 
+    
+        Description : 
+        """
         if (isinstance(binance_response, int)):
             return 1
         else:
@@ -105,6 +151,13 @@ class WinySloth:
                 return 1
 
     def WinySloth__UpdateStrategyFile(self, strategy_file_path, strategy_current_side, idx=0):
+        """
+        Name : 
+    
+        Parameters : 
+    
+        Description : 
+        """
         if (idx != 0):
             idx = 1+idx
 
@@ -126,6 +179,13 @@ class WinySloth:
             return 1
     
     def WinySloth__UpdatePositionSide(self, strategy, strategy_current_side, idx=0):
+        """
+        Name : 
+    
+        Parameters : 
+    
+        Description : 
+        """
         if (idx != 0):
             idx = 1+idx
         
@@ -148,8 +208,11 @@ class WinySloth:
 
     def WinySloth__UpdateMaster(self, strategy, strategy_current_side):
         """
-        1 - Ecriture dans le fichier de strategy
-        2 - Relecture du fichier pour MAJ de l'attribut master-api
+        Name : 
+    
+        Parameters : 
+    
+        Description : 
         """
         update_file = 1
         update_object = 1
@@ -164,8 +227,11 @@ class WinySloth:
     
     def WinySloth__UpdateSlave(self, strategy, strategy_current_side, idx):
         """
-        1 - Ecriture dans le fichier de strategy
-        2 - Relecture du fichier pour MAJ de l'attribut master-api
+        Name : 
+    
+        Parameters : 
+    
+        Description : 
         """
         update_file = 1
         update_object = 1
@@ -179,6 +245,13 @@ class WinySloth:
             return 0
                                            
     def WinySloth__SlaveManagement(self, strategy):
+        """
+        Name : 
+    
+        Parameters : 
+    
+        Description : 
+        """
         idx = 1
         for slave in strategy.slave_apis:
             ret_update_slave = 1
@@ -214,6 +287,13 @@ class WinySloth:
         return 0
 
     def WinySloth__Main(self):
+        """
+        Name : 
+    
+        Parameters : 
+    
+        Description : 
+        """
         for strategy in self.strategies:
             ret_update_master = 1
             ret_update_slave = 1
