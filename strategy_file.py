@@ -115,7 +115,7 @@ class ApiKeySlave(ApiKey):
         Description : 
         """
         client = Client(self.api_key, self.api_secret_key)
-        return I__CLOSE_SHORT(client, master_api)
+        return I__CLOSE_SHORT(client, master_api.symbol)
 
     def open_long(self, master_api):
         """
@@ -137,7 +137,7 @@ class ApiKeySlave(ApiKey):
         Description : 
         """
         client = Client(self.api_key, self.api_secret_key)
-        return I__OPEN_SHORT(client, master_api)
+        return I__OPEN_SHORT(client, master_api.symbol, master_api.leverage, master_api.engaged_balance, master_api.entryPrice)
     
     def open_long_from_short(self, master_api):
         """

@@ -131,11 +131,12 @@ def I__CLOSE_LONG_FUTURES(client, symbol):
     #TODO: To test
     err_cpt = 0
     ret = 1
+
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
             last_trade = I__FUTURES_ACCOUNT_TRADES(client, symbol)
             client.futures_create_order(symbol=symbol, positionside=LONG, side=SELL, \
-                                            closePosition='true', type=MARKET, quantity=last_trade[0][POSITION_AMT], \
+                                            type=MARKET, quantity=last_trade[1][POSITION_AMT], \
                                             timestamp=client.futures_time())
             ret = 0
         except:
@@ -160,7 +161,7 @@ def I__CLOSE_LONG(client, master_api):
     if (master_api.account_type == SPOT):
         ret = I__CLOSE_LONG_SPOT(client, master_api.symbol)
     elif (master_api.account_type == FUTURES):
-        ret = I__CLOSE_LONG_FUTURES(client, master_api.symbol, master_api.markPrice)
+        ret = I__CLOSE_LONG_FUTURES(client, master_api.symbol)
     else:
         ret = 1
         
@@ -212,18 +213,29 @@ def I__OPEN_LONG_FUTURES(client, symbol, leverage, engaged_balance, entryPrice):
     err_cpt = 0
     ret = 1
 
+    precision = 0
+
+    if (symbol == BTCUSDT):
+        precision = 3
+    elif (symbol == ETHUSDT):
+        precision = 2
+    else:
+        return 1
+    
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
-            client.futures_change_position_mode(dualSidePosition='true',timestamp=client.futures_time())
+            ret = client.futures_position_information(symbol=symbol, timestamp=client.futures_time())
+            if (len(ret) == 1):
+                client.futures_change_position_mode(dualSidePosition=TRUE,timestamp=client.futures_time())
             
             client.futures_change_leverage(symbol=symbol,leverage=leverage,timestamp=client.futures_time())
 
             ret=client.futures_account_balance(timestamp=client.futures_time())
             balance=ret[0][WITHDRAW_AVAILABLE]
 
-            quantity=round(((float(balance)*engaged_balance/entryPrice)-0.0005),3)
+            quantity=round(((float(balance)*engaged_balance/entryPrice)- (5*10**(-precision-1))),precision)
 
-            client.futures_create_order(symbol=BTCUSDT, side=BUY, positionSide=LONG, type=MARKET, quantity=quantity ,timestamp=client.futures_time())
+            client.futures_create_order(symbol=symbol, side=BUY, positionSide=LONG, type=MARKET, quantity=quantity ,timestamp=client.futures_time())
 
             ret = 0
         except:
@@ -247,7 +259,8 @@ def I__OPEN_LONG(client, master_api):
     if (master_api.account_type == SPOT):
         ret = I__OPEN_LONG_SPOT(client, master_api.symbol)
     elif (master_api.account_type == FUTURES):
-        ret = I__OPEN_LONG_FUTURES(client, master_api)
+        ret = I__OPEN_LONG_FUTURES(client, master_api.symbol, master_api.leverage, \
+                                   master_api.engaged_balance, master_api.entryPrice)
     else:
         ret = 1
 
@@ -297,8 +310,8 @@ def I__CLOSE_SHORT(client, symbol):
         try:
             last_trade = I__FUTURES_ACCOUNT_TRADES(client, symbol)
             client.futures_create_order(symbol=symbol, positionside=SHORT, side=BUY, \
-                                            closePosition='true', type=MARKET, quantity=last_trade[0][POSITION_AMT], \
-                                            timestamp=client.futures_time())
+                                        type=MARKET, quantity=abs(float(last_trade[2][POSITION_AMT])), \
+                                        timestamp=client.futures_time())
             ret = 0
         except:
             ret = 1
@@ -306,7 +319,7 @@ def I__CLOSE_SHORT(client, symbol):
     
     return ret
     
-def I__OPEN_SHORT(client, master_api, leverage, engaged_balance, entryPrice):
+def I__OPEN_SHORT(client, symbol, leverage, engaged_balance, entryPrice):
     """
     Name : I__OPEN_SHORT()
     
@@ -323,19 +336,29 @@ def I__OPEN_SHORT(client, master_api, leverage, engaged_balance, entryPrice):
     err_cpt = 0
     ret = 1
 
+    precision = 0
+
+    if (symbol == BTCUSDT):
+        precision = 3
+    elif (symbol == ETHUSDT):
+        precision = 2
+    else:
+        return 1
+
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
-            client.futures_change_position_mode(dualSidePosition='true',timestamp=client.futures_time())
-            client.futures_change_leverage(symbol=BTCUSDT,leverage=leverage,timestamp=client.futures_time())
-
-            client.futures_change_leverage(symbol=BTCUSDT,leverage=leverage,timestamp=client.futures_time())
+            ret = client.futures_position_information(symbol=symbol, timestamp=client.futures_time())
+            if (len(ret) == 1):
+                client.futures_change_position_mode(dualSidePosition=TRUE,timestamp=client.futures_time())
+            
+            client.futures_change_leverage(symbol=symbol,leverage=leverage,timestamp=client.futures_time())
 
             ret=client.futures_account_balance(timestamp=client.futures_time())
             balance=ret[0][WITHDRAW_AVAILABLE]
 
-            quantity=round(((float(balance)*engaged_balance/entryPrice)-0.0005),3)
+            quantity=round(((float(balance)*abs(engaged_balance)/entryPrice)-(5*10**(-precision - 1))), precision)
 
-            client.futures_create_order(symbol=BTCUSDT, side=SELL, positionSide=SHORT, type=MARKET, quantity=quantity ,timestamp=client.futures_time())
+            client.futures_create_order(symbol=symbol, side=SELL, positionSide=SHORT, type=MARKET, quantity=quantity ,timestamp=client.futures_time())
 
             ret = 0
         except:

@@ -106,15 +106,15 @@ class WinySloth:
             elif (master_api.account_type == FUTURES):
                 
                 if (len(binance_response) > 1):
-                    entry_price_1 = binance_response[0][ENTRY_PRICE] 
-                    entry_price_2 = binance_response[1][ENTRY_PRICE]
-                    entry_price_3 = binance_response[2][ENTRY_PRICE]
+                    entry_price_1 = float(binance_response[0][ENTRY_PRICE])
+                    entry_price_2 = float(binance_response[1][ENTRY_PRICE])
+                    entry_price_3 = float(binance_response[2][ENTRY_PRICE])
                     if (entry_price_1 != float(0)) or (entry_price_2 != float(0)):
                         master_api.markPrice = round(float(binance_response[1][MARK_PRICE]), 0)
                         master_api.entryPrice = round(float(binance_response[1][ENTRY_PRICE]), 0)
                         master_api.leverage = binance_response[1][LEVERAGE]
                         master_api.positionAmt = float(binance_response[1][POSITION_AMT])
-                        master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(Client(master_api.api_key, master_api.api_secret_key))[1]['balance'])
+                        master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(Client(master_api.api_key, master_api.api_secret_key))[0]['balance'])
                         master_api.computeEngagedBalance()
                         return LONG
                     elif (entry_price_1 == float(0) and entry_price_2 == float(0) and entry_price_3 == float(0)):
@@ -124,7 +124,7 @@ class WinySloth:
                         master_api.entryPrice = round(float(binance_response[2][ENTRY_PRICE]), 0)
                         master_api.leverage = binance_response[2][LEVERAGE]
                         master_api.positionAmt = float(binance_response[2][POSITION_AMT])
-                        master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(Client(master_api.api_key, master_api.api_secret_key))[2]['balance'])
+                        master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(Client(master_api.api_key, master_api.api_secret_key))[0]['balance'])
                         master_api.computeEngagedBalance()
                         return SHORT
                     else:
