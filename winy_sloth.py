@@ -330,5 +330,4 @@ class WinySloth:
                     sys.exit()
             else:
                 print("Position up to date")
-        a = 0
             
