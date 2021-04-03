@@ -133,11 +133,11 @@ class Errors():
         for receiver in RECEIVERS:
             msg[TO] = receiver
             context = ssl.create_default_context()
-            print("Starting to send")
+            #print("Starting to send")
             with smtplib.SMTP_SSL(STMP_URL, PORT, context=context) as server:
                 server.login(EMITTOR, EMITTOR_PASSWORD)
                 server.sendmail(EMITTOR, receiver, msg.as_string())
-            print("sent email!")
+            #print("sent email!")
         
         errors_object.err_criticity = NO_C
         errors_object.error_messages = ""

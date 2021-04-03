@@ -1,5 +1,6 @@
 import os
 import subprocess
+from time import *
 from constants import *
 from strategy_file import *
 from errors import *
@@ -69,7 +70,7 @@ class WinySloth:
 
             for strategy in strategies_files_list:
                 strategy_path = self.strategies_folder_path + strategy
-                print(strategy_path)
+                #print(strategy_path)
                 
                 with open(strategy_path, "r") as strategy_file:
                     content = strategy_file.readlines()
@@ -77,7 +78,7 @@ class WinySloth:
                     slave_info = content[2:]
                     strategy_file_object = StrategyFile(strategy_path, master_info, slave_info)
                     self.strategies.append(strategy_file_object)
-                    print(master_info)
+                    #print(master_info)
                     
                     strategy_file.close()
             return 0
@@ -261,8 +262,7 @@ class WinySloth:
             
             if (slave.side != strategy.master_api.side):
                 exec_trade_function = side_possibilities_dict[strategy.master_api.side, slave.side](strategy.master_api)
-                print(exec_trade_function)
-                #ret_exec_trade = exec_trade_function
+                #print(exec_trade_function)
                 if exec_trade_function == 0:
                     ret_update_slave = self.WinySloth__UpdateSlave(strategy, strategy.master_api.side, idx)
                     if ret_update_slave == 0:
@@ -277,12 +277,11 @@ class WinySloth:
                     errors.error_messages = "Trade function returned an error"
                     Errors.Errors__SendEmail(errors)
                     return 1
-                    #sys.exit()
             else:
-                #sys.exit()
                 return 0
             
             idx = idx + 1
+            sleep(1)
  
         return 0
 
@@ -300,10 +299,10 @@ class WinySloth:
             binance_return = I__GET_ACCOUNT_HISTORY(Client(strategy.master_api.api_key, \
                                                     strategy.master_api.api_secret_key), \
                                                     strategy.master_api.account_type, strategy.master_api.symbol)
-            print(binance_return)
+            #print(binance_return)
             strategy_current_side = self.WinySloth__ComputeAccountSide(strategy.master_api, binance_return)
             if (strategy_current_side != strategy.master_api.side):
-                print("Position not up to date")
+                #print("Position not up to date")
                 ret_update_master = self.WinySloth__UpdateMaster(strategy, strategy_current_side)
                 #gESTION DES SLAVES 
                 if (ret_update_master == 0):
@@ -320,15 +319,15 @@ class WinySloth:
                         errors.err_criticity = HIGH_C
                         errors.error_messages = "Slave update unsuccessful"
                         Errors.Errors__SendEmail(errors)
-
+                        sys.exit()
                 else:
                     #sendemail
                     errors = Errors()
                     errors.err_criticity = HIGH_C
-                    errors.error_messages = "Master update unsuccessful"
+                    errors.error_messages = "Master update unsuccessful. "
                     Errors.Errors__SendEmail(errors)
                     sys.exit()
             else:
-                print("Position up to date")
-        a = 0
+                sleep(2)
+                #print("Position up to date")
             
