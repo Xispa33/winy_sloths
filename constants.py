@@ -6,7 +6,6 @@ BOTH = 'BOTH'
 BTC = "BTC"
 BTCUSDT = "BTCUSDT"
 BUY = 'BUY'
-
 CURRENT_SIDE = 'current_side'
 EMITTOR = 'towardsecolonomy@gmail.com'
 EMITTOR_PASSWORD = 'ricqltndktzitayp'

@@ -39,16 +39,17 @@ class WinySloth:
             sys.exit()
         else:
             print("Init was good.\n")
+            print("There are {} strategies running.\n".format(len(self.strategies)))
             while (1):
                 try:
                     self.WinySloth__Main()
                 except:
-                    print("An error occured. An email \
-                    should have been sent around {}\n".format(str(datetime.now())))
+                    print("An error occured. An email should have been sent around {}\n".format(str(datetime.now())))
                     with open("errors.txt", "a") as error_file:
                         errors = Errors()
                         error_file.write(Errors.Errors__GetRawExceptionInfo(sys.exc_info()))
                         error_file.write('\n')
+                        Errors.Errors__SendEmail(errors)
                         error_file.close()
                     sleep(10)
                     self.strategies = []
@@ -89,7 +90,6 @@ class WinySloth:
 
             for strategy in strategies_files_list:
                 strategy_path = self.strategies_folder_path + strategy
-                #print(strategy_path)
                 
                 with open(strategy_path, "r") as strategy_file:
                     content = strategy_file.readlines()
@@ -346,4 +346,4 @@ class WinySloth:
                     sys.exit()
             else:
                 sleep(2)
-                #print("Position up to date")
+                #print("Position up to date\n")
