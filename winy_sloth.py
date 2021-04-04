@@ -12,22 +12,24 @@ from errors import *
 
 class WinySloth:
     """
-    A class used to ...
+    A class used to represent WinySloth main object
     Attributes
     ----------
-    client_file_path : list
-        List of the last 5 trades made for each and every API key
-    header : Header
-        List of the last 5 trades made for each and every API key
+    strategies_folder_path : str
+        Path of the folder containing all strategies
     
-    history : History
-        List of the last 5 trades made for each and every API key
+    strategies_nb : int
+        Number of strategies in strategies_folder_path ( = number of .txt file in this folder)
     
-    init_status : list
-        List of the last 5 trades made for each and every API key
+    strategies : list
+        List containing StrategyFile objects
+    
     Methods
     -------
-    
+    WinySloth__FindNbStrategies()
+
+    Static
+
     """
     def __init__(self, strategies_folder_path):
         self.strategies_folder_path = strategies_folder_path
@@ -47,6 +49,7 @@ class WinySloth:
                     print("An error occured. An email should have been sent around {}\n".format(str(datetime.now())))
                     with open("errors.txt", "a") as error_file:
                         errors = Errors()
+                        errors.err_criticity = HIGH_C
                         error_file.write(Errors.Errors__GetRawExceptionInfo(sys.exc_info()))
                         error_file.write('\n')
                         Errors.Errors__SendEmail(errors)
@@ -69,7 +72,7 @@ class WinySloth:
     
     def WinySloth__FindAllStrategiesFiles(self):
         """
-        Name : 
+        Name : WinySloth__FindAllStrategiesFiles()
     
         Parameters : 
     
@@ -79,7 +82,7 @@ class WinySloth:
     
     def WinySloth__Init(self):
         """
-        Name : 
+        Name : WinySloth__Init()
     
         Parameters : 
     
@@ -104,7 +107,7 @@ class WinySloth:
     
     def WinySloth__ComputeAccountSide(self, master_api, binance_response):
         """
-        Name : 
+        Name : WinySloth__ComputeAccountSide(master_api, binance_response)
     
         Parameters : 
     
@@ -170,7 +173,7 @@ class WinySloth:
 
     def WinySloth__UpdateStrategyFile(self, strategy_file_path, strategy_current_side, idx=0):
         """
-        Name : 
+        Name : WinySloth__UpdateStrategyFile(strategy_file_path, strategy_current_side, idx=0)
     
         Parameters : 
     
@@ -198,7 +201,7 @@ class WinySloth:
     
     def WinySloth__UpdatePositionSide(self, strategy, strategy_current_side, idx=0):
         """
-        Name : 
+        Name : WinySloth__UpdatePositionSide(strategy, strategy_current_side, idx=0)
     
         Parameters : 
     
@@ -226,7 +229,7 @@ class WinySloth:
 
     def WinySloth__UpdateMaster(self, strategy, strategy_current_side):
         """
-        Name : 
+        Name : WinySloth__UpdateMaster(strategy, strategy_current_side)
     
         Parameters : 
     
@@ -245,7 +248,7 @@ class WinySloth:
     
     def WinySloth__UpdateSlave(self, strategy, strategy_current_side, idx):
         """
-        Name : 
+        Name : WinySloth__UpdateSlave(strategy, strategy_current_side, idx)
     
         Parameters : 
     
@@ -264,7 +267,7 @@ class WinySloth:
                                            
     def WinySloth__SlaveManagement(self, strategy):
         """
-        Name : 
+        Name : WinySloth__SlaveManagement(strategy)
     
         Parameters : 
     
@@ -279,14 +282,12 @@ class WinySloth:
             
             if (slave.side != strategy.master_api.side):
                 exec_trade_function = side_possibilities_dict[strategy.master_api.side, slave.side](strategy.master_api)
-                #print(exec_trade_function)
                 if exec_trade_function == 0:
                     ret_update_slave = self.WinySloth__UpdateSlave(strategy, strategy.master_api.side, idx)
                     if ret_update_slave == 0:
                         return 0
                     else:
                         return 1
-                    
                 else:
                     #send mail
                     errors = Errors()
@@ -304,11 +305,14 @@ class WinySloth:
 
     def WinySloth__Main(self):
         """
-        Name : 
+        Name : WinySloth__Main()
     
         Parameters : 
     
-        Description : 
+        Description : Main function of a Winy_Sloth object. This function is going through each strategy
+        in the strategy list. For each strategy, the master's position in the strategy file is compared with
+        the master's position given from Binance. In case of difference, the position of each slave is updated
+        copying the master's position. If a position changes or if an error occurs, an email is sent
         """
         for strategy in self.strategies:
             ret_update_master = 1

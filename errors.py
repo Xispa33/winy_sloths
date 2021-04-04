@@ -10,66 +10,81 @@ from constants import *
 
 class Errors():
     """
-    A class used to ...
+    A class used to store errors information
     Attributes
     ----------
-    client_file_path : list
-        List of the last 5 trades made for each and every API key
-    header : Header
-        List of the last 5 trades made for each and every API key
+    error_messages : str
+        Message giving information about the nature of the error
+    error_function : str
+        Function called that raised the error
+    err_criticity : int
+        Criticity of the error message : INFO_C = INFO = 1
+                                         MEDIUM_C = WARNING = 2
+                                         HIGH_C = ERROR = 3
     
-    history : History
-        List of the last 5 trades made for each and every API key
-    
-    init_status : list
-        List of the last 5 trades made for each and every API key
     Methods
     -------
-    
+    Errors__AddMessages(message)
+    Errors__ClearMessages()
+    Errors__AddFunction(function)
+    Errors__UpdateCriticity(criticity)
+    Errors__FillErrors(function, message, err_criticity)
+
+    Static
+    Errors__GetRawExceptionInfo(info)
+    Errors__SendEmail(errors_object)
     """
     def __init__(self, nb_strategies = 0):
         self.error_messages   = str()
         self.error_function   = str()
-        self.mail_sent        = [0] * nb_strategies
         self.err_criticity    = NO_C
 
     def Errors__AddMessages(self, message):
         """
-        Name : 
+        Name : Errors__AddMessages()
     
         Parameters : 
+                      message : str
+                      Field storing the error information
     
-        Description : 
+        Description : This function fills the error_messages field 
+                      of an Error object
         """
         self.error_messages += message
 
     def Errors__ClearMessages(self):
         """
-        Name : 
+        Name : Errors__ClearMessages()
     
         Parameters : 
     
-        Description : 
+        Description : This function clears the error_messages field 
+                      of an Error object
         """
         self.error_messages = str()
     
     def Errors__AddFunction(self, function):
         """
-        Name : 
+        Name : Errors__AddFunction()
     
         Parameters : 
+                     function : str
+                     Function in which an error was raised 
     
-        Description : 
+        Description : This function fills the error_function field 
+                      of an Error object
         """
         self.error_function = function
 
     def Errors__UpdateCriticity(self, criticity):
         """
-        Name : 
+        Name : Errors__UpdateCriticity()
     
-        Parameters : 
+        Parameters : criticity : int
+                     Criticity of the error
     
-        Description : 
+        Description : This function fills the err_criticity field 
+                      of an Error object.
         """
         if (criticity > self.err_criticity):
             self.err_criticity = criticity
@@ -77,9 +92,11 @@ class Errors():
     @staticmethod
     def Errors__GetRawExceptionInfo(info):
         """
-        Name : 
+        Name : Errors__GetRawExceptionInfo()
     
-        Parameters : 
+        Parameters : info : list
+                     List containing all information about a raised 
+                     exception
     
         Description : 
         """
@@ -90,35 +107,34 @@ class Errors():
 
     def Errors__FillErrors(self, function, message, err_criticity):
         """
-        Name : 
+        Name : Errors__FillErrors(function, message, err_criticity)
     
-        Parameters : 
+        Parameters : function : str
+                     Function in which an error was raised 
+
+                     message : str
+                     Field storing the error information
+
+                     err_criticity : int
+                     Criticity of the error
     
-        Description : 
+        Description : Function filling all fields of an error object
         """
         self.Errors__AddFunction(function)
         self.Errors__AddMessages(message)
         self.Errors__UpdateCriticity(err_criticity)
 
     @staticmethod
-    def Errors__Init(nb_strategies):
-        """
-        Name : 
-    
-        Parameters : 
-    
-        Description : 
-        """
-        return (Errors(nb_strategies))
-
-    @staticmethod
     def Errors__SendEmail(errors_object):
         """
-        Name : 
+        Name : Errors__SendEmail(errors_object)
     
-        Parameters : 
+        Parameters : errors_object : Error
+                     Object containing all information about the error
+                     raised
     
-        Description : 
+        Description : This function sends an email featuring the errors'
+                      information
         """
         msg = MIMEMultipart(ALTERNATIVE)
         msg[SUBJECT] = "WINY SLOTHS {} NOTIFICATION".format(CORRESPONDANCE_DICT[errors_object.err_criticity]) 
@@ -130,13 +146,21 @@ class Errors():
 
         msg.attach(part1)
 
+        ret = 1
+
         for receiver in RECEIVERS:
             msg[TO] = receiver
             context = ssl.create_default_context()
             print("Starting to send")
-            with smtplib.SMTP_SSL(STMP_URL, PORT, context=context) as server:
-                server.login(EMITTOR, EMITTOR_PASSWORD)
-                server.sendmail(EMITTOR, receiver, msg.as_string())
+            while ret == 1:
+                try:
+                    with smtplib.SMTP_SSL(STMP_URL, PORT, context=context) as server:
+                        server.login(EMITTOR, EMITTOR_PASSWORD)
+                        server.sendmail(EMITTOR, receiver, msg.as_string())
+                    ret = 0
+                except:
+                    ret = 1
+            ret = 1
             print("sent email!")
         
         errors_object.err_criticity = NO_C
