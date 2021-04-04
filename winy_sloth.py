@@ -1,6 +1,11 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+#
+
 import os
 import subprocess
 from time import *
+from datetime import *
 from constants import *
 from strategy_file import *
 from errors import *
@@ -30,10 +35,24 @@ class WinySloth:
         self.strategies = []
         init_return = self.WinySloth__Init()
         if (init_return):
-            #send mail
+            print("Init was not good.\n")
             sys.exit()
         else:
-            self.WinySloth__Main()
+            print("Init was good.\n")
+            while (1):
+                try:
+                    self.WinySloth__Main()
+                except:
+                    print("An error occured. An email \
+                    should have been sent around {}\n".format(str(datetime.now())))
+                    with open("errors.txt", "a") as error_file:
+                        errors = Errors()
+                        error_file.write(Errors.Errors__GetRawExceptionInfo(sys.exc_info()))
+                        error_file.write('\n')
+                        error_file.close()
+                    sleep(10)
+                    self.strategies = []
+                    self.__init__(strategies_folder_path)
 
     def WinySloth__FindNbStrategies(self):
         """
@@ -78,8 +97,6 @@ class WinySloth:
                     slave_info = content[2:]
                     strategy_file_object = StrategyFile(strategy_path, master_info, slave_info)
                     self.strategies.append(strategy_file_object)
-                    #print(master_info)
-                    
                     strategy_file.close()
             return 0
         except:
@@ -330,4 +347,3 @@ class WinySloth:
             else:
                 sleep(2)
                 #print("Position up to date")
-            
