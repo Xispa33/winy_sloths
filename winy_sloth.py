@@ -188,12 +188,12 @@ class WinySloth:
                 strategy_file.close()
 
             with open(strategy_file_path, "w") as strategy_file:
-                master_info = info[idx]
+                master_info = info[idx] 
                 master_info = master_info.strip('\n').split(" ")
                 master_info[2] = strategy_current_side
                 info[idx] = master_info
                 info[idx] = " ".join(info[idx]) + '\n'
-                strategy_file.writelines(info)   
+                strategy_file.writelines(info)
                 strategy_file.close()
             return 0
         except:
@@ -240,7 +240,7 @@ class WinySloth:
 
         update_file = self.WinySloth__UpdateStrategyFile(strategy.strategy_file_path, strategy_current_side)
         update_object = self.WinySloth__UpdatePositionSide(strategy, strategy_current_side)
-
+        
         if (update_file == 1 or update_object == 1):
             return 1
         else:

@@ -122,7 +122,7 @@ def I__CLOSE_LONG_SPOT(client, symbol):
     
     return ret
 
-def I__CLOSE_LONG_FUTURES(client, symbol):
+def I__CLOSE_LONG_FUTURES(client, symbol, leverage):
     """
     Name : I__CLOSE_LONG_FUTURES()
     
@@ -139,11 +139,20 @@ def I__CLOSE_LONG_FUTURES(client, symbol):
     err_cpt = 0
     ret = 1
 
+    precision = 0
+
+    if (symbol == BTCUSDT):
+        precision = 3
+    elif (symbol == ETHUSDT):
+        precision = 2
+    else:
+        return 1
+
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
             last_trade = I__FUTURES_ACCOUNT_TRADES(client, symbol)
             client.futures_create_order(symbol=symbol, positionside=LONG, side=SELL, \
-                                            type=MARKET, quantity=last_trade[1][POSITION_AMT], \
+                                            type=MARKET, quantity=round(float(last_trade[1][POSITION_AMT])/float(leverage), precision), \
                                             timestamp=client.futures_time())
             ret = 0
         except:
@@ -170,7 +179,7 @@ def I__CLOSE_LONG(client, master_api):
     if (master_api.account_type == SPOT):
         ret = I__CLOSE_LONG_SPOT(client, master_api.symbol)
     elif (master_api.account_type == FUTURES):
-        ret = I__CLOSE_LONG_FUTURES(client, master_api.symbol)
+        ret = I__CLOSE_LONG_FUTURES(client, master_api.symbol, master_api.leverage)
     else:
         ret = 1
         
@@ -253,7 +262,7 @@ def I__OPEN_LONG_FUTURES(client, symbol, leverage, engaged_balance, entryPrice):
             quantity=round(((float(balance)*engaged_balance/entryPrice)- (5*10**(-precision-1))),precision)
             if (quantity < (1*10**(-precision))):
                 quantity = 1*10**(-precision)
-
+            quantity = round(quantity/float(leverage), precision)
             client.futures_create_order(symbol=symbol, side=BUY, positionSide=LONG, type=MARKET, quantity=quantity ,timestamp=client.futures_time())
 
             ret = 0
@@ -312,7 +321,7 @@ def I__GET_FUTURES_ACCOUNT_BALANCE(client):
     
     return ret
 
-def I__CLOSE_SHORT(client, symbol):
+def I__CLOSE_SHORT(client, symbol, leverage):
     """
     Name : I__CLOSE_SHORT()
     
@@ -321,6 +330,8 @@ def I__CLOSE_SHORT(client, symbol):
             Client used to connect to Binance server
         symbol : str
             Currency traded
+        leverage : str
+            Leverage
     
     Description : Function closing a short position for a FUTURES account
                   If this function fails MAX_RETRY times, an error is 
@@ -328,12 +339,21 @@ def I__CLOSE_SHORT(client, symbol):
     """
     err_cpt = 0
     ret = 1
+    precision = 0
+
+    if (symbol == BTCUSDT):
+        precision = 3
+    elif (symbol == ETHUSDT):
+        precision = 2
+    else:
+        return 1
 
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
             last_trade = I__FUTURES_ACCOUNT_TRADES(client, symbol)
+            quantity = round(abs(float(last_trade[2][POSITION_AMT]))/float(leverage), precision)
             client.futures_create_order(symbol=symbol, positionside=SHORT, side=BUY, \
-                                        type=MARKET, quantity=abs(float(last_trade[2][POSITION_AMT])), \
+                                        type=MARKET, quantity=quantity, \
                                         timestamp=client.futures_time())
             ret = 0
         except:
@@ -389,7 +409,9 @@ def I__OPEN_SHORT(client, symbol, leverage, engaged_balance, entryPrice):
             quantity=round(((float(balance)*abs(engaged_balance)/entryPrice)-(5*10**(-precision - 1))), precision)
             if (quantity < (1*10**(-precision))):
                 quantity = 1*10**(-precision)
-                
+            
+            quantity = round(quantity/leverage, precision)
+            
             client.futures_create_order(symbol=symbol, side=SELL, positionSide=SHORT, type=MARKET, quantity=quantity ,timestamp=client.futures_time())
 
             ret = 0

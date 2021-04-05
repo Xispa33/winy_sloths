@@ -115,7 +115,7 @@ class ApiKeySlave(ApiKey):
         Description : 
         """
         client = Client(self.api_key, self.api_secret_key)
-        return I__CLOSE_SHORT(client, master_api.symbol)
+        return I__CLOSE_SHORT(client, master_api.symbol, master_api.leverage)
 
     def open_long(self, master_api):
         """
