@@ -42,6 +42,7 @@ class WinySloth:
         else:
             print("Init was good.\n")
             print("There are {} strategies running.\n".format(len(self.strategies)))
+
             while (1):
                 try:
                     self.WinySloth__Main()
@@ -57,6 +58,8 @@ class WinySloth:
                     sleep(10)
                     self.strategies = []
                     self.__init__(strategies_folder_path)
+            
+            #self.WinySloth__Main()
 
     def WinySloth__FindNbStrategies(self):
         """
@@ -274,8 +277,9 @@ class WinySloth:
         Description : 
         """
         idx = 1
+        ret_update_slave = 1
+        update_list = [1] * len(strategy.slave_apis)
         for slave in strategy.slave_apis:
-            ret_update_slave = 1
             side_possibilities_dict = {(OUT,LONG):slave.close_long, (OUT,SHORT):slave.close_short, \
                                        (LONG,OUT):slave.open_long, (SHORT,OUT):slave.open_short, \
                                        (LONG,SHORT):slave.open_long_from_short, (SHORT,LONG):slave.open_short_from_long}
@@ -285,22 +289,32 @@ class WinySloth:
                 if exec_trade_function == 0:
                     ret_update_slave = self.WinySloth__UpdateSlave(strategy, strategy.master_api.side, idx)
                     if ret_update_slave == 0:
-                        return 0
+                        ret_update_slave = 1
+                        update_list[idx - 1] = 0
                     else:
-                        return 1
+                        update_list[idx - 1] = 1
+                        errors = Errors()
+                        errors.err_criticity = HIGH_C
+                        errors.error_messages = "Slave {} of strategy {} was not updated successfully".format(idx,strategy.strategy_file_path)
+                        Errors.Errors__SendEmail(errors)
+                        
                 else:
                     #send mail
                     errors = Errors()
                     errors.err_criticity = HIGH_C
                     errors.error_messages = "Trade function returned an error"
                     Errors.Errors__SendEmail(errors)
-                    return 1
+                    update_list[idx - 1] = 1
             else:
                 return 0
             
             idx = idx + 1
             sleep(1)
- 
+        
+        for out_slave in update_list:
+            if out_slave == 1:
+                return 1
+        
         return 0
 
     def WinySloth__Main(self):

@@ -152,7 +152,7 @@ def I__CLOSE_LONG_FUTURES(client, symbol, leverage):
         try:
             last_trade = I__FUTURES_ACCOUNT_TRADES(client, symbol)
             client.futures_create_order(symbol=symbol, positionside=LONG, side=SELL, \
-                                            type=MARKET, quantity=round(float(last_trade[1][POSITION_AMT])/float(leverage), precision), \
+                                            type=MARKET, quantity=round(float(last_trade[1][POSITION_AMT]), precision), \
                                             timestamp=client.futures_time())
             ret = 0
         except:
@@ -260,7 +260,7 @@ def I__OPEN_LONG_FUTURES(client, symbol, leverage, engaged_balance, entryPrice):
             balance=ret[0][WITHDRAW_AVAILABLE]
 
             quantity=round(((float(balance)*engaged_balance/entryPrice)- (5*10**(-precision-1))),precision)
-            quantity = round(quantity/float(leverage), precision)
+ 
             if (quantity < (1*10**(-precision))):
                 quantity = 1*10**(-precision)
             
@@ -352,7 +352,7 @@ def I__CLOSE_SHORT(client, symbol, leverage):
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
             last_trade = I__FUTURES_ACCOUNT_TRADES(client, symbol)
-            quantity = round(abs(float(last_trade[2][POSITION_AMT]))/float(leverage), precision)
+            quantity = round(abs(float(last_trade[2][POSITION_AMT])), precision)
             client.futures_create_order(symbol=symbol, positionside=SHORT, side=BUY, \
                                         type=MARKET, quantity=quantity, \
                                         timestamp=client.futures_time())
@@ -408,7 +408,7 @@ def I__OPEN_SHORT(client, symbol, leverage, engaged_balance, entryPrice):
             balance=ret[0][WITHDRAW_AVAILABLE]
 
             quantity = round(((float(balance)*abs(engaged_balance)/entryPrice)-(5*10**(-precision - 1))), precision)
-            quantity = round(quantity/float(leverage), precision)
+
             if (quantity < (1*10**(-precision))):
                 quantity = 1*10**(-precision)
             
