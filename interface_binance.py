@@ -260,9 +260,10 @@ def I__OPEN_LONG_FUTURES(client, symbol, leverage, engaged_balance, entryPrice):
             balance=ret[0][WITHDRAW_AVAILABLE]
 
             quantity=round(((float(balance)*engaged_balance/entryPrice)- (5*10**(-precision-1))),precision)
+            quantity = round(quantity/float(leverage), precision)
             if (quantity < (1*10**(-precision))):
                 quantity = 1*10**(-precision)
-            quantity = round(quantity/float(leverage), precision)
+            
             client.futures_create_order(symbol=symbol, side=BUY, positionSide=LONG, type=MARKET, quantity=quantity ,timestamp=client.futures_time())
 
             ret = 0
@@ -406,11 +407,10 @@ def I__OPEN_SHORT(client, symbol, leverage, engaged_balance, entryPrice):
             ret=client.futures_account_balance(timestamp=client.futures_time())
             balance=ret[0][WITHDRAW_AVAILABLE]
 
-            quantity=round(((float(balance)*abs(engaged_balance)/entryPrice)-(5*10**(-precision - 1))), precision)
+            quantity = round(((float(balance)*abs(engaged_balance)/entryPrice)-(5*10**(-precision - 1))), precision)
+            quantity = round(quantity/float(leverage), precision)
             if (quantity < (1*10**(-precision))):
                 quantity = 1*10**(-precision)
-            
-            quantity = round(quantity/leverage, precision)
             
             client.futures_create_order(symbol=symbol, side=SELL, positionSide=SHORT, type=MARKET, quantity=quantity ,timestamp=client.futures_time())
 
