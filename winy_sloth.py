@@ -8,6 +8,7 @@ from time import *
 from datetime import *
 from constants import *
 from strategy_file import *
+from interface_binance import *
 from errors import *
 
 class WinySloth:
@@ -42,7 +43,6 @@ class WinySloth:
         else:
             print("Init was good.\n")
             print("There are {} strategies running.\n".format(len(self.strategies)))
-
             while (1):
                 try:
                     self.WinySloth__Main()
@@ -58,7 +58,6 @@ class WinySloth:
                     sleep(10)
                     self.strategies = []
                     self.__init__(strategies_folder_path)
-            
             #self.WinySloth__Main()
 
     def WinySloth__FindNbStrategies(self):
@@ -128,28 +127,41 @@ class WinySloth:
                 else:
                     return 1
             elif (master_api.account_type == FUTURES):
-                
                 if (len(binance_response) > 1):
+                    """
                     entry_price_1 = float(binance_response[0][ENTRY_PRICE])
                     entry_price_2 = float(binance_response[1][ENTRY_PRICE])
                     entry_price_3 = float(binance_response[2][ENTRY_PRICE])
-                    if (entry_price_1 != float(0)) or (entry_price_2 != float(0)):
-                        master_api.markPrice = round(float(binance_response[1][MARK_PRICE]), 0)
-                        master_api.entryPrice = round(float(binance_response[1][ENTRY_PRICE]), 0)
-                        master_api.leverage = binance_response[1][LEVERAGE]
-                        master_api.positionAmt = float(binance_response[1][POSITION_AMT])
-                        master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(Client(master_api.api_key, master_api.api_secret_key))[0]['balance'])
-                        master_api.computeEngagedBalance()
+                    """
+                    for dic in binance_response:
+                        if dic[POSITION_SIDE] == BOTH:
+                            both_list = dic
+                        elif dic[POSITION_SIDE] == LONG:
+                            long_list = dic
+                        else:
+                            short_list = dic
+                    
+                    entry_price_both = float(both_list[ENTRY_PRICE])
+                    entry_price_long = float(long_list[ENTRY_PRICE])
+                    entry_price_short = float(short_list[ENTRY_PRICE])
+
+                    if (entry_price_both != float(0)) or (entry_price_long != float(0)):
+                        master_api.markPrice = round(float(long_list[MARK_PRICE]), 0)
+                        master_api.entryPrice = round(float(long_list[ENTRY_PRICE]), 0)
+                        master_api.leverage = long_list[LEVERAGE]
+                        master_api.positionAmt = float(long_list[POSITION_AMT])
+                        master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))[BALANCE])
+                        master_api.computeEngagedBalance(143, binance_response)
                         return LONG
-                    elif (entry_price_1 == float(0) and entry_price_2 == float(0) and entry_price_3 == float(0)):
+                    elif (entry_price_both == float(0) and entry_price_long == float(0) and entry_price_short == float(0)):
                         return OUT
-                    elif (entry_price_3 != float(0)):
-                        master_api.markPrice = round(float(binance_response[2][MARK_PRICE]), 0)
-                        master_api.entryPrice = round(float(binance_response[2][ENTRY_PRICE]), 0)
-                        master_api.leverage = binance_response[2][LEVERAGE]
-                        master_api.positionAmt = float(binance_response[2][POSITION_AMT])
-                        master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(Client(master_api.api_key, master_api.api_secret_key))[0]['balance'])
-                        master_api.computeEngagedBalance()
+                    elif (entry_price_short != float(0)):
+                        master_api.markPrice = round(float(entry_price_short[MARK_PRICE]), 0)
+                        master_api.entryPrice = round(float(entry_price_short[ENTRY_PRICE]), 0)
+                        master_api.leverage = entry_price_short[LEVERAGE]
+                        master_api.positionAmt = float(entry_price_short[POSITION_AMT])
+                        master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))[BALANCE])
+                        master_api.computeEngagedBalance(153, binance_response)
                         return SHORT
                     else:
                         return 1
@@ -160,8 +172,8 @@ class WinySloth:
                     master_api.leverage = binance_response[0][LEVERAGE]
                     master_api.positionAmt = float(binance_response[0][POSITION_AMT])
                     #TODO: A modifier pour grer les cas derreur
-                    master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(Client(master_api.api_key, master_api.api_secret_key))[0]['balance'])
-                    master_api.computeEngagedBalance()
+                    master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))[BALANCE])
+                    master_api.computeEngagedBalance(165, binance_response)
                     
                     if (master_api.positionAmt == float(0)):
                         return OUT
@@ -278,7 +290,7 @@ class WinySloth:
         """
         idx = 1
         ret_update_slave = 1
-        update_list = [1] * len(strategy.slave_apis)
+        update_list = [1]*len(strategy.slave_apis)
         for slave in strategy.slave_apis:
             side_possibilities_dict = {(OUT,LONG):slave.close_long, (OUT,SHORT):slave.close_short, \
                                        (LONG,OUT):slave.open_long, (SHORT,OUT):slave.open_short, \
@@ -295,18 +307,18 @@ class WinySloth:
                         update_list[idx - 1] = 1
                         errors = Errors()
                         errors.err_criticity = HIGH_C
-                        errors.error_messages = "Slave {} of strategy {} was not updated successfully".format(idx,strategy.strategy_file_path)
+                        errors.error_messages = "Slave {} of strategy {} was not updated successfully".format(idx, strategy.strategy_file_path)
                         Errors.Errors__SendEmail(errors)
                         
                 else:
                     #send mail
                     errors = Errors()
                     errors.err_criticity = HIGH_C
-                    errors.error_messages = "Trade function returned an error"
+                    errors.error_messages = "Trade function returned an error for slave {} of strategy {}".format(idx, strategy.strategy_file_path)
                     Errors.Errors__SendEmail(errors)
                     update_list[idx - 1] = 1
             else:
-                return 0
+                update_list[idx - 1] = 0
             
             idx = idx + 1
             sleep(1)
@@ -331,7 +343,7 @@ class WinySloth:
         for strategy in self.strategies:
             ret_update_master = 1
             ret_update_slave = 1
-            binance_return = I__GET_ACCOUNT_HISTORY(Client(strategy.master_api.api_key, \
+            binance_return = I__GET_ACCOUNT_HISTORY(I__CLIENT(strategy.master_api.api_key, \
                                                     strategy.master_api.api_secret_key), \
                                                     strategy.master_api.account_type, strategy.master_api.symbol)
             #print(binance_return)
@@ -352,14 +364,14 @@ class WinySloth:
                         #sendemail
                         errors = Errors()
                         errors.err_criticity = HIGH_C
-                        errors.error_messages = "Slave update unsuccessful"
+                        errors.error_messages = "Slave update unsuccessful of strategy : {}".format(strategy.strategy_file_path)
                         Errors.Errors__SendEmail(errors)
                         sys.exit()
                 else:
                     #sendemail
                     errors = Errors()
                     errors.err_criticity = HIGH_C
-                    errors.error_messages = "Master update unsuccessful. "
+                    errors.error_messages = "Master update unsuccessful of strategy : {}".format(strategy.strategy_file_path)
                     Errors.Errors__SendEmail(errors)
                     sys.exit()
             else:

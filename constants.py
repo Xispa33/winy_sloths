@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 ALTERNATIVE = 'alternative'
+ASSET = 'asset'
+BALANCE = 'balance'
 BOTH = 'BOTH'
 BTC = "BTC"
 BTCUSDT = "BTCUSDT"
@@ -32,6 +34,7 @@ OUT = 'OUT'
 PLAIN = 'plain'
 PORT = 465
 POSITION_AMT = 'positionAmt'
+POSITION_SIDE = 'positionSide'
 PRICE = 'price'
 RECEIVERS = ['briceleal@hotmail.fr', 'axel.berthier3@gmail.com'] 
 SELL = 'SELL'

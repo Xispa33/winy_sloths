@@ -1,8 +1,30 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+from binance.client import Client
 import binance
 from constants import *
+import os
+from time import *
+
+def I__CLIENT(api_key, api_secret_key):
+    FUNCTION = "I__CLIENT"
+    err_cpt = 0
+    ret = 1
+    client = 1
+
+    while (err_cpt < MAX_RETRY*4) and (ret == 1):
+        try:
+            client = Client(api_key, api_secret_key)
+            ret = 0
+        except:
+            ret = 1
+            err_cpt += 1
+            print(FUNCTION)
+            print(sys.exc_info())
+            sleep(2)
+    
+    return client
 
 def I__FUTURES_ACCOUNT_TRADES(client, symbol):
     """
@@ -100,6 +122,7 @@ def I__CLOSE_LONG_SPOT(client, symbol):
                   If this function fails MAX_RETRY times, an error is 
                   returned
     """
+    FUNCTION = "I__CLOSE_LONG_SPOT"
     err_cpt = 0
     ret = 1
 
@@ -119,6 +142,9 @@ def I__CLOSE_LONG_SPOT(client, symbol):
         except:
             ret = 1
             err_cpt += 1
+            print(FUNCTION)
+            print(sys.exc_info())
+            sleep(5)
     
     return ret
 
@@ -136,6 +162,7 @@ def I__CLOSE_LONG_FUTURES(client, symbol, leverage):
                   If this function fails MAX_RETRY times, an error is
                   returned
     """
+    FUNCTION = "I__CLOSE_LONG_FUTURES"
     err_cpt = 0
     ret = 1
 
@@ -151,13 +178,21 @@ def I__CLOSE_LONG_FUTURES(client, symbol, leverage):
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
             last_trade = I__FUTURES_ACCOUNT_TRADES(client, symbol)
+
+            for dic in last_trade:
+                if dic[POSITION_SIDE] == LONG:
+                    ret = dic
+
             client.futures_create_order(symbol=symbol, positionside=LONG, side=SELL, \
-                                            type=MARKET, quantity=round(float(last_trade[1][POSITION_AMT]), precision), \
-                                            timestamp=client.futures_time())
+                                        type=MARKET, quantity=round(float(ret[POSITION_AMT]), precision), \
+                                        timestamp=client.futures_time())
             ret = 0
         except:
             ret = 1
             err_cpt += 1
+            print(FUNCTION)
+            print(sys.exc_info())
+            sleep(5)
     
     return ret
 
@@ -199,6 +234,7 @@ def I__OPEN_LONG_SPOT(client, symbol):
                   If this function fails MAX_RETRY times, an error 
                   is returned
     """
+    FUNCTION = "I__OPEN_LONG_SPOT"
     err_cpt = 0
     ret = 1
 
@@ -212,6 +248,9 @@ def I__OPEN_LONG_SPOT(client, symbol):
         except:
             ret = 1
             err_cpt += 1
+            print(FUNCTION)
+            print(sys.exc_info())
+            sleep(5)
     
     return ret
 
@@ -236,6 +275,7 @@ def I__OPEN_LONG_FUTURES(client, symbol, leverage, engaged_balance, entryPrice):
                   If this function fails MAX_RETRY times, an error 
                   is returned
     """
+    FUNCTION = "I__OPEN_LONG_FUTURES"
     err_cpt = 0
     ret = 1
 
@@ -256,8 +296,13 @@ def I__OPEN_LONG_FUTURES(client, symbol, leverage, engaged_balance, entryPrice):
             
             client.futures_change_leverage(symbol=symbol,leverage=leverage,timestamp=client.futures_time())
 
-            ret=client.futures_account_balance(timestamp=client.futures_time())
-            balance=ret[0][WITHDRAW_AVAILABLE]
+            bin_ret=client.futures_account_balance(timestamp=client.futures_time())
+
+            for dic in bin_ret:
+                if dic[ASSET] == USDT:
+                    ret = dic
+
+            balance=ret[WITHDRAW_AVAILABLE]
 
             quantity=round(((float(balance)*engaged_balance/entryPrice)- (5*10**(-precision-1))),precision)
  
@@ -270,6 +315,9 @@ def I__OPEN_LONG_FUTURES(client, symbol, leverage, engaged_balance, entryPrice):
         except:
             ret = 1
             err_cpt += 1
+            print(FUNCTION)
+            print(sys.exc_info())
+            sleep(5)
     
     return ret
 
@@ -315,11 +363,13 @@ def I__GET_FUTURES_ACCOUNT_BALANCE(client):
 
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
-            ret = client.futures_account_balance(timestamp=client.futures_time())
+            bin_ret = client.futures_account_balance(timestamp=client.futures_time())
+            for dic in bin_ret:
+                if dic[ASSET] == USDT:
+                    ret = dic
         except:
             ret = 1
             err_cpt += 1
-    
     return ret
 
 def I__CLOSE_SHORT(client, symbol, leverage):
@@ -338,6 +388,7 @@ def I__CLOSE_SHORT(client, symbol, leverage):
                   If this function fails MAX_RETRY times, an error is 
                   returned
     """
+    FUNCTION = "I__CLOSE_SHORT"
     err_cpt = 0
     ret = 1
     precision = 0
@@ -352,7 +403,12 @@ def I__CLOSE_SHORT(client, symbol, leverage):
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
             last_trade = I__FUTURES_ACCOUNT_TRADES(client, symbol)
-            quantity = round(abs(float(last_trade[2][POSITION_AMT])), precision)
+
+            for dic in last_trade:
+                if dic[POSITION_SIDE] == SHORT:
+                    ret = dic
+            
+            quantity = round(abs(float(ret[POSITION_AMT])), precision)
             client.futures_create_order(symbol=symbol, positionside=SHORT, side=BUY, \
                                         type=MARKET, quantity=quantity, \
                                         timestamp=client.futures_time())
@@ -360,6 +416,9 @@ def I__CLOSE_SHORT(client, symbol, leverage):
         except:
             ret = 1
             err_cpt += 1
+            print(FUNCTION)
+            print(sys.exc_info())
+            sleep(5)
     
     return ret
     
@@ -384,6 +443,7 @@ def I__OPEN_SHORT(client, symbol, leverage, engaged_balance, entryPrice):
                   If this function fails MAX_RETRY times, an error is 
                   returned
     """
+    FUNCTION = "I__OPEN_SHORT"
     err_cpt = 0
     ret = 1
 
@@ -404,8 +464,13 @@ def I__OPEN_SHORT(client, symbol, leverage, engaged_balance, entryPrice):
             
             client.futures_change_leverage(symbol=symbol,leverage=leverage,timestamp=client.futures_time())
 
-            ret=client.futures_account_balance(timestamp=client.futures_time())
-            balance=ret[0][WITHDRAW_AVAILABLE]
+            bin_ret=client.futures_account_balance(timestamp=client.futures_time())
+            
+            for dic in bin_ret:
+                if dic[ASSET] == USDT:
+                    ret = dic
+            
+            balance=ret[WITHDRAW_AVAILABLE]
 
             quantity = round(((float(balance)*abs(engaged_balance)/entryPrice)-(5*10**(-precision - 1))), precision)
 
@@ -418,5 +483,8 @@ def I__OPEN_SHORT(client, symbol, leverage, engaged_balance, entryPrice):
         except:
             ret = 1
             err_cpt += 1
+            print(FUNCTION)
+            print(sys.exc_info())
+            sleep(5)
     
     return ret

@@ -63,7 +63,7 @@ class ApiKeyMaster(ApiKey):
         self.engaged_balance = 0
         self.balance = 0
     
-    def computeEngagedBalance(self):
+    def computeEngagedBalance(self, line_nb, binance_response):
         """
         Name : 
     
@@ -71,7 +71,14 @@ class ApiKeyMaster(ApiKey):
     
         Description : 
         """
-        self.engaged_balance = (self.positionAmt *self.entryPrice/self.balance)
+        if (self.balance != 0):
+            self.engaged_balance = (self.positionAmt * self.entryPrice/self.balance)
+        else:
+            print("Problem at line {}. WS should be restarting".format(line_nb))
+            print(binance_response)
+            print(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(self.api_key, self.api_secret_key)))
+            self.engaged_balance = (self.positionAmt * self.entryPrice/self.balance)
+        
 
 class ApiKeySlave(ApiKey):
     """
@@ -103,7 +110,7 @@ class ApiKeySlave(ApiKey):
     
         Description : 
         """
-        client = Client(self.api_key, self.api_secret_key)
+        client = I__CLIENT(self.api_key, self.api_secret_key)
         return I__CLOSE_LONG(client, master_api)
 
     def close_short(self, master_api):
@@ -114,7 +121,7 @@ class ApiKeySlave(ApiKey):
     
         Description : 
         """
-        client = Client(self.api_key, self.api_secret_key)
+        client = I__CLIENT(self.api_key, self.api_secret_key)
         return I__CLOSE_SHORT(client, master_api.symbol, master_api.leverage)
 
     def open_long(self, master_api):
@@ -125,7 +132,7 @@ class ApiKeySlave(ApiKey):
     
         Description : 
         """
-        client = Client(self.api_key, self.api_secret_key)
+        client = I__CLIENT(self.api_key, self.api_secret_key)
         return I__OPEN_LONG(client, master_api)
 
     def open_short(self, master_api):
@@ -136,7 +143,7 @@ class ApiKeySlave(ApiKey):
     
         Description : 
         """
-        client = Client(self.api_key, self.api_secret_key)
+        client = I__CLIENT(self.api_key, self.api_secret_key)
         return I__OPEN_SHORT(client, master_api.symbol, master_api.leverage, master_api.engaged_balance, master_api.entryPrice)
     
     def open_long_from_short(self, master_api):
