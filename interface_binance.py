@@ -5,6 +5,7 @@ from binance.client import Client
 import binance
 from constants import *
 import os
+import sys
 from time import *
 
 def I__CLIENT(api_key, api_secret_key):
@@ -148,7 +149,7 @@ def I__CLOSE_LONG_SPOT(client, symbol):
     
     return ret
 
-def I__CLOSE_LONG_FUTURES(client, symbol, leverage):
+def I__CLOSE_LONG_FUTURES(client, symbol):
     """
     Name : I__CLOSE_LONG_FUTURES()
     
@@ -214,7 +215,7 @@ def I__CLOSE_LONG(client, master_api):
     if (master_api.account_type == SPOT):
         ret = I__CLOSE_LONG_SPOT(client, master_api.symbol)
     elif (master_api.account_type == FUTURES):
-        ret = I__CLOSE_LONG_FUTURES(client, master_api.symbol, master_api.leverage)
+        ret = I__CLOSE_LONG_FUTURES(client, master_api.symbol)
     else:
         ret = 1
         

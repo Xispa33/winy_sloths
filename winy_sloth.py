@@ -55,7 +55,7 @@ class WinySloth:
                         error_file.write('\n')
                         Errors.Errors__SendEmail(errors)
                         error_file.close()
-                    sleep(10)
+                    sleep(5)
                     self.strategies = []
                     self.__init__(strategies_folder_path)
             #self.WinySloth__Main()
@@ -128,11 +128,6 @@ class WinySloth:
                     return 1
             elif (master_api.account_type == FUTURES):
                 if (len(binance_response) > 1):
-                    """
-                    entry_price_1 = float(binance_response[0][ENTRY_PRICE])
-                    entry_price_2 = float(binance_response[1][ENTRY_PRICE])
-                    entry_price_3 = float(binance_response[2][ENTRY_PRICE])
-                    """
                     for dic in binance_response:
                         if dic[POSITION_SIDE] == BOTH:
                             both_list = dic
@@ -156,10 +151,10 @@ class WinySloth:
                     elif (entry_price_both == float(0) and entry_price_long == float(0) and entry_price_short == float(0)):
                         return OUT
                     elif (entry_price_short != float(0)):
-                        master_api.markPrice = round(float(entry_price_short[MARK_PRICE]), 0)
-                        master_api.entryPrice = round(float(entry_price_short[ENTRY_PRICE]), 0)
-                        master_api.leverage = entry_price_short[LEVERAGE]
-                        master_api.positionAmt = float(entry_price_short[POSITION_AMT])
+                        master_api.markPrice = round(float(short_list[MARK_PRICE]), 0)
+                        master_api.entryPrice = round(float(short_list[ENTRY_PRICE]), 0)
+                        master_api.leverage = short_list[LEVERAGE]
+                        master_api.positionAmt = float(short_list[POSITION_AMT])
                         master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))[BALANCE])
                         master_api.computeEngagedBalance(153, binance_response)
                         return SHORT

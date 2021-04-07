@@ -6,6 +6,8 @@ import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from constants import *
+from time import *
+from datetime import *
 
 
 class Errors():
@@ -160,6 +162,7 @@ class Errors():
                     ret = 0
                 except:
                     ret = 1
+                    sleep(1)
             ret = 1
             print("sent email!")
         
