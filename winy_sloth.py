@@ -353,7 +353,7 @@ class WinySloth:
                         #sendemail
                         errors = Errors()
                         errors.err_criticity = INFO_C
-                        errors.error_messages = "Master + Slave update successful"
+                        errors.error_messages = "Master + Slave update successful of strategy : {}".format(strategy.strategy_file_path)
                         Errors.Errors__SendEmail(errors)
                     else:
                         #sendemail
