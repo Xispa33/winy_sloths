@@ -17,8 +17,10 @@ class Errors():
     ----------
     error_messages : str
         Message giving information about the nature of the error
+    
     error_function : str
         Function called that raised the error
+    
     err_criticity : int
         Criticity of the error message : INFO_C = INFO = 1
                                          MEDIUM_C = WARNING = 2
@@ -47,7 +49,7 @@ class Errors():
     
         Parameters : 
                       message : str
-                      Field storing the error information
+                        Field storing the error information
     
         Description : This function fills the error_messages field 
                       of an Error object
@@ -71,7 +73,7 @@ class Errors():
     
         Parameters : 
                      function : str
-                     Function in which an error was raised 
+                        Function in which an error was raised 
     
         Description : This function fills the error_function field 
                       of an Error object
@@ -83,7 +85,7 @@ class Errors():
         Name : Errors__UpdateCriticity()
     
         Parameters : criticity : int
-                     Criticity of the error
+                        Criticity of the error
     
         Description : This function fills the err_criticity field 
                       of an Error object.
@@ -97,8 +99,8 @@ class Errors():
         Name : Errors__GetRawExceptionInfo()
     
         Parameters : info : list
-                     List containing all information about a raised 
-                     exception
+                        List containing all information about a raised 
+                        exception
     
         Description : 
         """
@@ -112,13 +114,13 @@ class Errors():
         Name : Errors__FillErrors(function, message, err_criticity)
     
         Parameters : function : str
-                     Function in which an error was raised 
+                        Function in which an error was raised 
 
                      message : str
-                     Field storing the error information
+                        Field storing the error information
 
                      err_criticity : int
-                     Criticity of the error
+                        Criticity of the error
     
         Description : Function filling all fields of an error object
         """
@@ -132,8 +134,8 @@ class Errors():
         Name : Errors__SendEmail(errors_object)
     
         Parameters : errors_object : Error
-                     Object containing all information about the error
-                     raised
+                        Object containing all information about the error
+                        raised
     
         Description : This function sends an email featuring the errors'
                       information

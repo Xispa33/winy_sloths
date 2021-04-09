@@ -66,7 +66,8 @@ class WinySloth:
     
         Parameters : 
     
-        Description : ...
+        Description : Function that returns the number of strategies of a
+                      WinySloth object. 
         """
         shell_command = subprocess.run("ls " + self.strategies_folder_path + " | wc -l", shell=True, capture_output=True)
         number_files = shell_command.stdout.decode("utf-8").rstrip('\n')
@@ -78,7 +79,8 @@ class WinySloth:
     
         Parameters : 
     
-        Description : 
+        Description : Function that returns all strategy file of a
+                      WinySloth object. 
         """
         return (os.listdir(self.strategies_folder_path))
     
@@ -88,7 +90,7 @@ class WinySloth:
     
         Parameters : 
     
-        Description : 
+        Description : Initialisation of a WinySloth object
         """
         try:
             strategies_files_list = self.WinySloth__FindAllStrategiesFiles()
@@ -112,8 +114,14 @@ class WinySloth:
         Name : WinySloth__ComputeAccountSide(master_api, binance_response)
     
         Parameters : 
+                      master_api : ApiKey
+                        Api key of the account 
+
+                      binance_response : list
+                        list returned by Binance after asking the account's
+                        history
     
-        Description : 
+        Description : Function that computes the side of a Binance account
         """
         if (isinstance(binance_response, int)):
             return 1
@@ -146,7 +154,7 @@ class WinySloth:
                         master_api.leverage = long_list[LEVERAGE]
                         master_api.positionAmt = float(long_list[POSITION_AMT])
                         master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))[BALANCE])
-                        master_api.computeEngagedBalance(143, binance_response)
+                        master_api.computeEngagedBalance(157, binance_response)
                         return LONG
                     elif (entry_price_both == float(0) and entry_price_long == float(0) and entry_price_short == float(0)):
                         return OUT
@@ -156,7 +164,7 @@ class WinySloth:
                         master_api.leverage = short_list[LEVERAGE]
                         master_api.positionAmt = float(short_list[POSITION_AMT])
                         master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))[BALANCE])
-                        master_api.computeEngagedBalance(153, binance_response)
+                        master_api.computeEngagedBalance(167, binance_response)
                         return SHORT
                     else:
                         return 1
@@ -168,7 +176,7 @@ class WinySloth:
                     master_api.positionAmt = float(binance_response[0][POSITION_AMT])
                     #TODO: A modifier pour grer les cas derreur
                     master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))[BALANCE])
-                    master_api.computeEngagedBalance(165, binance_response)
+                    master_api.computeEngagedBalance(179, binance_response)
                     
                     if (master_api.positionAmt == float(0)):
                         return OUT
@@ -182,12 +190,23 @@ class WinySloth:
                 return 1
 
     def WinySloth__UpdateStrategyFile(self, strategy_file_path, strategy_current_side, idx=0):
+        # TODO: Changer peut etre cette fonction en supprimant le strategy_current_side
         """
         Name : WinySloth__UpdateStrategyFile(strategy_file_path, strategy_current_side, idx=0)
     
         Parameters : 
-    
-        Description : 
+                      strategy_file_path : str
+                        Path of the folder containing all strategies
+                    
+                      strategy_current_side : str
+                        New side of the strategy 
+
+                      idx : int (optionnal)
+                        Index of the strategy. This parameter indicates the line
+                        to modify in the strategy file. If the master has to be
+                        updated, idx = 0, else, idx = 1 + slave_idx
+
+        Description : Function updating a strategy file
         """
         if (idx != 0):
             idx = 1+idx
@@ -214,8 +233,19 @@ class WinySloth:
         Name : WinySloth__UpdatePositionSide(strategy, strategy_current_side, idx=0)
     
         Parameters : 
+                      strategy : StrategyFile
+                        StrategyFile object to be updated
+                    
+                      strategy_current_side : str
+                        New side of the strategy 
+                      
+                      idx : int (optionnal)
+                        Index of the strategy. This parameter indicates the line
+                        of the strategy file in which the master/slave is. If the 
+                        master has to be updated, idx = 0, else, idx = 1 + slave_idx
     
-        Description : 
+        Description : Function updating the position side of a strategy object
+                      during the code execution
         """
         if (idx != 0):
             idx = 1+idx
@@ -242,8 +272,14 @@ class WinySloth:
         Name : WinySloth__UpdateMaster(strategy, strategy_current_side)
     
         Parameters : 
+                      strategy : StrategyFile
+                        StrategyFile object to be updated
+                    
+                      strategy_current_side : str
+                        New side of the strategy for the master
     
-        Description : 
+        Description : Function that updates all needed information for a 
+                      master
         """
         update_file = 1
         update_object = 1
@@ -261,8 +297,14 @@ class WinySloth:
         Name : WinySloth__UpdateSlave(strategy, strategy_current_side, idx)
     
         Parameters : 
+                      strategy : StrategyFile
+                        StrategyFile object to be updated
+                    
+                      strategy_current_side : str
+                        New side of the strategy for the slave
     
-        Description : 
+        Description : Function that updates all needed information for a 
+                      slave
         """
         update_file = 1
         update_object = 1
@@ -280,8 +322,11 @@ class WinySloth:
         Name : WinySloth__SlaveManagement(strategy)
     
         Parameters : 
+                      strategy : StrategyFile
+                        StrategyFile object to manage
     
-        Description : 
+        Description : This function determines the appropriate function
+                      to call to change the slave's side.  
         """
         idx = 1
         ret_update_slave = 1

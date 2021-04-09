@@ -9,6 +9,19 @@ import sys
 from time import *
 
 def I__CLIENT(api_key, api_secret_key):
+    """
+    Name : I__CLIENT()
+    
+    Parameters : 
+                  api_key : str
+                    api key used to connect to Binance server
+        
+                  api_secret_key : str
+                    api secret key used to connect to Binance server
+    
+    Description : This function pings Binance servers with the API key
+                  provided in parameters.
+    """
     FUNCTION = "I__CLIENT"
     err_cpt = 0
     ret = 1
@@ -32,10 +45,11 @@ def I__FUTURES_ACCOUNT_TRADES(client, symbol):
     Name : I__FUTURES_ACCOUNT_TRADES()
     
     Parameters : 
-        client : binance.client
-            Client used to connect to Binance server
-        symbol : str
-            Currency traded
+                  client : binance.client
+                    Client used to connect to Binance server
+
+                  symbol : str
+                    Currency traded
     
     Description : Gets a symbol's trade history of a futures account. 
                   Client contains the API key credentials allowing to
@@ -60,10 +74,11 @@ def I__SPOT_ACCOUNT_TRADES(client, symbol):
     Name : I__SPOT_ACCOUNT_TRADES()
     
     Parameters : 
-        client : binance.client
-            Client used to connect to Binance server
-        symbol : str
-            Currency traded 
+                  client : binance.client
+                    Client used to connect to Binance server
+
+                  symbol : str
+                    Currency traded 
     
     Description : Gets a symbol's trade history of a SPOT account. 
                   Client contains the API key credentials allowing 
@@ -88,12 +103,14 @@ def I__GET_ACCOUNT_HISTORY(client, account_type, symbol):
     Name : I__GET_ACCOUNT_HISTORY()
     
     Parameters : 
-        client : binance.client
-            Client used to connect to Binance server
-        account_type : str
-            Type of account, either 'SPOT' or 'FUTURES'
-        symbol : str
-            Currency traded
+                  client : binance.client
+                    Client used to connect to Binance server
+
+                  account_type : str
+                    Type of account, either 'SPOT' or 'FUTURES'
+
+                  symbol : str
+                    Currency traded
     
     Description : Gets a symbol's trade history, depending on the 
                   account_type. 
@@ -114,10 +131,11 @@ def I__CLOSE_LONG_SPOT(client, symbol):
     Name : I__CLOSE_LONG_SPOT()
     
     Parameters : 
-        client : binance.client
-            Client used to connect to Binance server
-        symbol : str
-            Currency traded
+                  client : binance.client
+                    Client used to connect to Binance server
+
+                  symbol : str
+                    Currency traded
     
     Description : Function closing an open trade on a SPOT account.
                   If this function fails MAX_RETRY times, an error is 
@@ -154,10 +172,11 @@ def I__CLOSE_LONG_FUTURES(client, symbol):
     Name : I__CLOSE_LONG_FUTURES()
     
     Parameters : 
-        client : binance.client
-            Client used to connect to Binance server
-        symbol : str
-            Currency traded
+                  client : binance.client
+                    Client used to connect to Binance server
+                  
+                  symbol : str
+                    Currency traded
     
     Description : Function closing an open trade on a FUTURES account.
                   If this function fails MAX_RETRY times, an error is
@@ -202,10 +221,11 @@ def I__CLOSE_LONG(client, master_api):
     Name : I__CLOSE_LONG()
     
     Parameters : 
-        client : binance.client
-            Client used to connect to Binance server
-        master_api : ApiKeyMaster
-            Binance account handled by EC
+                  client : binance.client
+                    Client used to connect to Binance server
+
+                  master_api : ApiKeyMaster
+                    Binance account handled by EC
     
     Description : Function closing an open trade depending on 
                   the accounts type (SPOT/FUTURES).
@@ -226,10 +246,11 @@ def I__OPEN_LONG_SPOT(client, symbol):
     Name : I__OPEN_LONG_SPOT()
     
     Parameters : 
-        client : binance.client
-            Client used to connect to Binance server
-        symbol : str
-            Currency traded
+                  client : binance.client
+                    Client used to connect to Binance server
+                  
+                  symbol : str
+                    Currency traded
     
     Description : Function opening a trade on a SPOT account
                   If this function fails MAX_RETRY times, an error 
@@ -260,17 +281,21 @@ def I__OPEN_LONG_FUTURES(client, symbol, leverage, engaged_balance, entryPrice):
     Name : I__OPEN_LONG_FUTURES()
     
     Parameters : 
-        client : binance.client
-            Client used to connect to Binance server
-        symbol : str
-            Currency traded
-        leverage : str
-            Trade's leverage. This parameter has to be a string 
-            of an integer
-        engaged_balance : float
-            Rate of the wallet engaged on the trade
-        entryPrice : float
-            Current price of the currency
+                  client : binance.client
+                    Client used to connect to Binance server
+                  
+                  symbol : str
+                    Currency traded
+                  
+                  leverage : str
+                    Trade's leverage. This parameter has to be a string 
+                    of an integer
+                  
+                  engaged_balance : float
+                    Rate of the wallet engaged on the trade
+                  
+                  entryPrice : float
+                    Current price of the currency
     
     Description : Function opening a trade on a FUTURES account
                   If this function fails MAX_RETRY times, an error 
@@ -327,10 +352,11 @@ def I__OPEN_LONG(client, master_api):
     Name : I__OPEN_LONG()
     
     Parameters : 
-        client : binance.client
-            Client used to connect to Binance server
-        master_api : ApiKeyMaster
-            Binance account handled by EC
+                  client : binance.client
+                    Client used to connect to Binance server
+                  
+                  master_api : ApiKeyMaster
+                    Binance account handled by EC
     
     Description : Function opening a trade depending on 
                   the accounts type (SPOT/FUTURES).
@@ -352,8 +378,8 @@ def I__GET_FUTURES_ACCOUNT_BALANCE(client):
     Name : I__GET_FUTURES_ACCOUNT_BALANCE()
     
     Parameters : 
-        client : binance.client
-            Client used to connect to Binance server
+                  client : binance.client
+                    Client used to connect to Binance server
     
     Description : Function returning a futures account information
                   If this function fails MAX_RETRY times, an error is 
@@ -378,12 +404,14 @@ def I__CLOSE_SHORT(client, symbol, leverage):
     Name : I__CLOSE_SHORT()
     
     Parameters : 
-        client : binance.client
-            Client used to connect to Binance server
-        symbol : str
-            Currency traded
-        leverage : str
-            Leverage
+                  client : binance.client
+                    Client used to connect to Binance server
+
+                  symbol : str
+                    Currency traded
+
+                  leverage : str
+                    Leverage
     
     Description : Function closing a short position for a FUTURES account
                   If this function fails MAX_RETRY times, an error is 
@@ -428,17 +456,21 @@ def I__OPEN_SHORT(client, symbol, leverage, engaged_balance, entryPrice):
     Name : I__OPEN_SHORT()
     
     Parameters : 
-        client : binance.client
-            Client used to connect to Binance server
-        symbol : str
-            Currency traded
-        leverage : str
-            Trade's leverage. This parameter has to be a string 
-            of an integer
-        engaged_balance : float
-            Rate of the wallet engaged on the trade
-        entryPrice : float
-            Current price of the currency
+                  client : binance.client
+                    Client used to connect to Binance server
+
+                  symbol : str
+                    Currency traded
+
+                  leverage : str
+                    Trade's leverage. This parameter has to be a string 
+                    of an integer
+
+                  engaged_balance : float
+                    Rate of the wallet engaged on the trade
+
+                  entryPrice : float
+                    Current price of the currency
     
     Description : Function opening a short position for a FUTURES account
                   If this function fails MAX_RETRY times, an error is 
