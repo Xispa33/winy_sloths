@@ -48,4 +48,4 @@ jobs:
       - name: Run a multi-line script
         run: |
           echo ${{ github.repository }}
-          cd docs ; sphinx-apidoc -o . .. ; make html; ls
+          cd docs ; sphinx-apidoc -o . .. ; make html; ls; pwd
