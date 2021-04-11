@@ -16,25 +16,6 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  check-synthax:
-    # The type of runner that the job will run on
-    runs-on: self-hosted
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo ${{ github.repository }}
-          python3 errors.py
-          python3 interface_binance.py
-          python3 constants.py
-          python3 strategy_file.py
-          python3 winy_sloth.py
-  
   documentation:
     # The type of runner that the job will run on
     runs-on: self-hosted
