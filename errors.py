@@ -38,7 +38,7 @@ class Errors():
     Errors__GetRawExceptionInfo(info)
     Errors__SendEmail(errors_object)
     """
-    def __init__(self, nb_strategies = 0):
+    def __init__(self):
         self.error_messages   = str()
         self.error_function   = str()
         self.err_criticity    = NO_C
