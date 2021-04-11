@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+from password import GMAIL_PASSWORD_KEY
+
 ALTERNATIVE = 'alternative'
 ASSET = 'asset'
 BALANCE = 'balance'
@@ -10,7 +12,7 @@ BTCUSDT = "BTCUSDT"
 BUY = 'BUY'
 CURRENT_SIDE = 'current_side'
 EMITTOR = 'towardsecolonomy@gmail.com'
-EMITTOR_PASSWORD = 'ricqltndktzitayp'
+EMITTOR_PASSWORD = GMAIL_PASSWORD_KEY
 ENTRY_PRICE = 'entryPrice'
 ERROR = "ERROR"
 ETH = "ETH"
