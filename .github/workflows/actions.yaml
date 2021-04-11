@@ -4,8 +4,8 @@ name: Winy Sloths Continuous Integration
 
 # Controls when the action will run. 
 on:
-  push: 
-    branches: [ feature/tests ]
+  #push: 
+  #  branches: [ feature/tests ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
