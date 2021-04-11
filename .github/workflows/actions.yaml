@@ -51,7 +51,7 @@ jobs:
           cd docs ; sphinx-apidoc -o . .. ; make html; ls; pwd
       
       - name: Publish Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        path: ${{ github.workspace }}/docs/_build/html
-        name: ${{ github.run_number }}
+        uses: actions/upload-artifact@v2
+        with:
+          path: ${{ github.workspace }}/docs/_build/html
+          name: ${{ github.run_number }}
