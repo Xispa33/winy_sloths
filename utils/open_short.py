@@ -11,7 +11,7 @@
 import argparse
 import sys
 from interface_binance import I__CLIENT, I__OPEN_SHORT
-from constants import OUT, SPOT, FUTURES, BTCUSDT, ETHUSDT
+from constants import OUT, SPOT, FUTURES, BTCUSDT, ETHUSDT, PRICE
 from strategy_file import *
 # A "export PYTHONPATH=$PWD" needs to be done to run these functions
 
@@ -35,7 +35,9 @@ if __name__ == "__main__":
     master_api.entryPrice = client.get_avg_price(symbol=master_api.symbol)[PRICE]
     """ ====================================================================== """
 
-    trade_ret = I__OPEN_SHORT(I__CLIENT(master_api.api_key, master_api.api_secret_key), master_api)
+    trade_ret = I__OPEN_SHORT(I__CLIENT(master_api.api_key, master_api.api_secret_key), \
+                              master_api.symbol, master_api.leverage, \
+                              master_api.engaged_balance, master_api.entryPrice)
     #trade_ret = 0
     sys.exit(trade_ret)
     
