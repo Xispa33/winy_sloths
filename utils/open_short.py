@@ -21,7 +21,7 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--type", type=str, choices=[SPOT, FUTURES, "S", "F"], help="account type")
     parser.add_argument("-s", "--symbol", type=str, choices=[BTCUSDT, ETHUSDT], help="Symbol")
     parser.add_argument("-l", "--leverage", type=str, help="Leverage", default='1')
-    parser.add_argument("-e", "--engaged_balance", type=int, help="Engaged balance", default = 1)
+    parser.add_argument("-e", "--engaged_balance", type=float, help="Engaged balance", default = 1.0)
     args = parser.parse_args()
 
     account_types_dict = {SPOT:SPOT, "S":SPOT, FUTURES:FUTURES, "F":FUTURES}
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     client = I__CLIENT(master_api.api_key, master_api.api_secret_key)
     master_api.leverage = str(args.leverage)
     master_api.engaged_balance = args.engaged_balance
-    master_api.entryPrice = client.get_avg_price(symbol=master_api.symbol)[PRICE]
+    master_api.entryPrice = float(client.get_avg_price(symbol=master_api.symbol)[PRICE])
     """ ====================================================================== """
 
     trade_ret = I__OPEN_SHORT(I__CLIENT(master_api.api_key, master_api.api_secret_key), \
