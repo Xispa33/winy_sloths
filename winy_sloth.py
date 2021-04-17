@@ -10,6 +10,7 @@ from constants import *
 from strategy_file import *
 from interface_binance import *
 from errors import *
+import traceback
 
 class WinySloth:
     """
@@ -48,6 +49,8 @@ class WinySloth:
                     self.WinySloth__Main()
                 except:
                     print("An error occured. An email should have been sent around {}\n".format(str(datetime.now())))
+                    print(sys.exc_info())
+                    print(traceback.format_exc())
                     with open("errors.txt", "a") as error_file:
                         errors = Errors()
                         errors.err_criticity = HIGH_C
@@ -55,7 +58,7 @@ class WinySloth:
                         error_file.write('\n')
                         Errors.Errors__SendEmail(errors)
                         error_file.close()
-                    sleep(5)
+                    sleep(2)
                     self.strategies = []
                     self.__init__(strategies_folder_path)
             #self.WinySloth__Main()
@@ -107,6 +110,9 @@ class WinySloth:
                     strategy_file.close()
             return 0
         except:
+            print("An error during the reading of the file occured here line 111. 1\n")
+            print(sys.exc_info())
+            print(traceback.format_exc())
             return 1
     
     def WinySloth__ComputeAccountSide(self, master_api, binance_response):
@@ -124,7 +130,9 @@ class WinySloth:
         Description : Function that computes the side of a Binance account
         """
         if (isinstance(binance_response, int)):
-            return 1
+            print("Binance return was crap ! \n")
+            return master_api.side
+            #return 1
         else:
             if (master_api.account_type == SPOT):
                 binance_response = binance_response[0]
@@ -133,7 +141,9 @@ class WinySloth:
                 elif binance_response[SIDE] == SELL:
                     return OUT
                 else:
-                    return 1
+                    #return 1
+                    return master_api.side
+                    
             elif (master_api.account_type == FUTURES):
                 if (len(binance_response) > 1):
                     for dic in binance_response:
@@ -167,7 +177,8 @@ class WinySloth:
                         master_api.computeEngagedBalance(167, binance_response)
                         return SHORT
                     else:
-                        return 1
+                        #return 1
+                        return master_api.side
                 else:
                     # Store needed information for FUTURES account
                     master_api.markPrice = round(float(binance_response[0][MARK_PRICE]), 0)
@@ -185,9 +196,11 @@ class WinySloth:
                     elif (master_api.positionAmt > 0):
                         return LONG
                     else: 
-                        return 1
+                        #return 1
+                        return master_api.side
             else:
-                return 1
+                #return 1
+                return master_api.side
 
     def WinySloth__UpdateStrategyFile(self, strategy_file_path, strategy_current_side, idx=0):
         # TODO: Changer peut etre cette fonction en supprimant le strategy_current_side
@@ -226,6 +239,9 @@ class WinySloth:
                 strategy_file.close()
             return 0
         except:
+            print("An error during the reading of the file occured here line 230. 1\n")
+            print(sys.exc_info())
+            print(traceback.format_exc())
             return 1
     
     def WinySloth__UpdatePositionSide(self, strategy, strategy_current_side, idx=0):
@@ -265,6 +281,9 @@ class WinySloth:
                     return 1
                 strategy_file.close()
         except:
+            print("An error during the reading of the file occured here line 270. 1\n")
+            print(sys.exc_info())
+            print(traceback.format_exc())
             return 1
 
     def WinySloth__UpdateMaster(self, strategy, strategy_current_side):
@@ -390,6 +409,10 @@ class WinySloth:
             strategy_current_side = self.WinySloth__ComputeAccountSide(strategy.master_api, binance_return)
             if (strategy_current_side != strategy.master_api.side):
                 #print("Position not up to date")
+                print("Binance return = ")
+                print(binance_return)
+                print("New position computed = ")
+                print(strategy_current_side)
                 ret_update_master = self.WinySloth__UpdateMaster(strategy, strategy_current_side)
                 #gESTION DES SLAVES 
                 if (ret_update_master == 0):
