@@ -186,7 +186,13 @@ class WinySloth:
                     master_api.leverage = binance_response[0][LEVERAGE]
                     master_api.positionAmt = float(binance_response[0][POSITION_AMT])
                     #TODO: A modifier pour grer les cas derreur
-                    master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))[BALANCE])
+                    bin_ret = I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))
+                    if (isinstance(bin_ret, int)):
+                        return master_api.side
+                    else:
+                        master_api.balance = float(bin_ret[BALANCE])
+                    
+                    #master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))[BALANCE])
                     master_api.computeEngagedBalance(179, binance_response)
                     
                     if (master_api.positionAmt == float(0)):

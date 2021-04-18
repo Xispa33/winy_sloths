@@ -172,7 +172,7 @@ def I__CLOSE_LONG_SPOT(client, symbol):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
-            sleep(1)
+            sleep(0.5)
     
     return ret
 
@@ -221,7 +221,7 @@ def I__CLOSE_LONG_FUTURES(client, symbol):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
-            sleep(1)
+            sleep(0.5)
     
     return ret
 
@@ -281,7 +281,7 @@ def I__OPEN_LONG_SPOT(client, symbol):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
-            sleep(1)
+            sleep(0.5)
     
     return ret
 
@@ -352,7 +352,7 @@ def I__OPEN_LONG_FUTURES(client, symbol, leverage, engaged_balance, entryPrice):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
-            sleep(1)
+            sleep(0.5)
     
     return ret
 
@@ -397,7 +397,7 @@ def I__GET_FUTURES_ACCOUNT_BALANCE(client):
     err_cpt = 0
     ret = 1
 
-    while (err_cpt < MAX_RETRY) and (ret == 1):
+    while (err_cpt < MAX_RETRY*5) and (ret == 1):
         try:
             bin_ret = client.futures_account_balance(timestamp=client.futures_time())
             for dic in bin_ret:
@@ -406,6 +406,8 @@ def I__GET_FUTURES_ACCOUNT_BALANCE(client):
         except:
             ret = 1
             err_cpt += 1
+            print("futures_account_balance() return failed\n")
+            sleep(0.5)
     return ret
 
 def I__CLOSE_SHORT(client, symbol, leverage):
@@ -456,7 +458,7 @@ def I__CLOSE_SHORT(client, symbol, leverage):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
-            sleep(1)
+            sleep(0.5)
     
     return ret
     
@@ -527,6 +529,6 @@ def I__OPEN_SHORT(client, symbol, leverage, engaged_balance, entryPrice):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
-            sleep(1)
+            sleep(0.5)
     
     return ret
