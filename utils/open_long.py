@@ -25,6 +25,7 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--symbol", type=str, choices=[BTCUSDT, ETHUSDT], help="Symbol")
     parser.add_argument("-l", "--leverage", type=str, help="Leverage", default='1')
     parser.add_argument("-e", "--engaged_balance", type=float, help="Engaged balance", default = 1.0)
+    parser.add_argument("-m", "--mode", type=str, choices=['n', 'd'], default='d', help="Mode of execution")
     args = parser.parse_args()
 
     account_types_dict = {SPOT:SPOT, "S":SPOT, FUTURES:FUTURES, "F":FUTURES}
@@ -38,8 +39,12 @@ if __name__ == "__main__":
     master_api.engaged_balance = args.engaged_balance
     master_api.entryPrice = float(client.get_avg_price(symbol=master_api.symbol)[PRICE])
     """ ====================================================================== """
-
-    trade_ret = I__OPEN_LONG(I__CLIENT(master_api.api_key, master_api.api_secret_key), master_api)
+    client = I__CLIENT(master_api.api_key, master_api.api_secret_key)
+    
+    if (str(args.mode) == 'd'):
+        client.API_URL = 'https://testnet.binance.vision/api'
+    
+    trade_ret = I__OPEN_LONG(client, master_api)
     #trade_ret = 0
     sys.exit(trade_ret)
     

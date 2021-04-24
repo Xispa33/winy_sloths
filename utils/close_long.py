@@ -19,6 +19,7 @@ if __name__ == "__main__":
     parser.add_argument("-k", "--keys", nargs='+', type=str, help="API keys")
     parser.add_argument("-t", "--type", type=str, choices=[SPOT, FUTURES, "S", "F"], help="Account type")
     parser.add_argument("-s", "--symbol", type=str, choices=[BTCUSDT, ETHUSDT], help="Symbol")
+    parser.add_argument("-m", "--mode", type=str, choices=['n', 'd'], default='d', help="Mode of execution")
     args = parser.parse_args()
 
     account_types_dict = {SPOT:SPOT, "S":SPOT, FUTURES:FUTURES, "F":FUTURES}
@@ -27,8 +28,12 @@ if __name__ == "__main__":
     master_api = ApiKeyMaster([str(args.keys[0]), str(args.keys[1]), OUT, \
                                account_types_dict[args.type], args.symbol])
     """ ====================================================================== """
-
-    trade_ret = I__CLOSE_LONG(I__CLIENT(master_api.api_key, master_api.api_secret_key), master_api)
+    client = I__CLIENT(master_api.api_key, master_api.api_secret_key)
+    if (str(args.mode) == 'd'):
+        print("tatata\n")
+        client.API_URL = 'https://testnet.binance.vision/api'
+    
+    trade_ret = I__CLOSE_LONG(client, master_api)
     #trade_ret = 0
     sys.exit(trade_ret)
     
