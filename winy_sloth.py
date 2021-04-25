@@ -44,6 +44,7 @@ class WinySloth:
         else:
             print("Init was good.\n")
             print("There are {} strategies running.\n".format(len(self.strategies)))
+            """
             while (1):
                 try:
                     self.WinySloth__Main()
@@ -61,7 +62,8 @@ class WinySloth:
                     sleep(2)
                     self.strategies = []
                     self.__init__(strategies_folder_path)
-            #self.WinySloth__Main()
+            """
+            self.WinySloth__Main()
 
     def WinySloth__FindNbStrategies(self):
         """
@@ -115,7 +117,8 @@ class WinySloth:
             print(traceback.format_exc())
             return 1
     
-    def WinySloth__ComputeAccountSide(self, master_api, binance_response):
+    @staticmethod
+    def WinySloth__ComputeAccountSide(master_api, binance_response):
         """
         Name : WinySloth__ComputeAccountSide(master_api, binance_response)
     
@@ -164,8 +167,11 @@ class WinySloth:
                         master_api.leverage = long_list[LEVERAGE]
                         master_api.positionAmt = float(long_list[POSITION_AMT])
                         master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))[BALANCE])
-                        master_api.computeEngagedBalance(157, binance_response)
-                        return LONG
+                        ret = master_api.computeEngagedBalance(157, binance_response)
+                        if ret == 1:
+                            return OUT
+                        else:
+                            return LONG
                     elif (entry_price_both == float(0) and entry_price_long == float(0) and entry_price_short == float(0)):
                         return OUT
                     elif (entry_price_short != float(0)):
@@ -174,8 +180,11 @@ class WinySloth:
                         master_api.leverage = short_list[LEVERAGE]
                         master_api.positionAmt = float(short_list[POSITION_AMT])
                         master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))[BALANCE])
-                        master_api.computeEngagedBalance(167, binance_response)
-                        return SHORT
+                        ret = master_api.computeEngagedBalance(167, binance_response)
+                        if ret == 1:
+                            return OUT
+                        else:
+                            return SHORT
                     else:
                         #return 1
                         return master_api.side
@@ -193,9 +202,9 @@ class WinySloth:
                         master_api.balance = float(bin_ret[BALANCE])
                     
                     #master_api.balance = float(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))[BALANCE])
-                    master_api.computeEngagedBalance(179, binance_response)
+                    ret = master_api.computeEngagedBalance(179, binance_response)
                     
-                    if (master_api.positionAmt == float(0)):
+                    if (master_api.positionAmt == float(0) or ret == 1):
                         return OUT
                     elif (master_api.positionAmt < 0):
                         return SHORT
@@ -356,6 +365,8 @@ class WinySloth:
         idx = 1
         ret_update_slave = 1
         update_list = [1]*len(strategy.slave_apis)
+        ret_stop_loss_slave = 1
+        update_list_stop_loss = [1]*len(strategy.slave_apis)
         for slave in strategy.slave_apis:
             side_possibilities_dict = {(OUT,LONG):slave.close_long, (OUT,SHORT):slave.close_short, \
                                        (LONG,OUT):slave.open_long, (SHORT,OUT):slave.open_short, \
@@ -368,6 +379,18 @@ class WinySloth:
                     if ret_update_slave == 0:
                         ret_update_slave = 1
                         update_list[idx - 1] = 0
+                        
+                        ret_stop_loss_slave = WinySloth.ConfigureStopLoss(I__CLIENT(slave.api_key, slave.api_secret_key),
+                                                    strategy.master_api.symbol, \
+                                                    strategy.master_api.account_type, \
+                                                    strategy.master_api.engaged_balance, \
+                                                    strategy.master_api.entryPrice, \
+                                                    strategy.master_api.side)
+                        if (ret_stop_loss_slave == 0):
+                            ret_stop_loss_slave = 1
+                            update_list_stop_loss[idx - 1] = 0
+                        else:
+                            update_list_stop_loss[idx - 1] = 1
                     else:
                         update_list[idx - 1] = 1
                         errors = Errors()
@@ -392,8 +415,25 @@ class WinySloth:
             if out_slave == 1:
                 return 1
         
+        for i in range(0,len(update_list_stop_loss)):
+            if update_list_stop_loss[i] == 1:
+                errors = Errors()
+                errors.err_criticity = MEDIUM_C
+                errors.error_messages = "Stop loss of strategy {} was not configured for slave {}".format(strategy.strategy_file_path, i)
+                Errors.Errors__SendEmail(errors)
+        
         return 0
-
+    
+    @staticmethod
+    def ConfigureStopLoss(client, symbol, account_type, engaged_balance, entryPrice, side):
+        if ((account_type == SPOT)):
+            return 0
+        elif (abs(engaged_balance) > 1 and ((side == LONG) or (side == SHORT))) or (side == OUT):
+            ret = I__MANAGE_STOP_LOSS(client, symbol, abs(engaged_balance), entryPrice, side)
+            return ret
+        else:
+            return 0
+    
     def WinySloth__Main(self):
         """
         Name : WinySloth__Main()
@@ -408,19 +448,29 @@ class WinySloth:
         for strategy in self.strategies:
             ret_update_master = 1
             ret_update_slave = 1
+            ret_stop_loss_master = 1
             binance_return = I__GET_ACCOUNT_HISTORY(I__CLIENT(strategy.master_api.api_key, \
                                                     strategy.master_api.api_secret_key), \
                                                     strategy.master_api.account_type, strategy.master_api.symbol)
             #print(binance_return)
-            strategy_current_side = self.WinySloth__ComputeAccountSide(strategy.master_api, binance_return)
+            strategy_current_side = WinySloth.WinySloth__ComputeAccountSide(strategy.master_api, binance_return)
             if (strategy_current_side != strategy.master_api.side):
                 #print("Position not up to date")
                 print("Binance return = ")
                 print(binance_return)
                 print("New position computed = ")
                 print(strategy_current_side)
+                ret_stop_loss_master = WinySloth.ConfigureStopLoss(I__CLIENT(strategy.master_api.api_key, \
+                                                    strategy.master_api.api_secret_key),
+                                                    strategy.master_api.symbol, \
+                                                    strategy.master_api.account_type, \
+                                                    strategy.master_api.engaged_balance, \
+                                                    strategy.master_api.entryPrice, \
+                                                    strategy_current_side)
+
                 ret_update_master = self.WinySloth__UpdateMaster(strategy, strategy_current_side)
-                #gESTION DES SLAVES 
+                
+                #GESTION DES SLAVES 
                 if (ret_update_master == 0):
                     ret_update_slave = self.WinySloth__SlaveManagement(strategy)
                     if (ret_update_slave == 0):
@@ -443,6 +493,13 @@ class WinySloth:
                     errors.error_messages = "Master update unsuccessful of strategy : {}".format(strategy.strategy_file_path)
                     Errors.Errors__SendEmail(errors)
                     sys.exit()
+                
+                if (ret_stop_loss_master == 1):
+                        errors = Errors()
+                        errors.err_criticity = MEDIUM_C
+                        errors.error_messages = "Stop loss of strategy {} was not configured".format(strategy.strategy_file_path)
+                        Errors.Errors__SendEmail(errors)
             else:
                 sleep(2)
                 #print("Position up to date\n")
+

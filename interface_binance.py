@@ -176,6 +176,67 @@ def I__CLOSE_LONG_SPOT(client, symbol):
     
     return ret
 
+def I__SET_STOP_LOSS_LONG(client, symbol, engaged_balance, entryPrice):
+    FUNCTION = "I__SET_STOP_LOSS_LONG"
+    err_cpt = 0
+    ret = 1
+    while (err_cpt < MAX_RETRY) and (ret == 1):
+        try:
+            price=(1 - (RISK/engaged_balance))*entryPrice
+            client.futures_create_order(symbol=symbol, side=SELL, positionSide=LONG, closeposition=TRUE, stopPrice=round(float(price),0), type=STOP_MARKET, timestamp=client.futures_time())
+            #print(client.futures_get_open_orders(symbol='symbol', timestamp=client.futures_time()))
+            #For test purposes
+            #ret = 1
+            #err_cpt += 1
+            ret = 0
+        except:
+            ret = 1
+            err_cpt += 1
+            print(FUNCTION)
+            print(sys.exc_info())
+            sleep(0.5)
+    
+    return ret
+       
+def I__SET_STOP_LOSS_SHORT(client, symbol, engaged_balance, entryPrice):
+    FUNCTION = "I__SET_STOP_LOSS_SHORT"
+    err_cpt = 0
+    ret = 1
+    while (err_cpt < MAX_RETRY) and (ret == 1):
+        try:
+            price=(1 + (RISK/engaged_balance))*entryPrice
+            client.futures_create_order(symbol=symbol, side=BUY, positionSide=SHORT, closeposition=TRUE, stopPrice=round(float(price),0), type=STOP_MARKET, timestamp=client.futures_time())
+            #print(client.futures_get_open_orders(symbol='symbol', timestamp=client.futures_time()))
+            #For test purposes
+            #ret = 1
+            #err_cpt += 1
+            ret = 0
+        except:
+            ret = 1
+            err_cpt += 1
+            print(FUNCTION)
+            print(sys.exc_info())
+            sleep(0.5)
+    
+    return ret
+
+def I__CLEAR_STOP_LOSS(client, symbol):
+    FUNCTION = "I__CLEAR_STOP_LOSS"
+    err_cpt = 0
+    ret = 1
+
+    while (err_cpt < MAX_RETRY) and (ret == 1):
+        try:
+            client.futures_cancel_all_open_orders(symbol=symbol,countdownTime=0,timestamp=client.futures_time())
+            ret = 0
+        except:
+            ret = 1
+            err_cpt += 1
+            print(FUNCTION)
+            print(sys.exc_info())
+            sleep(0.5)
+    return ret
+    
 def I__CLOSE_LONG_FUTURES(client, symbol):
     """
     Name : I__CLOSE_LONG_FUTURES()
@@ -194,7 +255,7 @@ def I__CLOSE_LONG_FUTURES(client, symbol):
     FUNCTION = "I__CLOSE_LONG_FUTURES"
     err_cpt = 0
     ret = 1
-
+    last_trade = []
     precision = 0
 
     if (symbol == BTCUSDT):
@@ -206,15 +267,23 @@ def I__CLOSE_LONG_FUTURES(client, symbol):
 
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
-            last_trade = I__FUTURES_ACCOUNT_TRADES(client, symbol)
-
+            if last_trade == []:
+                last_trade = I__FUTURES_ACCOUNT_TRADES(client, symbol)
+            else:
+                pass
+            
             for dic in last_trade:
                 if dic[POSITION_SIDE] == LONG:
                     ret = dic
-
-            client.futures_create_order(symbol=symbol, positionside=LONG, side=SELL, \
-                                        type=MARKET, quantity=round(float(ret[POSITION_AMT]), precision), \
-                                        timestamp=client.futures_time())
+            
+            position_amt = round(float(ret[POSITION_AMT]), precision)
+            if (position_amt != 0.0):
+                client.futures_create_order(symbol=symbol, positionside=LONG, side=SELL, \
+                                            type=MARKET, quantity=position_amt, \
+                                            timestamp=client.futures_time())
+            else:
+                pass
+            #ret = I__CLEAR_STOP_LOSS(client, symbol)
             ret = 0
         except:
             ret = 1
@@ -432,6 +501,7 @@ def I__CLOSE_SHORT(client, symbol, leverage):
     err_cpt = 0
     ret = 1
     precision = 0
+    last_trade = []
 
     if (symbol == BTCUSDT):
         precision = 3
@@ -442,16 +512,25 @@ def I__CLOSE_SHORT(client, symbol, leverage):
 
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
-            last_trade = I__FUTURES_ACCOUNT_TRADES(client, symbol)
-
+            if last_trade == []:
+                last_trade = I__FUTURES_ACCOUNT_TRADES(client, symbol)
+            else:
+                pass
+            
             for dic in last_trade:
                 if dic[POSITION_SIDE] == SHORT:
                     ret = dic
             
             quantity = round(abs(float(ret[POSITION_AMT])), precision)
-            client.futures_create_order(symbol=symbol, positionside=SHORT, side=BUY, \
+
+            if (quantity != 0.0):
+                client.futures_create_order(symbol=symbol, positionside=SHORT, side=BUY, \
                                         type=MARKET, quantity=quantity, \
                                         timestamp=client.futures_time())
+            else:
+                pass
+                
+            #ret = I__CLEAR_STOP_LOSS(client, symbol)
             ret = 0
         except:
             ret = 1
@@ -530,5 +609,23 @@ def I__OPEN_SHORT(client, symbol, leverage, engaged_balance, entryPrice):
             print(FUNCTION)
             print(sys.exc_info())
             sleep(0.5)
+    
+    return ret
+
+def I__MANAGE_STOP_LOSS(client, symbol, engaged_balance, entryPrice, side):
+    """
+    paramètres à récupérer : 
+    - engaged_balance
+    - symbol
+    - entryPrice
+    """
+    if (side == LONG):
+        ret = I__SET_STOP_LOSS_LONG(client, symbol, engaged_balance, entryPrice)
+    elif (side == SHORT):
+        ret = I__SET_STOP_LOSS_SHORT(client, symbol, engaged_balance, entryPrice)
+    elif (side == OUT):
+        ret = I__CLEAR_STOP_LOSS(client, symbol)
+    else:
+        return 1
     
     return ret

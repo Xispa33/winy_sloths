@@ -45,6 +45,7 @@ if __name__ == "__main__":
         client.API_URL = 'https://testnet.binance.vision/api'
     
     trade_ret = I__OPEN_LONG(client, master_api)
+    print(trade_ret)
     #trade_ret = 0
     sys.exit(trade_ret)
     

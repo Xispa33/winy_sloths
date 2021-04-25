@@ -93,11 +93,13 @@ class ApiKeyMaster(ApiKey):
         """
         if (self.balance != 0):
             self.engaged_balance = (self.positionAmt * self.entryPrice/self.balance)
+            return 0
         else:
             print("Problem at line {}. WS should be restarting".format(line_nb))
             print(binance_response)
             print(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(self.api_key, self.api_secret_key)))
-            self.engaged_balance = (self.positionAmt * self.entryPrice/self.balance)
+            #self.engaged_balance = (self.positionAmt * self.entryPrice/self.balance)
+            return 1
         
 
 class ApiKeySlave(ApiKey):
