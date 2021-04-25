@@ -44,7 +44,6 @@ class WinySloth:
         else:
             print("Init was good.\n")
             print("There are {} strategies running.\n".format(len(self.strategies)))
-            """
             while (1):
                 try:
                     self.WinySloth__Main()
@@ -62,8 +61,7 @@ class WinySloth:
                     sleep(2)
                     self.strategies = []
                     self.__init__(strategies_folder_path)
-            """
-            self.WinySloth__Main()
+            #self.WinySloth__Main()
 
     def WinySloth__FindNbStrategies(self):
         """
