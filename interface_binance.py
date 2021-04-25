@@ -39,6 +39,7 @@ def I__CLIENT(api_key, api_secret_key):
             print(FUNCTION)
             print("DATE : {}".format(str(datetime.now())))
             print(sys.exc_info())
+            print(traceback.format_exc())
             sleep(1)
     
     return client
@@ -73,6 +74,7 @@ def I__FUTURES_ACCOUNT_TRADES(client, symbol):
             print(FUNCTION)
             print("DATE : {}".format(str(datetime.now())))
             print("Binance return was not good for the {}th time ! \n".format(err_cpt))
+            print(traceback.format_exc())
     return ret
 
 def I__SPOT_ACCOUNT_TRADES(client, symbol):
@@ -105,6 +107,7 @@ def I__SPOT_ACCOUNT_TRADES(client, symbol):
             print(FUNCTION)
             print("DATE : {}".format(str(datetime.now())))
             print("Binance return was not good for the {}th time ! \n".format(err_cpt))
+            print(traceback.format_exc())
     return ret
 
 def I__GET_ACCOUNT_HISTORY(client, account_type, symbol):
@@ -161,7 +164,7 @@ def I__CLOSE_LONG_SPOT(client, symbol):
     else:
         return 1
 
-    while (err_cpt < MAX_RETRY) and (ret == 1):
+    while (err_cpt < MAX_RETRY*100) and (ret == 1):
         try:
             price = client.get_avg_price(symbol=symbol)[PRICE]
             asset = round(float(client.get_asset_balance(asset=curr_asset)[FREE])*float(price) - 0.05,1)
@@ -172,7 +175,8 @@ def I__CLOSE_LONG_SPOT(client, symbol):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
-            sleep(0.5)
+            print(traceback.format_exc())
+            sleep(0.1)
     
     return ret
 
@@ -194,6 +198,7 @@ def I__SET_STOP_LOSS_LONG(client, symbol, engaged_balance, entryPrice):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
+            print(traceback.format_exc())
             sleep(0.5)
     
     return ret
@@ -216,6 +221,7 @@ def I__SET_STOP_LOSS_SHORT(client, symbol, engaged_balance, entryPrice):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
+            print(traceback.format_exc())
             sleep(0.5)
     
     return ret
@@ -234,6 +240,7 @@ def I__CLEAR_STOP_LOSS(client, symbol):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
+            print(traceback.format_exc())
             sleep(0.5)
     return ret
     
@@ -265,7 +272,7 @@ def I__CLOSE_LONG_FUTURES(client, symbol):
     else:
         return 1
 
-    while (err_cpt < MAX_RETRY) and (ret == 1):
+    while (err_cpt < MAX_RETRY*100) and (ret == 1):
         try:
             if last_trade == []:
                 last_trade = I__FUTURES_ACCOUNT_TRADES(client, symbol)
@@ -290,7 +297,8 @@ def I__CLOSE_LONG_FUTURES(client, symbol):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
-            sleep(0.5)
+            print(traceback.format_exc())
+            sleep(0.1)
     
     return ret
 
@@ -350,6 +358,7 @@ def I__OPEN_LONG_SPOT(client, symbol):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
+            print(traceback.format_exc())
             sleep(0.5)
     
     return ret
@@ -421,6 +430,7 @@ def I__OPEN_LONG_FUTURES(client, symbol, leverage, engaged_balance, entryPrice):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
+            print(traceback.format_exc())
             sleep(0.5)
     
     return ret
@@ -476,6 +486,7 @@ def I__GET_FUTURES_ACCOUNT_BALANCE(client):
             ret = 1
             err_cpt += 1
             print("futures_account_balance() return failed\n")
+            print(traceback.format_exc())
             sleep(0.5)
     return ret
 
@@ -510,7 +521,7 @@ def I__CLOSE_SHORT(client, symbol, leverage):
     else:
         return 1
 
-    while (err_cpt < MAX_RETRY) and (ret == 1):
+    while (err_cpt < MAX_RETRY*100) and (ret == 1):
         try:
             if last_trade == []:
                 last_trade = I__FUTURES_ACCOUNT_TRADES(client, symbol)
@@ -537,7 +548,8 @@ def I__CLOSE_SHORT(client, symbol, leverage):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
-            sleep(0.5)
+            print(traceback.format_exc())
+            sleep(0.1)
     
     return ret
     
@@ -608,6 +620,7 @@ def I__OPEN_SHORT(client, symbol, leverage, engaged_balance, entryPrice):
             err_cpt += 1
             print(FUNCTION)
             print(sys.exc_info())
+            print(traceback.format_exc())
             sleep(0.5)
     
     return ret

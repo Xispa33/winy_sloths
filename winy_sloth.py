@@ -498,6 +498,6 @@ class WinySloth:
                         errors.error_messages = "Stop loss of strategy {} was not configured".format(strategy.strategy_file_path)
                         Errors.Errors__SendEmail(errors)
             else:
-                sleep(2)
-                #print("Position up to date\n")
+                sleep(1)
+                print("Position up to date\n")
 
