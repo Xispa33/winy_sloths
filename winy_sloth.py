@@ -499,5 +499,5 @@ class WinySloth:
                         Errors.Errors__SendEmail(errors)
             else:
                 sleep(1)
-                print("Position up to date\n")
+                #print("Position up to date\n")
 
