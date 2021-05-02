@@ -147,6 +147,7 @@ class WinySloth:
                     
             elif (master_api.account_type == FUTURES):
                 if (len(binance_response) > 1):
+                    master_api.account_mode = HEDGE
                     for dic in binance_response:
                         if dic[POSITION_SIDE] == BOTH:
                             both_list = dic
@@ -188,6 +189,7 @@ class WinySloth:
                         return master_api.side
                 else:
                     # Store needed information for FUTURES account
+                    master_api.account_mode = ONE_WAY
                     master_api.markPrice = round(float(binance_response[0][MARK_PRICE]), 0)
                     master_api.entryPrice = round(float(binance_response[0][ENTRY_PRICE]), 0)
                     master_api.leverage = binance_response[0][LEVERAGE]
@@ -423,11 +425,11 @@ class WinySloth:
         return 0
     
     @staticmethod
-    def ConfigureStopLoss(client, symbol, account_type, engaged_balance, entryPrice, side):
+    def ConfigureStopLoss(client, symbol, account_type, engaged_balance, entryPrice, side, mode=HEDGE):
         if ((account_type == SPOT)):
             return 0
         elif (abs(engaged_balance) > 1 and ((side == LONG) or (side == SHORT))) or (side == OUT):
-            ret = I__MANAGE_STOP_LOSS(client, symbol, abs(engaged_balance), entryPrice, side)
+            ret = I__MANAGE_STOP_LOSS(client, symbol, abs(engaged_balance), entryPrice, side, mode)
             return ret
         else:
             return 0
@@ -464,7 +466,7 @@ class WinySloth:
                                                     strategy.master_api.account_type, \
                                                     strategy.master_api.engaged_balance, \
                                                     strategy.master_api.entryPrice, \
-                                                    strategy_current_side)
+                                                    strategy_current_side, strategy.master_api.account_mode)
 
                 ret_update_master = self.WinySloth__UpdateMaster(strategy, strategy_current_side)
                 

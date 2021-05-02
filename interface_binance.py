@@ -167,7 +167,7 @@ def I__CLOSE_LONG_SPOT(client, symbol):
     while (err_cpt < MAX_RETRY*100) and (ret == 1):
         try:
             price = client.get_avg_price(symbol=symbol)[PRICE]
-            asset = round(float(client.get_asset_balance(asset=curr_asset)[FREE])*float(price) - 0.05,1)
+            asset = round(float(client.get_asset_balance(asset=curr_asset)[FREE])*float(price) - 1,1)
             client.create_order(symbol=symbol, side=SELL, type=MARKET, quoteOrderQty=asset, timestamp=client.get_server_time())
             ret = 0
         except:
@@ -180,14 +180,20 @@ def I__CLOSE_LONG_SPOT(client, symbol):
     
     return ret
 
-def I__SET_STOP_LOSS_LONG(client, symbol, engaged_balance, entryPrice):
+def I__SET_STOP_LOSS_LONG(client, symbol, engaged_balance, entryPrice, mode):
     FUNCTION = "I__SET_STOP_LOSS_LONG"
     err_cpt = 0
     ret = 1
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
             price=(1 - (RISK/engaged_balance))*entryPrice
-            client.futures_create_order(symbol=symbol, side=SELL, positionSide=LONG, closeposition=TRUE, stopPrice=round(float(price),0), type=STOP_MARKET, timestamp=client.futures_time())
+            if (mode == HEDGE):
+                client.futures_create_order(symbol=symbol, side=SELL, positionSide=LONG, closeposition=TRUE, stopPrice=round(float(price),0), type=STOP_MARKET, timestamp=client.futures_time())
+            elif (mode == ONE_WAY):
+                client.futures_create_order(symbol=symbol, side=SELL, closeposition=TRUE, stopPrice=round(float(price),0), type=STOP_MARKET, timestamp=client.futures_time())
+            else:
+                ret = 1
+            
             #print(client.futures_get_open_orders(symbol='symbol', timestamp=client.futures_time()))
             #For test purposes
             #ret = 1
@@ -203,14 +209,19 @@ def I__SET_STOP_LOSS_LONG(client, symbol, engaged_balance, entryPrice):
     
     return ret
        
-def I__SET_STOP_LOSS_SHORT(client, symbol, engaged_balance, entryPrice):
+def I__SET_STOP_LOSS_SHORT(client, symbol, engaged_balance, entryPrice, mode):
     FUNCTION = "I__SET_STOP_LOSS_SHORT"
     err_cpt = 0
     ret = 1
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
             price=(1 + (RISK/engaged_balance))*entryPrice
-            client.futures_create_order(symbol=symbol, side=BUY, positionSide=SHORT, closeposition=TRUE, stopPrice=round(float(price),0), type=STOP_MARKET, timestamp=client.futures_time())
+            if (mode == HEDGE):
+                client.futures_create_order(symbol=symbol, side=BUY, positionSide=SHORT, closeposition=TRUE, stopPrice=round(float(price),0), type=STOP_MARKET, timestamp=client.futures_time())
+            elif (mode == ONE_WAY):
+                client.futures_create_order(symbol=symbol, side=BUY, closeposition=TRUE, stopPrice=round(float(price),0), type=STOP_MARKET, timestamp=client.futures_time())
+            else:
+                ret = 1
             #print(client.futures_get_open_orders(symbol='symbol', timestamp=client.futures_time()))
             #For test purposes
             #ret = 1
@@ -408,7 +419,7 @@ def I__OPEN_LONG_FUTURES(client, symbol, leverage, engaged_balance, entryPrice):
                 client.futures_change_position_mode(dualSidePosition=TRUE,timestamp=client.futures_time())
             
             client.futures_change_leverage(symbol=symbol,leverage=leverage,timestamp=client.futures_time())
-
+            
             bin_ret=client.futures_account_balance(timestamp=client.futures_time())
 
             for dic in bin_ret:
@@ -625,7 +636,7 @@ def I__OPEN_SHORT(client, symbol, leverage, engaged_balance, entryPrice):
     
     return ret
 
-def I__MANAGE_STOP_LOSS(client, symbol, engaged_balance, entryPrice, side):
+def I__MANAGE_STOP_LOSS(client, symbol, engaged_balance, entryPrice, side, mode):
     """
     paramètres à récupérer : 
     - engaged_balance
@@ -633,9 +644,9 @@ def I__MANAGE_STOP_LOSS(client, symbol, engaged_balance, entryPrice, side):
     - entryPrice
     """
     if (side == LONG):
-        ret = I__SET_STOP_LOSS_LONG(client, symbol, engaged_balance, entryPrice)
+        ret = I__SET_STOP_LOSS_LONG(client, symbol, engaged_balance, entryPrice, mode)
     elif (side == SHORT):
-        ret = I__SET_STOP_LOSS_SHORT(client, symbol, engaged_balance, entryPrice)
+        ret = I__SET_STOP_LOSS_SHORT(client, symbol, engaged_balance, entryPrice, mode)
     elif (side == OUT):
         ret = I__CLEAR_STOP_LOSS(client, symbol)
     else:

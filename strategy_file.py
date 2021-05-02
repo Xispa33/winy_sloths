@@ -76,6 +76,7 @@ class ApiKeyMaster(ApiKey):
         self.positionAmt = 0
         self.engaged_balance = 0
         self.balance = 0
+        self.account_mode = ONE_WAY 
     
     def computeEngagedBalance(self, line_nb, binance_response):
         """
