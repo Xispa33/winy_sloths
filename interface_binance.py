@@ -653,3 +653,22 @@ def I__MANAGE_STOP_LOSS(client, symbol, engaged_balance, entryPrice, side, mode)
         return 1
     
     return ret
+
+def I__GET_ASSET_BALANCE(client):
+    FUNCTION = "I__GET_ASSET_BALANCE"
+    err_cpt = 0
+    ret = 1
+    
+
+    while (err_cpt < MAX_RETRY) and (ret == 1):
+        try:
+            ret = client.get_asset_balance(asset=USDT)
+        except:
+            ret = 1
+            err_cpt += 1
+            print(FUNCTION)
+            print(sys.exc_info())
+            print(traceback.format_exc())
+            sleep(0.5)
+    
+    return ret

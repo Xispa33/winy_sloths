@@ -137,13 +137,20 @@ class WinySloth:
         else:
             if (master_api.account_type == SPOT):
                 binance_response = binance_response[0]
-                if binance_response[SIDE] == BUY: 
-                    return LONG
-                elif binance_response[SIDE] == SELL:
-                    return OUT
-                else:
-                    #return 1
+                asset_dict = I__GET_ASSET_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))
+                
+                if (not isinstance(asset_dict, dict)):
                     return master_api.side
+                else:
+                    asset_usdt=float(asset_dict[FREE])
+
+                    if binance_response[SIDE] == BUY and round(float(asset_usdt),1) < MIN_WALLET_IN_USDT: 
+                        return LONG
+                    elif binance_response[SIDE] == SELL and round(float(asset_usdt),1) > MIN_WALLET_IN_USDT:
+                        return OUT
+                    else:
+                        #return 1
+                        return master_api.side
                     
             elif (master_api.account_type == FUTURES):
                 if (len(binance_response) > 1):
@@ -500,6 +507,6 @@ class WinySloth:
                         errors.error_messages = "Stop loss of strategy {} was not configured".format(strategy.strategy_file_path)
                         Errors.Errors__SendEmail(errors)
             else:
-                sleep(1)
-                #print("Position up to date\n")
+                sleep(5)
+                print("Position up to date\n")
 
