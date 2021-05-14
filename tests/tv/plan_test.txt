@@ -1,0 +1,9 @@
+Test 1 SPOT: 
+Scénario : 
+    1 - Open long master
+    2 - Vérifier que open long est passé pour le master
+    3 - Vérifier que open long est passé pour le slave
+
+    1 - Close long master
+    2 - Vérifier que close long est passé pour le master
+    3 - Vérifier que close long est passé pour le slave
