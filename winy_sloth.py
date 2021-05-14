@@ -71,6 +71,7 @@ class WinySloth:
                 while (end_time - start_time < 20.0):
                     self.WinySloth__Main()
                     end_time = time.time()
+                print("0")
 
     def WinySloth__ReadArguments(self):
         """

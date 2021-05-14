@@ -8,34 +8,41 @@ from winy_sloth import WinySloth
 from strategy_file import ApiKey, ApiKeyMaster
 from password import API_KEY_SLAVE, API_KEY_SLAVE_SECRET, API_KEY_MASTER, API_KEY_MASTER_SECRET
 import ast
-import ray
-
+import multiprocessing
+from functools import partial
+"""
+try:
+    from pytest_cov.embed import cleanup_on_sigterm
+except ImportError:
+    pass
+else:
+    cleanup_on_sigterm()
+"""
 #python3 -m pytest --junitxml result.xml tests/tu/spot_tests.py -vxk "not test_compute_side"      
 
 PATH = "tests/tv/TEST_SPOT/"
 ACCOUNT_TYPE = SPOT
 
-@ray.remote
-def test_compute_side(account, symbol, wait):
+def test_compute_side(account, symbol, wait, return_dict):
         sleep(wait)
         shell_command = subprocess.run("python3 ./utils/get_account_info.py --keys " + account.api_key + " " + account.api_secret_key + " " + "--type S --symbol " + symbol, shell=True, capture_output=True)
         ret_get_info = ast.literal_eval(shell_command.stdout.decode("utf-8").rstrip('\n'))
         pos = WinySloth.WinySloth__ComputeAccountSide(account, ret_get_info)
-        return pos
+        return_dict[0] = pos
 
-@ray.remote
-def run_winy_sloth_debug(symbol):
-    subprocess.run("python3 --mode debug --folder " + PATH + \
-                   "/TEST_OUT_" + symbol + " main.py", shell=True, capture_output=True)
+def run_winy_sloth_debug(symbol, return_dict):
+    shell_command = subprocess.run("python3 main.py --mode debug --folder " + PATH + \
+                   "/TEST_OUT_" + symbol + "/", shell=True, capture_output=True)
+    ret = ast.literal_eval(shell_command.stdout.decode("utf-8").rstrip('\n'))
+    return_dict[1] = ret
 
-@ray.remote
 def open_long(master_api, account_type, symbol, wait):
     sleep(wait)
     shell_command = subprocess.run("python3 ./utils/open_long.py -k " + master_api.api_key + " " + master_api.api_secret_key + " " + "-t " + account_type + " -s " + symbol, shell=True, capture_output=True)
     ret_open_long = ast.literal_eval(shell_command.stdout.decode("utf-8").rstrip('\n'))
     return ret_open_long
 
-@ray.remote
+
 def close_long(master_api, account_type, symbol, wait):
     sleep(wait)
     shell_command = subprocess.run("python3 ./utils/close_long.py -k " + master_api.api_key + " " + master_api.api_secret_key + " " + "-t " + account_type + " -s " + symbol, shell=True, capture_output=True)
@@ -43,29 +50,50 @@ def close_long(master_api, account_type, symbol, wait):
     return ret_close_long
 
 class TestSpot(unittest.TestCase):
+    
     def test_eth_out(self):
-        ray.init()
-
+        
         symbol = ETHUSDT
+        jobs = []
         master_api = ApiKeyMaster([API_KEY_MASTER, API_KEY_MASTER_SECRET, OUT, ACCOUNT_TYPE, symbol])
+        manager = multiprocessing.Manager()
+        return_dict = manager.dict()
+
+        p = multiprocessing.Process(target=run_winy_sloth_debug, args=([symbol, return_dict]))
+        jobs.append(p)
+        p.start()
+
+        p = multiprocessing.Process(target=test_compute_side, args=([master_api, symbol, 10, return_dict]))
+        jobs.append(p)
+        p.start()
+
+        for proc in jobs:
+            proc.join()
         
-        ret1, ret2 = ray.get([run_winy_sloth_debug.remote(symbol), \
-                              test_compute_side.remote(master_api, symbol, 10)])
-        self.assertEqual(ret2, OUT)
-        
-        ray.shutdown()
+        self.assertEqual(return_dict[0], OUT)
+        self.assertEqual(return_dict[1], 0)
     
     def test_btc_out(self):
-        ray.init()
         
         symbol = BTCUSDT
+        jobs = []
         master_api = ApiKeyMaster([API_KEY_MASTER, API_KEY_MASTER_SECRET, OUT, ACCOUNT_TYPE, symbol])
-        
-        ret1, ret2 = ray.get([run_winy_sloth_debug.remote(symbol), \
-                              test_compute_side.remote(master_api, symbol, 10)])
-        self.assertEqual(ret2, OUT)
+        manager = multiprocessing.Manager()
+        return_dict = manager.dict()
 
-        ray.shutdown()
+        p = multiprocessing.Process(target=run_winy_sloth_debug, args=([symbol, return_dict]))
+        jobs.append(p)
+        p.start()
+
+        p = multiprocessing.Process(target=test_compute_side, args=([master_api, symbol, 10, return_dict]))
+        jobs.append(p)
+        p.start()
+
+        for proc in jobs:
+            proc.join()
+        
+        self.assertEqual(return_dict[0], OUT)
+        self.assertEqual(return_dict[1], 0)
     
     """
     # TEST BTC
@@ -127,3 +155,4 @@ if __name__ == '__main__':
 
 #coverage run -m --source=. pytest --junitxml toto.xml tests/tv/spot_tests.py -vxk "not test_compute_side"
 #coverage report or coverage html
+#coverage run -m pytest tests/tv/spot_tests.py -vxk  "not test_compute_side"; coverage combine; coverage report
