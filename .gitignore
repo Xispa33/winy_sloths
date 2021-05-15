@@ -4,7 +4,5 @@ __pycache__
 docs
 password.py
 STRATEGIES
-tests/tv/TEST_SPOT/TEST_OUT_ETHUSDT/
-tests/tv/TEST_SPOT/TEST_OUT_BTCUSDT/
-tests/tv/TEST_FUTURES/TEST_OUT_ETHUSDT/
-tests/tv/TEST_FUTURES/TEST_OUT_BTCUSDT/
+tests/tv/TEST_SPOT/TEST_OUT_BTCUSDT/btc.txt
+tests/tv/TEST_SPOT/TEST_OUT_BTCUSDT/eth.txt

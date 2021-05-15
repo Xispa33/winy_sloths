@@ -6,13 +6,13 @@ import unittest
 from constants import LONG, SHORT, OUT, BTCUSDT, ETHUSDT, SPOT, FUTURES
 from winy_sloth import WinySloth
 from strategy_file import ApiKey, ApiKeyMaster
-from password import API_KEY_SLAVE, API_KEY_SLAVE_SECRET
+from password import API_KEY_SLAVE, API_KEY_SLAVE_SECRET, API_KEY_MASTER, API_KEY_MASTER_SECRET
 import ast
 #python3 -m pytest --junitxml result.xml tests/tu/spot_tests.py -vxk "not test_compute_side"      
 
 
 def test_compute_side(symbol):
-        master_api = ApiKeyMaster([API_KEY_SLAVE, API_KEY_SLAVE_SECRET, OUT, SPOT, ETHUSDT])
+        master_api = ApiKeyMaster([API_KEY_MASTER, API_KEY_MASTER_SECRET, OUT, SPOT, symbol])
         shell_command = subprocess.run("python3 ./utils/get_account_info.py --keys " + master_api.api_key + " " + master_api.api_secret_key + " " + "--type S --symbol " + symbol, shell=True, capture_output=True)
         ret_get_info = ast.literal_eval(shell_command.stdout.decode("utf-8").rstrip('\n'))
         pos = WinySloth.WinySloth__ComputeAccountSide(master_api, ret_get_info)
@@ -26,7 +26,7 @@ class TestSpot(unittest.TestCase):
     def test_btc_out(self):
         ret = test_compute_side(BTCUSDT)
         self.assertEqual(ret, OUT)
-
+    """
     # TEST BTC
     def test_long_btc(self):
         # INIT
@@ -74,6 +74,6 @@ class TestSpot(unittest.TestCase):
 
         ret = test_compute_side(symbol)
         self.assertEqual(ret, OUT)
-
+    """
 if __name__ == '__main__':
     unittest.main()

@@ -27,6 +27,7 @@ class TestFutures(unittest.TestCase):
         ret = test_compute_side(BTCUSDT)
         self.assertEqual(ret, OUT)
 
+    """
     # TEST BTC
     def test_long_btc(self):
         # INIT
@@ -181,6 +182,6 @@ class TestFutures(unittest.TestCase):
         sl_list = client.futures_get_open_orders(symbol=symbol, timestamp=client.futures_time())
  
         self.assertEqual(len(sl_list), 0)
-
+    """
 if __name__ == '__main__':
     unittest.main()

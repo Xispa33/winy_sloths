@@ -127,7 +127,12 @@ class WinySloth:
         Description : Function that returns all strategy file of a
                       WinySloth object. 
         """
-        return (os.listdir(self.strategies_folder_path))
+        files_list = os.listdir(self.strategies_folder_path)
+        out_list = []
+        for _file in files_list:
+            if (_file[-4] == ".txt"):
+                out_list.append(_file)
+        return (out_list)
     
     def WinySloth__Init(self):
         """
@@ -181,14 +186,16 @@ class WinySloth:
             #return 1
         else:
             if (master_api.account_type == SPOT):
-                binance_response = binance_response[0]
-                if binance_response[SIDE] == BUY: 
-                    return LONG
-                elif binance_response[SIDE] == SELL:
-                    return OUT
-                else:
-                    #return 1
+                if (len(binance_response) == 0):
                     return master_api.side
+                else:
+                    binance_response = binance_response[0]
+                    if binance_response[SIDE] == BUY: 
+                        return LONG
+                    elif binance_response[SIDE] == SELL:
+                        return OUT
+                    else:
+                        return master_api.side
                     
             elif (master_api.account_type == FUTURES):
                 if (len(binance_response) > 1):
