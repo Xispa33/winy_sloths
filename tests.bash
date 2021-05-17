@@ -12,3 +12,6 @@ coverage run -m pytest --junitxml tests/results/tv_spot.xml tests/tv/spot_tests.
 coverage run -m pytest --junitxml tests/results/tv_futures.xml tests/tv/futures_tests.py -vxk "not test_compute_side"
 coverage combine; coverage report
 rm .coverage
+
+#Generate doc
+cd docs; sphinx-apidoc -o . .. ; make html; cd ..
