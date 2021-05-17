@@ -13,5 +13,9 @@ coverage run -m pytest --junitxml tests/results/tv_futures.xml tests/tv/futures_
 coverage combine; coverage report
 rm .coverage
 
-#Generate doc
+# GENERATE DOC
+# DEPENDANCES
+#pip3 install -U sphinx; pip3 install sphinx_rtd_theme;pip3 install sphinx-test-reports
+
 cd docs; sphinx-apidoc -o . .. ; make html; cd ..
+
