@@ -7,6 +7,7 @@ SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
+MODULES_PATH = pages/Modules
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -18,3 +19,4 @@ help:
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	mv constants.rst errors.rst interface_binance.rst main.rst strategy_file.rst winy_sloth.rst ${MODULES_PATH}
