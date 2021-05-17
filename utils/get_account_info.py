@@ -26,7 +26,6 @@ if __name__ == "__main__":
     parser.add_argument("-k", "--keys", nargs='+', type=str, help="API keys")
     parser.add_argument("-t", "--type", type=str, choices=[SPOT, FUTURES, "S", "F"], help="account type")
     parser.add_argument("-s", "--symbol", type=str, choices=[BTCUSDT, ETHUSDT], help="Symbol")
-    parser.add_argument("-m", "--mode", type=str, choices=['n', 'd'], default='d', help="Mode of execution")
     args = parser.parse_args()
 
     account_types_dict = {SPOT:SPOT, "S":SPOT, FUTURES:FUTURES, "F":FUTURES}
@@ -35,11 +34,6 @@ if __name__ == "__main__":
     master_api = ApiKeyMaster([str(args.keys[0]), str(args.keys[1]), OUT, \
                                account_types_dict[args.type], args.symbol])
     client = I__CLIENT(master_api.api_key, master_api.api_secret_key)
-    client.API_URL = 'https://testnet.binance.vision/api'
-    print(client.get_account())
-    #print(client.enable_subaccount_futures())
-    #print(client.get_margin_account())
-    print(client.ping())
     
     #client.API_URL = 'https://testnet.binancefuture.com'
     """ ====================================================================== """

@@ -180,13 +180,13 @@ def I__CLOSE_LONG_SPOT(client, symbol):
     
     return ret
 
-def I__SET_STOP_LOSS_LONG(client, symbol, engaged_balance, entryPrice, mode):
+def I__SET_STOP_LOSS_LONG(client, symbol, engaged_balance, entryPrice, mode, risk=RISK):
     FUNCTION = "I__SET_STOP_LOSS_LONG"
     err_cpt = 0
     ret = 1
     while (err_cpt < MAX_RETRY) and (ret == 1):
         try:
-            price=(1 - (RISK/engaged_balance))*entryPrice
+            price=(1 - (risk/engaged_balance))*entryPrice
             if (mode == HEDGE):
                 client.futures_create_order(symbol=symbol, side=SELL, positionSide=LONG, closeposition=TRUE, stopPrice=round(float(price),0), type=STOP_MARKET, timestamp=client.futures_time())
             elif (mode == ONE_WAY):
@@ -209,7 +209,7 @@ def I__SET_STOP_LOSS_LONG(client, symbol, engaged_balance, entryPrice, mode):
     
     return ret
        
-def I__SET_STOP_LOSS_SHORT(client, symbol, engaged_balance, entryPrice, mode):
+def I__SET_STOP_LOSS_SHORT(client, symbol, engaged_balance, entryPrice, mode, risk=RISK):
     FUNCTION = "I__SET_STOP_LOSS_SHORT"
     err_cpt = 0
     ret = 1
@@ -636,7 +636,7 @@ def I__OPEN_SHORT(client, symbol, leverage, engaged_balance, entryPrice):
     
     return ret
 
-def I__MANAGE_STOP_LOSS(client, symbol, engaged_balance, entryPrice, side, mode):
+def I__MANAGE_STOP_LOSS(client, symbol, engaged_balance, entryPrice, side, mode, risk=RISK):
     """
     paramètres à récupérer : 
     - engaged_balance
@@ -644,9 +644,9 @@ def I__MANAGE_STOP_LOSS(client, symbol, engaged_balance, entryPrice, side, mode)
     - entryPrice
     """
     if (side == LONG):
-        ret = I__SET_STOP_LOSS_LONG(client, symbol, engaged_balance, entryPrice, mode)
+        ret = I__SET_STOP_LOSS_LONG(client, symbol, engaged_balance, entryPrice, mode, risk)
     elif (side == SHORT):
-        ret = I__SET_STOP_LOSS_SHORT(client, symbol, engaged_balance, entryPrice, mode)
+        ret = I__SET_STOP_LOSS_SHORT(client, symbol, engaged_balance, entryPrice, mode, risk)
     elif (side == OUT):
         ret = I__CLEAR_STOP_LOSS(client, symbol)
     else:

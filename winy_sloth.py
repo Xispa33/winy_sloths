@@ -11,6 +11,8 @@ from strategy_file import *
 from interface_binance import *
 from errors import *
 import traceback
+import argparse
+import time
 
 class WinySloth:
     """
@@ -33,8 +35,8 @@ class WinySloth:
     Static
 
     """
-    def __init__(self, strategies_folder_path):
-        self.strategies_folder_path = strategies_folder_path
+    def __init__(self):
+        (self.mode, self.strategies_folder_path) = self.WinySloth__ReadArguments()
         self.strategies_nb = self.WinySloth__FindNbStrategies()
         self.strategies = []
         init_return = self.WinySloth__Init()
@@ -42,27 +44,64 @@ class WinySloth:
             print("Init was not good.\n")
             sys.exit()
         else:
-            print("Init was good.\n")
-            print("There are {} strategies running.\n".format(len(self.strategies)))
-            while (1):
-                try:
-                    self.WinySloth__Main()
-                except:
-                    print("An error occured. An email should have been sent around {}\n".format(str(datetime.now())))
-                    print(sys.exc_info())
-                    print(traceback.format_exc())
-                    with open("errors.txt", "a") as error_file:
-                        errors = Errors()
-                        errors.err_criticity = HIGH_C
-                        error_file.write(Errors.Errors__GetRawExceptionInfo(sys.exc_info()))
-                        error_file.write('\n')
-                        Errors.Errors__SendEmail(errors)
-                        error_file.close()
-                    sleep(2)
-                    self.strategies = []
-                    self.__init__(strategies_folder_path)
-            #self.WinySloth__Main()
+            if (self.mode == RUN):
+                print("Init was good.\n")
+                print("There are {} strategies running.\n".format(len(self.strategies)))
+                while (1):
+                    try:
+                        self.WinySloth__Main()
+                    except:
+                        print("An error occured. An email should have been sent around {}\n".format(str(datetime.now())))
+                        print(sys.exc_info())
+                        print(traceback.format_exc())
+                        with open("errors.txt", "a") as error_file:
+                            errors = Errors()
+                            errors.err_criticity = HIGH_C
+                            error_file.write(Errors.Errors__GetRawExceptionInfo(sys.exc_info()))
+                            error_file.write('\n')
+                            Errors.Errors__SendEmail(errors)
+                            error_file.close()
+                        sleep(2)
+                        self.strategies = []
+                        self.__init__()
+            elif (self.mode == DEBUG):
+                start_time = time.time()
+                end_time = time.time()
 
+                while (end_time - start_time < 20.0):
+                    self.WinySloth__Main()
+                    end_time = time.time()
+                print("0")
+
+    def WinySloth__ReadArguments(self):
+        """
+        Name : WinySloth__ReadArguments()
+    
+        Parameters : 
+    
+        Description : 
+        """
+        mode = ERROR_MODE
+        strat_folder_path = ""
+
+        parser = argparse.ArgumentParser()
+        parser.add_argument("-m", "--mode", type=str, choices=['d', DEBUG, RUN], default='run', help="Mode of Execution")
+        parser.add_argument("-f", "--folder", type=str, default='STRATEGIES', help="Path of the folder containing strategy files")
+        args = parser.parse_args()
+        if (args.mode == 'run'):
+            mode = RUN
+        elif ((args.mode == 'd') or (args.mode == DEBUG)):
+            mode = DEBUG
+        else:
+            mode = ERROR_MODE
+        
+        if (os.path.exists(os.path.join(os.getcwd(), args.folder))):
+            strat_folder_path = args.folder
+        else:
+            strat_folder_path = ERROR_STRATEGY_PATH_FOLDER
+        
+        return (mode, strat_folder_path)
+    
     def WinySloth__FindNbStrategies(self):
         """
         Name : WinySloth__FindNbStrategies()
@@ -72,9 +111,12 @@ class WinySloth:
         Description : Function that returns the number of strategies of a
                       WinySloth object. 
         """
-        shell_command = subprocess.run("ls " + self.strategies_folder_path + " | wc -l", shell=True, capture_output=True)
-        number_files = shell_command.stdout.decode("utf-8").rstrip('\n')
-        return number_files
+        if (self.strategies_folder_path != ERROR_STRATEGY_PATH_FOLDER):
+            shell_command = subprocess.run("ls " + self.strategies_folder_path + " | wc -l", shell=True, capture_output=True)
+            number_files = shell_command.stdout.decode("utf-8").rstrip('\n')
+            return number_files
+        else:
+            return -1
     
     def WinySloth__FindAllStrategiesFiles(self):
         """
@@ -85,7 +127,12 @@ class WinySloth:
         Description : Function that returns all strategy file of a
                       WinySloth object. 
         """
-        return (os.listdir(self.strategies_folder_path))
+        files_list = os.listdir(self.strategies_folder_path)
+        out_list = []
+        for _file in files_list:
+            if (_file[-4] == ".txt"):
+                out_list.append(_file)
+        return (out_list)
     
     def WinySloth__Init(self):
         """
@@ -95,24 +142,27 @@ class WinySloth:
     
         Description : Initialisation of a WinySloth object
         """
-        try:
-            strategies_files_list = self.WinySloth__FindAllStrategiesFiles()
+        if ((self.strategies_nb != -1) and (self.mode != ERROR_MODE)):
+            try:
+                strategies_files_list = self.WinySloth__FindAllStrategiesFiles()
 
-            for strategy in strategies_files_list:
-                strategy_path = self.strategies_folder_path + strategy
-                
-                with open(strategy_path, "r") as strategy_file:
-                    content = strategy_file.readlines()
-                    master_info = content[0].strip('\n').split(" ")
-                    slave_info = content[2:]
-                    strategy_file_object = StrategyFile(strategy_path, master_info, slave_info)
-                    self.strategies.append(strategy_file_object)
-                    strategy_file.close()
-            return 0
-        except:
-            print("An error during the reading of the file occured here line 111. 1\n")
-            print(sys.exc_info())
-            print(traceback.format_exc())
+                for strategy in strategies_files_list:
+                    strategy_path = self.strategies_folder_path + strategy
+                    
+                    with open(strategy_path, "r") as strategy_file:
+                        content = strategy_file.readlines()
+                        master_info = content[0].strip('\n').split(" ")
+                        slave_info = content[2:]
+                        strategy_file_object = StrategyFile(strategy_path, master_info, slave_info)
+                        self.strategies.append(strategy_file_object)
+                        strategy_file.close()
+                return 0
+            except:
+                print("An error during the reading of the file occured here line 111. 1\n")
+                print(sys.exc_info())
+                print(traceback.format_exc())
+                return 1
+        else:
             return 1
     
     @staticmethod
@@ -136,20 +186,15 @@ class WinySloth:
             #return 1
         else:
             if (master_api.account_type == SPOT):
-                binance_response = binance_response[0]
-                asset_dict = I__GET_ASSET_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))
-                
-                if (not isinstance(asset_dict, dict)):
+                if (len(binance_response) == 0):
                     return master_api.side
                 else:
-                    asset_usdt=float(asset_dict[FREE])
-
-                    if binance_response[SIDE] == BUY and round(float(asset_usdt),1) < MIN_WALLET_IN_USDT: 
+                    binance_response = binance_response[0]
+                    if binance_response[SIDE] == BUY: 
                         return LONG
-                    elif binance_response[SIDE] == SELL and round(float(asset_usdt),1) > MIN_WALLET_IN_USDT:
+                    elif binance_response[SIDE] == SELL:
                         return OUT
                     else:
-                        #return 1
                         return master_api.side
                     
             elif (master_api.account_type == FUTURES):
@@ -432,16 +477,16 @@ class WinySloth:
         return 0
     
     @staticmethod
-    def ConfigureStopLoss(client, symbol, account_type, engaged_balance, entryPrice, side, mode=HEDGE):
+    def ConfigureStopLoss(client, symbol, account_type, engaged_balance, entryPrice, side, mode=HEDGE, risk=RISK):
         if ((account_type == SPOT)):
             return 0
         elif (abs(engaged_balance) > 1 and ((side == LONG) or (side == SHORT))) or (side == OUT):
-            ret = I__MANAGE_STOP_LOSS(client, symbol, abs(engaged_balance), entryPrice, side, mode)
+            ret = I__MANAGE_STOP_LOSS(client, symbol, abs(engaged_balance), entryPrice, side, mode, risk)
             return ret
         else:
             return 0
     
-    def WinySloth__Main(self):
+    def WinySloth__Main(self, timeout=0):
         """
         Name : WinySloth__Main()
     

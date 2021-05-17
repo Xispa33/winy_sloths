@@ -4,14 +4,14 @@ name: Winy Sloths Continuous Integration
 
 # Controls when the action will run. 
 on:
-  #push: 
-  #  branches: [ feature/tests ]
+  push: 
+    branches: [ new_feature/tests ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
       version:
         description: WS Version
-        default: v1.0.1
+        default: v1.0.2
         required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -31,6 +31,7 @@ jobs:
           echo ${{ github.repository }}
           cd docs ; sphinx-apidoc -o . .. ; make html; ls; pwd
       
+      # TO UNCOMMENT
       - name: Publish Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -39,7 +40,7 @@ jobs:
 
   sonarcloud:
     name: SonarCloud
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
         with:
