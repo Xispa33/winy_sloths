@@ -16,13 +16,13 @@ from interface_binance import I__CLIENT, \
     I__MANAGE_STOP_LOSS
 from constants import OUT, SPOT, FUTURES, PRICE, \
                       BTCUSDT, ETHUSDT, LONG, SHORT, RISK, \
-                      HEDGE, ONE_WAY
+                      HEDGE, ONE_WAY, BNBUSDT
 from strategy_file import *
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-k", "--keys", nargs='+', type=str, help="API keys")
-    parser.add_argument("-s", "--symbol", type=str, choices=[BTCUSDT, ETHUSDT], help="Symbol")
+    parser.add_argument("-s", "--symbol", type=str, choices=[BTCUSDT, ETHUSDT, BNBUSDT], help="Symbol")
     parser.add_argument("-t", "--type", type=str, choices=[SHORT, LONG], help="Symbol")
     parser.add_argument("-e", "--engaged_balance", type=float, help="Engaged balance", default = 1.0)
     parser.add_argument("-r", "--risk", type=float, help="Risk", default = RISK)

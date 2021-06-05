@@ -17,7 +17,7 @@
 import argparse
 import sys
 from interface_binance import I__CLIENT, I__GET_ACCOUNT_HISTORY, I__SPOT_ACCOUNT_TRADES, I__FUTURES_ACCOUNT_TRADES
-from constants import OUT, SPOT, FUTURES, BTCUSDT, ETHUSDT, PRICE
+from constants import OUT, SPOT, FUTURES, BTCUSDT, ETHUSDT, BNBUSDT, PRICE
 from strategy_file import *
 # A "export PYTHONPATH=$PWD" needs to be done to run these functions
 
@@ -25,7 +25,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-k", "--keys", nargs='+', type=str, help="API keys")
     parser.add_argument("-t", "--type", type=str, choices=[SPOT, FUTURES, "S", "F"], help="account type")
-    parser.add_argument("-s", "--symbol", type=str, choices=[BTCUSDT, ETHUSDT], help="Symbol")
+    parser.add_argument("-s", "--symbol", type=str, choices=[BTCUSDT, ETHUSDT, BNBUSDT], help="Symbol")
     args = parser.parse_args()
 
     account_types_dict = {SPOT:SPOT, "S":SPOT, FUTURES:FUTURES, "F":FUTURES}

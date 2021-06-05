@@ -11,7 +11,7 @@ import ast
 import multiprocessing
 from functools import partial
 
-ACCOUNT_TYPE = SPOT
+ACCOUNT_TYPE = FUTURES
 PATH = "tests/tv/TEST_" + ACCOUNT_TYPE + "/"
 
 def test_compute_side(account, symbol, wait, return_dict, i):
@@ -33,14 +33,19 @@ def open_long(master_api, account_type, symbol, wait, return_dict, i):
     ret_open_long = ast.literal_eval(shell_command.stdout.decode("utf-8").rstrip('\n'))
     return_dict[i] = ret_open_long
 
+def open_short(master_api, account_type, symbol, wait, return_dict, i):
+    sleep(wait)
+    shell_command = subprocess.run("python3 ./utils/open_short.py -k " + master_api.api_key + " " + master_api.api_secret_key + " " + "-t " + account_type + " -s " + symbol, shell=True, capture_output=True)
+    ret_open_short = ast.literal_eval(shell_command.stdout.decode("utf-8").rstrip('\n'))
+    return_dict[i] = ret_open_short
+
 def close_long(master_api, account_type, symbol, wait, return_dict, i):
     sleep(wait)
     shell_command = subprocess.run("python3 ./utils/close_long.py -k " + master_api.api_key + " " + master_api.api_secret_key + " " + "-t " + account_type + " -s " + symbol, shell=True, capture_output=True)
     ret_close_long = ast.literal_eval(shell_command.stdout.decode("utf-8").rstrip('\n'))
     return_dict[i] = ret_close_long
 
-class TestSpot(unittest.TestCase):
-    
+class TestFutures(unittest.TestCase):
     def test_eth_out(self):
         
         symbol = ETHUSDT
@@ -85,14 +90,14 @@ class TestSpot(unittest.TestCase):
         self.assertEqual(return_dict[0], 0)
         self.assertEqual(return_dict[1], OUT)
     
-    """
     # TEST BTC
     def test_long_btc(self):
         # INIT
         symbol = BTCUSDT
         jobs = []
         master_api = ApiKeyMaster([API_KEY_MASTER, API_KEY_MASTER_SECRET, OUT, ACCOUNT_TYPE, symbol])
-        slave_api = ApiKey([API_KEY_SLAVE, API_KEY_SLAVE_SECRET, OUT)
+        #slave_api = ApiKey([API_KEY_SLAVE, API_KEY_SLAVE_SECRET, OUT])
+        slave_api = ApiKeyMaster([API_KEY_SLAVE, API_KEY_SLAVE_SECRET, OUT, ACCOUNT_TYPE, symbol])
         manager = multiprocessing.Manager()
         return_dict = manager.dict()
 
@@ -100,15 +105,15 @@ class TestSpot(unittest.TestCase):
         jobs.append(p)
         p.start()
 
-        p = multiprocessing.Process(target=open_long, args=([master_api, ACCOUNT_TYPE, symbol, 1, return_dict, len(jobs)]))
+        p = multiprocessing.Process(target=open_long, args=([master_api, ACCOUNT_TYPE, symbol, 5, return_dict, len(jobs)]))
         jobs.append(p)
         p.start()
 
-        p = multiprocessing.Process(target=close_long, args=([master_api, ACCOUNT_TYPE, symbol, 10, return_dict, len(jobs)]))
+        p = multiprocessing.Process(target=close_long, args=([master_api, ACCOUNT_TYPE, symbol, 25, return_dict, len(jobs)]))
         jobs.append(p)
         p.start()
 
-        times_s = [5, 15]
+        times_s = [15, 35]
         for time in times_s:
             p = multiprocessing.Process(target=test_compute_side, args=([master_api, symbol, time, return_dict, len(jobs)]))
             jobs.append(p)
@@ -124,19 +129,20 @@ class TestSpot(unittest.TestCase):
         self.assertEqual(return_dict[0], 0)
         self.assertEqual(return_dict[1], 0)
         self.assertEqual(return_dict[2], 0)
-        self.assertEqual(return_dict[1], LONG)
-        self.assertEqual(return_dict[2], LONG)
-        self.assertEqual(return_dict[1], OUT)
-        self.assertEqual(return_dict[2], OUT)
+        self.assertEqual(return_dict[3], LONG)
+        self.assertEqual(return_dict[4], LONG)
+        self.assertEqual(return_dict[5], OUT)
+        self.assertEqual(return_dict[6], OUT)
+        
 
-    
     # TEST ETH
     def test_long_eth(self):
         # INIT
         symbol = ETHUSDT
         jobs = []
         master_api = ApiKeyMaster([API_KEY_MASTER, API_KEY_MASTER_SECRET, OUT, ACCOUNT_TYPE, symbol])
-        slave_api = ApiKey([API_KEY_SLAVE, API_KEY_SLAVE_SECRET, OUT)
+        #slave_api = ApiKey([API_KEY_SLAVE, API_KEY_SLAVE_SECRET, OUT])
+        slave_api = ApiKeyMaster([API_KEY_SLAVE, API_KEY_SLAVE_SECRET, OUT, ACCOUNT_TYPE, symbol])
         manager = multiprocessing.Manager()
         return_dict = manager.dict()
 
@@ -144,15 +150,15 @@ class TestSpot(unittest.TestCase):
         jobs.append(p)
         p.start()
 
-        p = multiprocessing.Process(target=open_long, args=([master_api, ACCOUNT_TYPE, symbol, 1, return_dict, len(jobs)]))
+        p = multiprocessing.Process(target=open_long, args=([master_api, ACCOUNT_TYPE, symbol, 5, return_dict, len(jobs)]))
         jobs.append(p)
         p.start()
 
-        p = multiprocessing.Process(target=close_long, args=([master_api, ACCOUNT_TYPE, symbol, 10, return_dict, len(jobs)]))
+        p = multiprocessing.Process(target=close_long, args=([master_api, ACCOUNT_TYPE, symbol, 25, return_dict, len(jobs)]))
         jobs.append(p)
         p.start()
 
-        times_s = [5, 15]
+        times_s = [15, 35]
         for time in times_s:
             p = multiprocessing.Process(target=test_compute_side, args=([master_api, symbol, time, return_dict, len(jobs)]))
             jobs.append(p)
@@ -168,11 +174,99 @@ class TestSpot(unittest.TestCase):
         self.assertEqual(return_dict[0], 0)
         self.assertEqual(return_dict[1], 0)
         self.assertEqual(return_dict[2], 0)
-        self.assertEqual(return_dict[1], LONG)
-        self.assertEqual(return_dict[2], LONG)
-        self.assertEqual(return_dict[1], OUT)
-        self.assertEqual(return_dict[2], OUT)
-    """
+        self.assertEqual(return_dict[3], LONG)
+        self.assertEqual(return_dict[4], LONG)
+        self.assertEqual(return_dict[5], OUT)
+        self.assertEqual(return_dict[6], OUT)
+    
+    # TEST BTC
+    def test_short_btc(self):
+        # INIT
+        symbol = BTCUSDT
+        jobs = []
+        master_api = ApiKeyMaster([API_KEY_MASTER, API_KEY_MASTER_SECRET, OUT, ACCOUNT_TYPE, symbol])
+        #slave_api = ApiKey([API_KEY_SLAVE, API_KEY_SLAVE_SECRET, OUT])
+        slave_api = ApiKeyMaster([API_KEY_SLAVE, API_KEY_SLAVE_SECRET, OUT, ACCOUNT_TYPE, symbol])
+        manager = multiprocessing.Manager()
+        return_dict = manager.dict()
+
+        p = multiprocessing.Process(target=run_winy_sloth_debug, args=([symbol, return_dict, len(jobs)]))
+        jobs.append(p)
+        p.start()
+
+        p = multiprocessing.Process(target=open_short, args=([master_api, ACCOUNT_TYPE, symbol, 5, return_dict, len(jobs)]))
+        jobs.append(p)
+        p.start()
+
+        p = multiprocessing.Process(target=close_long, args=([master_api, ACCOUNT_TYPE, symbol, 25, return_dict, len(jobs)]))
+        jobs.append(p)
+        p.start()
+
+        times_s = [15, 35]
+        for time in times_s:
+            p = multiprocessing.Process(target=test_compute_side, args=([master_api, symbol, time, return_dict, len(jobs)]))
+            jobs.append(p)
+            p.start()
+
+            p = multiprocessing.Process(target=test_compute_side, args=([slave_api, symbol, time, return_dict, len(jobs)]))
+            jobs.append(p)
+            p.start()
+
+        for proc in jobs:
+            proc.join()
+        
+        self.assertEqual(return_dict[0], 0)
+        self.assertEqual(return_dict[1], 0)
+        self.assertEqual(return_dict[2], 0)
+        self.assertEqual(return_dict[3], SHORT)
+        self.assertEqual(return_dict[4], SHORT)
+        self.assertEqual(return_dict[5], OUT)
+        self.assertEqual(return_dict[6], OUT)
+        
+
+    # TEST ETH
+    def test_short_eth(self):
+        # INIT
+        symbol = ETHUSDT
+        jobs = []
+        master_api = ApiKeyMaster([API_KEY_MASTER, API_KEY_MASTER_SECRET, OUT, ACCOUNT_TYPE, symbol])
+        #slave_api = ApiKey([API_KEY_SLAVE, API_KEY_SLAVE_SECRET, OUT])
+        slave_api = ApiKeyMaster([API_KEY_SLAVE, API_KEY_SLAVE_SECRET, OUT, ACCOUNT_TYPE, symbol])
+        manager = multiprocessing.Manager()
+        return_dict = manager.dict()
+
+        p = multiprocessing.Process(target=run_winy_sloth_debug, args=([symbol, return_dict, len(jobs)]))
+        jobs.append(p)
+        p.start()
+
+        p = multiprocessing.Process(target=open_short, args=([master_api, ACCOUNT_TYPE, symbol, 5, return_dict, len(jobs)]))
+        jobs.append(p)
+        p.start()
+
+        p = multiprocessing.Process(target=close_long, args=([master_api, ACCOUNT_TYPE, symbol, 25, return_dict, len(jobs)]))
+        jobs.append(p)
+        p.start()
+
+        times_s = [15, 35]
+        for time in times_s:
+            p = multiprocessing.Process(target=test_compute_side, args=([master_api, symbol, time, return_dict, len(jobs)]))
+            jobs.append(p)
+            p.start()
+
+            p = multiprocessing.Process(target=test_compute_side, args=([slave_api, symbol, time, return_dict, len(jobs)]))
+            jobs.append(p)
+            p.start()
+
+        for proc in jobs:
+            proc.join()
+        
+        self.assertEqual(return_dict[0], 0)
+        self.assertEqual(return_dict[1], 0)
+        self.assertEqual(return_dict[2], 0)
+        self.assertEqual(return_dict[3], SHORT)
+        self.assertEqual(return_dict[4], SHORT)
+        self.assertEqual(return_dict[5], OUT)
+        self.assertEqual(return_dict[6], OUT)
 if __name__ == '__main__':
     unittest.main()
 
