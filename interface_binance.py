@@ -161,6 +161,8 @@ def I__CLOSE_LONG_SPOT(client, symbol):
         curr_asset = BTC
     elif (symbol == ETHUSDT):
         curr_asset = ETH
+    elif (symbol == BNBUSDT):
+        curr_asset = BNB
     else:
         return 1
 
@@ -168,14 +170,16 @@ def I__CLOSE_LONG_SPOT(client, symbol):
         try:
             price = client.get_avg_price(symbol=symbol)[PRICE]
             asset = round(float(client.get_asset_balance(asset=curr_asset)[FREE])*float(price) - 1,1)
-            client.create_order(symbol=symbol, side=SELL, type=MARKET, quoteOrderQty=asset, timestamp=client.get_server_time())
+            client.create_order(symbol=symbol, side=SELL, type=MARKET, quoteOrderQty=abs(asset), timestamp=client.get_server_time())
             ret = 0
         except:
             ret = 1
             err_cpt += 1
+            
             print(FUNCTION)
             print(sys.exc_info())
             print(traceback.format_exc())
+            
             sleep(0.1)
     
     return ret
@@ -279,6 +283,8 @@ def I__CLOSE_LONG_FUTURES(client, symbol):
     if (symbol == BTCUSDT):
         precision = 3
     elif (symbol == ETHUSDT):
+        precision = 2
+    elif (symbol == BNBUSDT):
         precision = 2
     else:
         return 1
@@ -409,6 +415,8 @@ def I__OPEN_LONG_FUTURES(client, symbol, leverage, engaged_balance, entryPrice):
         precision = 3
     elif (symbol == ETHUSDT):
         precision = 2
+    elif (symbol == BNBUSDT):
+        precision = 2
     else:
         return 1
     
@@ -529,6 +537,8 @@ def I__CLOSE_SHORT(client, symbol, leverage):
         precision = 3
     elif (symbol == ETHUSDT):
         precision = 2
+    elif (symbol == BNBUSDT):
+        precision = 2
     else:
         return 1
 
@@ -598,6 +608,8 @@ def I__OPEN_SHORT(client, symbol, leverage, engaged_balance, entryPrice):
     if (symbol == BTCUSDT):
         precision = 3
     elif (symbol == ETHUSDT):
+        precision = 2
+    elif (symbol == BNBUSDT):
         precision = 2
     else:
         return 1
@@ -672,3 +684,4 @@ def I__GET_ASSET_BALANCE(client):
             sleep(0.5)
     
     return ret
+

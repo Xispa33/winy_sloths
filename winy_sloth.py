@@ -68,7 +68,7 @@ class WinySloth:
                 start_time = time.time()
                 end_time = time.time()
 
-                while (end_time - start_time < 20.0):
+                while (end_time - start_time < 40.0):
                     self.WinySloth__Main()
                     end_time = time.time()
                 print("0")
@@ -130,7 +130,7 @@ class WinySloth:
         files_list = os.listdir(self.strategies_folder_path)
         out_list = []
         for _file in files_list:
-            if (_file[-4] == ".txt"):
+            if (_file[-4:] == ".txt"):
                 out_list.append(_file)
         return (out_list)
     
@@ -432,31 +432,23 @@ class WinySloth:
                         ret_update_slave = 1
                         update_list[idx - 1] = 0
                         
-                        ret_stop_loss_slave = WinySloth.ConfigureStopLoss(I__CLIENT(slave.api_key, slave.api_secret_key),
-                                                    strategy.master_api.symbol, \
-                                                    strategy.master_api.account_type, \
-                                                    strategy.master_api.engaged_balance, \
-                                                    strategy.master_api.entryPrice, \
-                                                    strategy.master_api.side)
-                        if (ret_stop_loss_slave == 0):
-                            ret_stop_loss_slave = 1
-                            update_list_stop_loss[idx - 1] = 0
-                        else:
-                            update_list_stop_loss[idx - 1] = 1
                     else:
                         update_list[idx - 1] = 1
-                        errors = Errors()
-                        errors.err_criticity = HIGH_C
-                        errors.error_messages = "Slave {} of strategy {} was not updated successfully".format(idx, strategy.strategy_file_path)
-                        Errors.Errors__SendEmail(errors)
+                        if (self.mode != DEBUG):
+                            errors = Errors()
+                            errors.err_criticity = HIGH_C
+                            errors.error_messages = "Slave {} of strategy {} was not updated successfully".format(idx, strategy.strategy_file_path)
+                            Errors.Errors__SendEmail(errors)
                         
                 else:
-                    #send mail
-                    errors = Errors()
-                    errors.err_criticity = HIGH_C
-                    errors.error_messages = "Trade function returned an error for slave {} of strategy {}".format(idx, strategy.strategy_file_path)
-                    Errors.Errors__SendEmail(errors)
                     update_list[idx - 1] = 1
+                    if (self.mode != DEBUG):
+                        #send mail
+                        errors = Errors()
+                        errors.err_criticity = HIGH_C
+                        errors.error_messages = "Trade function returned an error for slave {} of strategy {}".format(idx, strategy.strategy_file_path)
+                        Errors.Errors__SendEmail(errors)
+                        
             else:
                 update_list[idx - 1] = 0
             
@@ -466,13 +458,6 @@ class WinySloth:
         for out_slave in update_list:
             if out_slave == 1:
                 return 1
-        
-        for i in range(0,len(update_list_stop_loss)):
-            if update_list_stop_loss[i] == 1:
-                errors = Errors()
-                errors.err_criticity = MEDIUM_C
-                errors.error_messages = "Stop loss of strategy {} was not configured for slave {}".format(strategy.strategy_file_path, i)
-                Errors.Errors__SendEmail(errors)
         
         return 0
     
@@ -500,7 +485,6 @@ class WinySloth:
         for strategy in self.strategies:
             ret_update_master = 1
             ret_update_slave = 1
-            ret_stop_loss_master = 1
             binance_return = I__GET_ACCOUNT_HISTORY(I__CLIENT(strategy.master_api.api_key, \
                                                     strategy.master_api.api_secret_key), \
                                                     strategy.master_api.account_type, strategy.master_api.symbol)
@@ -508,17 +492,11 @@ class WinySloth:
             strategy_current_side = WinySloth.WinySloth__ComputeAccountSide(strategy.master_api, binance_return)
             if (strategy_current_side != strategy.master_api.side):
                 #print("Position not up to date")
-                print("Binance return = ")
-                print(binance_return)
-                print("New position computed = ")
-                print(strategy_current_side)
-                ret_stop_loss_master = WinySloth.ConfigureStopLoss(I__CLIENT(strategy.master_api.api_key, \
-                                                    strategy.master_api.api_secret_key),
-                                                    strategy.master_api.symbol, \
-                                                    strategy.master_api.account_type, \
-                                                    strategy.master_api.engaged_balance, \
-                                                    strategy.master_api.entryPrice, \
-                                                    strategy_current_side, strategy.master_api.account_mode)
+                if (self.mode != DEBUG):
+                    print("Binance return = ")
+                    print(binance_return)
+                    print("New position computed = ")
+                    print(strategy_current_side)
 
                 ret_update_master = self.WinySloth__UpdateMaster(strategy, strategy_current_side)
                 
@@ -526,31 +504,29 @@ class WinySloth:
                 if (ret_update_master == 0):
                     ret_update_slave = self.WinySloth__SlaveManagement(strategy)
                     if (ret_update_slave == 0):
-                        #sendemail
-                        errors = Errors()
-                        errors.err_criticity = INFO_C
-                        errors.error_messages = "Master + Slave update successful of strategy : {}".format(strategy.strategy_file_path)
-                        Errors.Errors__SendEmail(errors)
+                        if (self.mode != DEBUG):
+                            #sendemail
+                            errors = Errors()
+                            errors.err_criticity = INFO_C
+                            errors.error_messages = "Master + Slave update successful of strategy : {}".format(strategy.strategy_file_path)
+                            Errors.Errors__SendEmail(errors)
                     else:
+                        if (self.mode != DEBUG):
+                            #sendemail
+                            errors = Errors()
+                            errors.err_criticity = HIGH_C
+                            errors.error_messages = "Slave update unsuccessful of strategy : {}".format(strategy.strategy_file_path)
+                            Errors.Errors__SendEmail(errors)
+                            sys.exit()
+                else:
+                    if (self.mode != DEBUG):
                         #sendemail
                         errors = Errors()
                         errors.err_criticity = HIGH_C
-                        errors.error_messages = "Slave update unsuccessful of strategy : {}".format(strategy.strategy_file_path)
+                        errors.error_messages = "Master update unsuccessful of strategy : {}".format(strategy.strategy_file_path)
                         Errors.Errors__SendEmail(errors)
                         sys.exit()
-                else:
-                    #sendemail
-                    errors = Errors()
-                    errors.err_criticity = HIGH_C
-                    errors.error_messages = "Master update unsuccessful of strategy : {}".format(strategy.strategy_file_path)
-                    Errors.Errors__SendEmail(errors)
-                    sys.exit()
-                
-                if (ret_stop_loss_master == 1):
-                        errors = Errors()
-                        errors.err_criticity = MEDIUM_C
-                        errors.error_messages = "Stop loss of strategy {} was not configured".format(strategy.strategy_file_path)
-                        Errors.Errors__SendEmail(errors)
+
             else:
                 sleep(1)
                 #print("Position up to date\n")

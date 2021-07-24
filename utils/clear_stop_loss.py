@@ -13,13 +13,13 @@ import argparse
 import sys
 from interface_binance import I__CLIENT, \
     I__CLEAR_STOP_LOSS
-from constants import FUTURES, OUT, BTCUSDT, ETHUSDT
+from constants import FUTURES, OUT, BTCUSDT, ETHUSDT, BNBUSDT
 from strategy_file import *
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-k", "--keys", nargs='+', type=str, help="API keys")
-    parser.add_argument("-s", "--symbol", type=str, choices=[BTCUSDT, ETHUSDT], help="Symbol")
+    parser.add_argument("-s", "--symbol", type=str, choices=[BTCUSDT, ETHUSDT, BNBUSDT], help="Symbol")
     args = parser.parse_args()
 
     """ Init of the master """
