@@ -50,11 +50,7 @@ Les comptes de type SPOT et FUTURES sont testés.
 Résultats de test
 -----------------
 
-<<<<<<< HEAD
 .. test-results:: pages/tu_spot.xml
-=======
-.. test-results:: ../tests/results/tu_spot.xml
->>>>>>> 1240b19aa7074ac82e66c5b09d8bd24f1d25c16a
 
 * FUTURES
 
@@ -115,11 +111,7 @@ Résultats de test
 Résultats de test
 -----------------
 
-<<<<<<< HEAD
 .. test-results:: pages/tu_futures.xml
-=======
-.. test-results:: ../tests/results/tu_futures.xml
->>>>>>> 1240b19aa7074ac82e66c5b09d8bd24f1d25c16a
 
 
 Tests de validation
