@@ -65,6 +65,8 @@ class WinySloth:
                         self.strategies = []
                         self.__init__()
             elif (self.mode == DEBUG):
+                print("There are {} strategies running.\n".format(len(self.strategies)))
+                
                 start_time = time.time()
                 end_time = time.time()
 
@@ -147,7 +149,7 @@ class WinySloth:
                 strategies_files_list = self.WinySloth__FindAllStrategiesFiles()
 
                 for strategy in strategies_files_list:
-                    strategy_path = self.strategies_folder_path + strategy
+                    strategy_path = self.strategies_folder_path + '/' + strategy
                     
                     with open(strategy_path, "r") as strategy_file:
                         content = strategy_file.readlines()
@@ -189,13 +191,20 @@ class WinySloth:
                 if (len(binance_response) == 0):
                     return master_api.side
                 else:
-                    binance_response = binance_response[0]
-                    if binance_response[SIDE] == BUY: 
-                        return LONG
-                    elif binance_response[SIDE] == SELL:
-                        return OUT
-                    else:
+                    asset_dict = I__GET_ASSET_BALANCE(I__CLIENT(master_api.api_key, master_api.api_secret_key))
+                
+                    if (not isinstance(asset_dict, dict)):
                         return master_api.side
+                    else:
+                        binance_response = binance_response[0]
+                        asset_usdt=float(asset_dict[FREE])
+
+                        if binance_response[SIDE] == BUY and round(float(asset_usdt),1) < MIN_WALLET_IN_USDT: 
+                            return LONG
+                        elif binance_response[SIDE] == SELL and round(float(asset_usdt),1) > MIN_WALLET_IN_USDT:
+                            return OUT
+                        else:
+                            return master_api.side
                     
             elif (master_api.account_type == FUTURES):
                 if (len(binance_response) > 1):
