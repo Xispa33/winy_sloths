@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["--mode", "run", "--folder", "$PWD/STRATEGIES"]
+            "args": ["--mode", "run", "--folder", "$PWD/strategies"]
         }
     ]
 }

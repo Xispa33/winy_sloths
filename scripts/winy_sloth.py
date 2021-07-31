@@ -88,7 +88,7 @@ class WinySloth:
 
         parser = argparse.ArgumentParser()
         parser.add_argument("-m", "--mode", type=str, choices=['d', DEBUG, RUN], default='run', help="Mode of Execution")
-        parser.add_argument("-f", "--folder", type=str, default='STRATEGIES', help="Path of the folder containing strategy files")
+        parser.add_argument("-f", "--folder", type=str, default='strategies', help="Path of the folder containing strategy files")
         args = parser.parse_args()
         if (args.mode == 'run'):
             mode = RUN
