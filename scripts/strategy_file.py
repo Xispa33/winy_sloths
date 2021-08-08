@@ -7,125 +7,97 @@ from binance.client import Client
 from interface_binance import *
 from constants import *
 from errors import *
+from cep_binance import *
+from cep_coinbase import *
 
 class ApiKey:
     """
     A class used to gather all important information about an API key
+    
     Attributes
     ----------
-    api_key : list
+    exchange_platform_name : str
+        Name of the exchange platform linked to the API key
+    
+    _api_key : list
         Api key
     
-    api_secret_key : str
+    _api_secret_key : str
         Api key secret code
+    
+    exchange_platform_obj : CryptoExchangePlatform
+        Crypto exchange platform object
+    
+    Methods
+    -------
+    find_exchange_platform_class()
+    
+    """
+    def __init__(self, info_strategy_file):
+        self.exchange_platform_name = info_strategy_file[ \
+                                    OFFSET_EXCHANGE_PLATFORM]
+        self._api_key = info_strategy_file[OFFSET_API_KEY]
+        self._api_secret_key = info_strategy_file[ \
+                                        OFFSET_API_SECRET_KEY]
+
+        self.exchange_platform_obj = self.find_exchange_platform_class()
+
+    def find_exchange_platform_class(self):
+        klass = globals()[CEP + self.exchange_platform_name]
+        return klass()
+        
+        
+class Account():
+    """
+    Description :
+        A class used to represent an account on a 
+        crypto exchange platform. Either a slave or a 
+        master, but this is an abstract class.
+
+    Attributes
+    ----------
+    api_key : ApiKey
+        Account API key basic information
+    
+    account_rtype : str
+        Type of the account. Either master or slave
     
     side : str
         Account side. Can be either LONG/SHORT/OUT
     
     Methods
     -------
-    
+    close_long()
+    close_short()
+    open_long()
+    open_short()
+    open_long_from_short()
+    open_short_from_long()
     """
-    def __init__(self, info_strategy_file):
-        self.api_key = info_strategy_file[0]
-        self.api_secret_key = info_strategy_file[1]
-        self.side = info_strategy_file[2]
-
-
-class ApiKeyMaster(ApiKey):
-    """
-    A class used to represent a master' account
-    Attributes
-    ----------
-    account_type : str
-        Account type. Either SPOT or FUTURES
-    
-    symbol : str
-        Symbol traded
-    
-    markPrice : int
-        Mark price
-    
-    entryPrice : int
-        Entry price
-    
-    leverage : int
-        Leverage
-    
-    positionAmt : int
-        Position amount
-    
-    engaged_balance : int
-        Engaged balance
-    
-    balance : int
-        Balance
-
-    Methods
-    -------
-    computeEngagedBalance(line_nb, binance_response)
-    
-    """
-    def __init__(self, info_strategy_file):
-        super().__init__(info_strategy_file)
-        self.account_type = info_strategy_file[3]
-        self.symbol = info_strategy_file[4]
+    def __init__(self, info_strategy_file, rtype=None, account_contract_type=None, symbol=None):
+        #super().__init__(info_strategy_file)
+        self.api_key = ApiKey(info_strategy_file)
+        self.account_rtype = rtype if rtype != None else ""
+        self.side = info_strategy_file[OFFSET_SIDE]
+        
+        if (self.account_rtype == MASTER):
+            #CASE WHERE MASTER IS INITIALIZING
+            self.account_contract_type = info_strategy_file[OFFSET_ACCOUNT_TYPE]
+            self.symbol = info_strategy_file[OFFSET_SYMBOL]
+        else:
+            #CASE WHERE SLAVE IS INITIALIZING
+            self.account_contract_type = account_contract_type
+            self.symbol = symbol
+        
         self.markPrice = 0
         self.entryPrice = 0
         self.leverage = 0
         self.positionAmt = 0
         self.engaged_balance = 0
         self.balance = 0
-        self.account_mode = ONE_WAY 
+        self.account_mode = ONE_WAY
     
-    def computeEngagedBalance(self, line_nb, binance_response):
-        """
-        Name : computeEngagedBalance(line_nb, binance_response)
-    
-        Parameters : 
-                      line_nb : int
-                        Line number in winy_sloth.py that called computeEngagedBalance()
-                      
-                      binance_response : list
-                        List provided by Binance about the master' information
-        
-        Description : Function that returns the amount in % of the wallet
-                      in the trade
-        """
-        if (self.balance != 0):
-            self.engaged_balance = (self.positionAmt * self.entryPrice/self.balance)
-            return 0
-        else:
-            print("Problem at line {}. WS should be restarting".format(line_nb))
-            print(binance_response)
-            print(I__GET_FUTURES_ACCOUNT_BALANCE(I__CLIENT(self.api_key, self.api_secret_key)))
-            #self.engaged_balance = (self.positionAmt * self.entryPrice/self.balance)
-            return 1
-        
-
-class ApiKeySlave(ApiKey):
-    """
-    A class used to represent a slave' account
-    
-    Attributes
-    ----------
-    api_key : list
-        Api key
-    
-    api_secret_key : str
-        Api key secret code
-    
-    side : str
-        Account side. Can be either LONG/SHORT/OUT
-    
-    Methods
-    -------
-    
-    """
-    def __init__(self, info_strategy_file):
-        super().__init__(info_strategy_file)
-
-    def close_long(self, master_api):
+    def close_long(self):
         """
         Name : close_long(master_api)
     
@@ -135,10 +107,11 @@ class ApiKeySlave(ApiKey):
     
         Description : Function that closes an opened long trade
         """
-        client = I__CLIENT(self.api_key, self.api_secret_key)
-        return I__CLOSE_LONG(client, master_api)
+        client = self.api_key.exchange_platform_obj.CEP__CLIENT( \
+                                    self.api_key._api_key, self.api_key._api_secret_key)
+        return self.api_key.exchange_platform_obj.CEP__CLOSE_LONG(client)
 
-    def close_short(self, master_api):
+    def close_short(self):
         """
         Name : close_short(master_api)
     
@@ -148,10 +121,12 @@ class ApiKeySlave(ApiKey):
     
         Description : Function that closes an opened short trade
         """
-        client = I__CLIENT(self.api_key, self.api_secret_key)
-        return I__CLOSE_SHORT(client, master_api.symbol, master_api.leverage)
+        client = self.api_key.exchange_platform_obj.CEP__CLIENT( \
+                                    self.api_key._api_key, self.api_key._api_secret_key)
+        return self.api_key.exchange_platform_obj.CEP__CLOSE_SHORT( \
+                                    client, self.symbol, self.leverage)
 
-    def open_long(self, master_api):
+    def open_long(self):
         """
         Name : open_long(master_api)
     
@@ -161,10 +136,10 @@ class ApiKeySlave(ApiKey):
     
         Description : Function that opens a long trade
         """
-        client = I__CLIENT(self.api_key, self.api_secret_key)
-        return I__OPEN_LONG(client, master_api)
+        client = self.api_key.exchange_platform_obj.CEP__CLIENT(self.api_key._api_key, self.api_key._api_secret_key)
+        return self.api_key.exchange_platform_obj.CEP__OPEN_LONG(client, self)
 
-    def open_short(self, master_api):
+    def open_short(self):
         """
         Name : open_short(master_api)
     
@@ -174,10 +149,14 @@ class ApiKeySlave(ApiKey):
     
         Description : Function that opens a short trade
         """
-        client = I__CLIENT(self.api_key, self.api_secret_key)
-        return I__OPEN_SHORT(client, master_api.symbol, master_api.leverage, master_api.engaged_balance, master_api.entryPrice)
+        client = self.api_key.exchange_platform_obj.CEP__CLIENT( \
+                                    self.api_key._api_key, self.api_key._api_secret_key)
+        return self.api_key.exchange_platform_obj.CEP__OPEN_SHORT(client, self.symbol, \
+                                                        self.leverage, \
+                                                        self.engaged_balance, \
+                                                        self.entryPrice)
     
-    def open_long_from_short(self, master_api):
+    def open_long_from_short(self):
         """
         Name : open_long_from_short(master_api)
     
@@ -187,12 +166,12 @@ class ApiKeySlave(ApiKey):
     
         Description : Function that opens a long trade from a short trade
         """
-        if (not self.close_short(master_api)):
-            return self.open_long(master_api)
+        if (not self.close_short()):
+            return self.open_long()
         else:
             return 1
 
-    def open_short_from_long(self, master_api):
+    def open_short_from_long(self):
         """
         Name : open_short_from_long(master_api)
     
@@ -202,36 +181,73 @@ class ApiKeySlave(ApiKey):
     
         Description : Function that opens a short trade from a long trade
         """
-        if (not self.close_long(master_api)):
-            return self.open_short(master_api)
+        if (not self.close_long()):
+            return self.open_short()
         else:
             return 1
+        
+
+class SlaveAccount(Account):
+    """
+    Description :
+        A class used to represent a slave's account. Inherits from Account class
     
+    Attributes
+    ----------
+
+    Methods
+    -------
+    
+    """
+    def __init__(self, info_strategy_file, account_contract_type, symbol):
+        super().__init__(info_strategy_file, rtype=SLAVE, \
+                    account_contract_type=account_contract_type, \
+                    symbol=symbol)
+
+class MasterAccount(Account):
+    """
+    Description :
+        A class used to represent a master's account. Inherits from Account class
+    
+    Attributes
+    ----------
+
+    Methods
+    -------
+    
+    """
+    def __init__(self, info_strategy_file):
+        super().__init__(info_strategy_file, rtype=MASTER)
+
 class StrategyFile:
     """
-    A class used to represent a strategy file
+    Description : 
+        A class gathering all information about a strategy file
+
     Attributes
     ----------
     strategy_file_path : str
-        Path of the folder containing all strategies
+        Path of the strategy file
     
-    master_api : ApiKeyMaster
-        Api key of the master
+    master_api : MasterAccount
+        MasterAccount object representing the master of a strategy
     
     slave_apis : list
-        List of ApiKeySlave, containing all slave for a strategy
-    
+        List containing all SlaveAccount of a strategy.
+        SlaveAccount represents a slave of a strategy. 
+
     Methods
     -------
-    StrategyFile__InitSlaves(info_strategy_file_slave)
+    StrategyFile__InitSlaves()
+
     """
     def __init__(self, strategy_file_path, info_strategy_file_master, info_strategy_file_slave):
         self.strategy_file_path = strategy_file_path
-        self.master_api = ApiKeyMaster(info_strategy_file_master)
-        self.slave_apis = self.StrategyFile__InitSlaves(info_strategy_file_slave)
-        self.global_slave_status = 0
+        self.master_api = MasterAccount(info_strategy_file_master)
+        self.slave_apis = self.StrategyFile__InitSlaves(info_strategy_file_slave, \
+                            self.master_api.account_contract_type, self.master_api.symbol)
 
-    def StrategyFile__InitSlaves(self, info_strategy_file_slave):
+    def StrategyFile__InitSlaves(self, info_strategy_file_slave, account_contract_type, symbol):
         """
         Name : StrategyFile__InitSlaves(info_strategy_file_slave)
     
@@ -246,6 +262,7 @@ class StrategyFile:
         slaves_list = []
 
         for slaves in info_strategy_file_slave:
-            slaves_list.append(ApiKeySlave(slaves.strip('\n').split(" ")))
+            slaves_list.append(SlaveAccount(slaves.strip('\n').split(" "), \
+                                account_contract_type, symbol))
 
         return slaves_list
