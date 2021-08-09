@@ -372,7 +372,8 @@ class WinySloth:
         for slave in strategy.slave_apis:
             side_possibilities_dict = {(OUT,LONG):slave.close_long, (OUT,SHORT):slave.close_short, \
                                        (LONG,OUT):slave.open_long, (SHORT,OUT):slave.open_short, \
-                                       (LONG,SHORT):slave.open_long_from_short, (SHORT,LONG):slave.open_short_from_long}
+                                       (LONG,SHORT):slave.open_long_from_short, \
+                                       (SHORT,LONG):slave.open_short_from_long}
             
             if (slave.side != strategy.master_api.side):
                 exec_trade_function = side_possibilities_dict[strategy.master_api.side, slave.side]()

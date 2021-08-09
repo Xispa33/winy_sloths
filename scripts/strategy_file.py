@@ -8,7 +8,7 @@ from interface_binance import *
 from constants import *
 from errors import *
 from cep_binance import *
-from cep_coinbase import *
+#from cep_coinbase import *
 
 class ApiKey:
     """
@@ -109,7 +109,8 @@ class Account():
         """
         client = self.api_key.exchange_platform_obj.CEP__CLIENT( \
                                     self.api_key._api_key, self.api_key._api_secret_key)
-        return self.api_key.exchange_platform_obj.CEP__CLOSE_LONG(client)
+        return self.api_key.exchange_platform_obj.CEP__CLOSE_LONG( \
+                                    client, self.account_contract_type, self.symbol)
 
     def close_short(self):
         """
@@ -124,7 +125,7 @@ class Account():
         client = self.api_key.exchange_platform_obj.CEP__CLIENT( \
                                     self.api_key._api_key, self.api_key._api_secret_key)
         return self.api_key.exchange_platform_obj.CEP__CLOSE_SHORT( \
-                                    client, self.symbol, self.leverage)
+                                    client, self.symbol)
 
     def open_long(self):
         """

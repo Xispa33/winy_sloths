@@ -173,7 +173,7 @@ class CryptoExchangePlatform(ABC):
                                 retry=MAX_RETRY*100, \
                                 retry_period=0.1)
 
-    def CEP__CLOSE_LONG(self, client, master_api):
+    def CEP__CLOSE_LONG(self, client, account_contract_type, symbol):
         """
         Name : I__CLOSE_LONG()
         
@@ -190,10 +190,10 @@ class CryptoExchangePlatform(ABC):
                     to connect to Binance server.
         """
         self.called_function_name="CEP__CLOSE_LONG"
-        if (master_api.account_contract_type == SPOT):
-            ret = self.CEP__CLOSE_LONG_SPOT(client, master_api.symbol)
-        elif (master_api.account_contract_type == FUTURES):
-            ret = self.CEP__CLOSE_LONG_FUTURES(client, master_api.symbol)
+        if (account_contract_type == SPOT):
+            ret = self.CEP__CLOSE_LONG_SPOT(client, symbol)
+        elif (account_contract_type == FUTURES):
+            ret = self.CEP__CLOSE_LONG_FUTURES(client, symbol)
         else:
             ret = 1
             
@@ -238,13 +238,13 @@ class CryptoExchangePlatform(ABC):
     
 
     @abstractmethod
-    def cep__close_short(self, client, symbol, leverage): pass
+    def cep__close_short(self, client, symbol): pass
 
-    def CEP__CLOSE_SHORT(self, client, symbol, leverage):
+    def CEP__CLOSE_SHORT(self, client, symbol):
         self.called_function_name="CEP__CLOSE_SHORT"
         return self.CEP__BaseFunction(functools.partial( \
                             self.cep__close_short, client, \
-                            symbol, leverage), retry=MAX_RETRY*100, \
+                            symbol), retry=MAX_RETRY*100, \
                             retry_period=0.1)
 
 

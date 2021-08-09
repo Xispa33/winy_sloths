@@ -141,8 +141,7 @@ class CEP__Binance(CryptoExchangePlatform):
         
         return 0
 
-    #TODO: PARAM leverage unused
-    def cep__close_short(self, client, symbol, leverage):
+    def cep__close_short(self, client, symbol):
         self.called_function_name="cep__close_short"
         last_trade = []
         precision = ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
@@ -321,7 +320,7 @@ class CEP__Binance(CryptoExchangePlatform):
                     account.balance = float(self.CEP__GET_FUTURES_ACCOUNT_BALANCE( \
                                             self.CEP__CLIENT(account.api_key._api_key, \
                                             account.api_key._api_secret_key))[BALANCE])
-                    ret = account.computeEngagedBalance(binance_response)
+                    ret = self.cep__compute_engaged_balance(account, binance_response)
                     if ret == 1:
                         return OUT
                     else:
@@ -338,7 +337,7 @@ class CEP__Binance(CryptoExchangePlatform):
                     account.balance = float(self.CEP__GET_FUTURES_ACCOUNT_BALANCE( \
                                             self.CEP__CLIENT(account.api_key._api_key, \
                                             account.api_key._api_secret_key))[BALANCE])
-                    ret = account.computeEngagedBalance(binance_response)
+                    ret = self.cep__compute_engaged_balance(account, binance_response)
                     if ret == 1:
                         return OUT
                     else:
@@ -361,7 +360,7 @@ class CEP__Binance(CryptoExchangePlatform):
                 else:
                     account.balance = float(bin_ret[BALANCE])
                 
-                ret = account.computeEngagedBalance(binance_response)
+                ret = self.cep__compute_engaged_balance(account, binance_response)
                 
                 if (account.positionAmt == float(0) or ret == 1):
                     return OUT
@@ -384,5 +383,3 @@ class CEP__Binance(CryptoExchangePlatform):
                                 account.exchange_platform_obj.CEP__CLIENT( \
                                 account.api_key._api_key, account.api_key._api_secret_key))))
             return 1
-
-        
