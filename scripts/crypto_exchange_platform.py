@@ -70,6 +70,7 @@ class CryptoExchangePlatform(ABC):
     def __init__(self):
         self.name = ""
         self.called_function_name = ""
+        self.ALL_SYMBOLS_DICT = {BTCUSDT:(BTC,3), ETHUSDT:(ETH,2), BNBUSDT:(BNB,2)}
     
     def get_called_function_name(self):
         return (self.called_function_name + "_" + self.name)
@@ -101,7 +102,6 @@ class CryptoExchangePlatform(ABC):
         return self.CEP__BaseFunction(functools.partial(self.cep__client, \
                             api_key, api_secret_key), \
                             retry=MAX_RETRY*4)
-
 
     @abstractmethod
     def cep__futures_account_trades(self, client, symbol): pass
@@ -262,6 +262,7 @@ class CryptoExchangePlatform(ABC):
     
 
     @abstractmethod
+    #PLATFORM SPECIFIC
     def cep__get_futures_account_balance(self, client): pass
 
     def CEP__GET_FUTURES_ACCOUNT_BALANCE(self, client):
@@ -272,6 +273,7 @@ class CryptoExchangePlatform(ABC):
 
 
     @abstractmethod
+    #PLATFORM SPECIFIC
     def cep__get_asset_balance(self, client): pass
 
     def CEP__GET_ASSET_BALANCE(self, client):
@@ -361,6 +363,7 @@ class CryptoExchangePlatform(ABC):
     
 
     @abstractmethod
+    #PLATFORM SPECIFIC
     def cep__compute_engaged_balance(self, account, cep_response): pass
     
     def CEP__COMPUTE_ENGAGED_BALANCE(self, account, cep_response):

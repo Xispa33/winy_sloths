@@ -4,11 +4,9 @@
 import os
 import sys
 from binance.client import Client
-from interface_binance import *
 from constants import *
 from errors import *
 from cep_binance import *
-#from cep_coinbase import *
 
 class ApiKey:
     """

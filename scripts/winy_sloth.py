@@ -8,7 +8,6 @@ from time import *
 from datetime import *
 from constants import *
 from strategy_file import *
-from interface_binance import *
 from crypto_exchange_platform import *
 from errors import *
 import traceback

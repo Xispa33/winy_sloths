@@ -2,7 +2,6 @@ __pycache__
 .DS_Store
 *.pyc
 docs
-scripts/password.py
 strategies
 tests/tv/TEST_SPOT/TEST_OUT_BTCUSDT
 tests/tv/TEST_SPOT/TEST_OUT_BTCUSDT

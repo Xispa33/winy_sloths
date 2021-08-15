@@ -62,7 +62,7 @@ class CEP__Binance(CryptoExchangePlatform):
 
     def cep__close_long_spot(self, client, symbol):
         self.called_function_name="cep__close_long_spot"
-        curr_asset = ALL_SYMBOLS_DICT[symbol][ASSET_IDX]
+        curr_asset = self.ALL_SYMBOLS_DICT[symbol][ASSET_IDX]
         price = client.get_avg_price(symbol=symbol)[PRICE]
         asset = round(float(client.get_asset_balance( \
                         asset=curr_asset)[FREE])*float(price) - 1,1)
@@ -74,7 +74,7 @@ class CEP__Binance(CryptoExchangePlatform):
     def cep__close_long_futures(self, client, symbol):
         self.called_function_name="cep__close_long_futures"
         last_trade = []
-        precision = ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
+        precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
 
         if last_trade == []:
             last_trade = self.CEP__FUTURES_ACCOUNT_TRADES(client, symbol)
@@ -111,7 +111,7 @@ class CEP__Binance(CryptoExchangePlatform):
                                 engaged_balance, entryPrice):
         self.called_function_name="cep__open_long_futures"
 
-        precision = ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
+        precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
         ret = client.futures_position_information(symbol=symbol, \
                                                   timestamp=client.futures_time())
         if (len(ret) == 1):
@@ -144,7 +144,7 @@ class CEP__Binance(CryptoExchangePlatform):
     def cep__close_short(self, client, symbol):
         self.called_function_name="cep__close_short"
         last_trade = []
-        precision = ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
+        precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
 
         if last_trade == []:
             last_trade = self.CEP__FUTURES_ACCOUNT_TRADES(client, symbol)
@@ -169,7 +169,7 @@ class CEP__Binance(CryptoExchangePlatform):
     def cep__open_short(self, client, symbol, leverage, engaged_balance, \
                                             entryPrice):
         self.called_function_name="cep__open_short"
-        precision = ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
+        precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
 
         ret = client.futures_position_information(symbol=symbol, \
                                                   timestamp=client.futures_time())
