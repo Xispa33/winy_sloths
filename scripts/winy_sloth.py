@@ -59,8 +59,8 @@ class WinySloth:
             print("Init was not good.\n")
             sys.exit()
         else:
-            print("Init was good.\nThere are {} strategies \
-                        running.\n".format(len(self.strategies)))
+            print("Init was good.\nThere are {} strategies running.\
+            \n".format(len(self.strategies)))
             if (self.mode == RUN):
                 while (1):
                     try:
@@ -375,6 +375,11 @@ class WinySloth:
                                        (SHORT,LONG):slave.open_short_from_long}
             
             if (slave.side != strategy.master_api.side):
+
+                slave.leverage = strategy.master_api.leverage
+                slave.engaged_balance = strategy.master_api.engaged_balance
+                slave.entryPrice = strategy.master_api.entryPrice
+                
                 exec_trade_function = side_possibilities_dict[strategy.master_api.side, slave.side]()
                 if exec_trade_function == 0:
                     ret_update_slave = self.WinySloth__Update(strategy, strategy.master_api.side, idx)

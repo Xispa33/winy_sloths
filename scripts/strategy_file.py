@@ -7,6 +7,7 @@ from binance.client import Client
 from constants import *
 from errors import *
 from cep_binance import *
+from cep_bybit import *
 
 class ApiKey:
     """
@@ -135,8 +136,11 @@ class Account():
     
         Description : Function that opens a long trade
         """
-        client = self.api_key.exchange_platform_obj.CEP__CLIENT(self.api_key._api_key, self.api_key._api_secret_key)
-        return self.api_key.exchange_platform_obj.CEP__OPEN_LONG(client, self)
+        client = self.api_key.exchange_platform_obj.CEP__CLIENT(self.api_key._api_key, \
+                                                            self.api_key._api_secret_key)
+        return self.api_key.exchange_platform_obj.CEP__OPEN_LONG(client, \
+                                                self.account_contract_type, self.symbol, \
+                                                self.leverage, self.engaged_balance, self.entryPrice)
 
     def open_short(self):
         """

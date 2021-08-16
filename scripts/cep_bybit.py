@@ -71,7 +71,7 @@ class CEP__Bybit(CryptoExchangePlatform):
                                 engaged_balance, entryPrice):
         self.called_function_name="cep__open_long_futures"
         client.Positions.Positions_saveLeverage(symbol=symbol, \
-                                            leverage=leverage).result()
+                                            leverage=str(leverage)).result()
 
         bybit_balance_response = client.Wallet.Wallet_getBalance(coin=USDT).result()
         balance=bybit_balance_response[0][RESULT][USDT][WALLET_BALANCE]
@@ -111,7 +111,7 @@ class CEP__Bybit(CryptoExchangePlatform):
                                             entryPrice):
         self.called_function_name="cep__open_short"
         
-        client.Positions.Positions_saveLeverage(symbol=symbol, leverage=leverage).result()
+        client.Positions.Positions_saveLeverage(symbol=symbol, leverage=str(leverage)).result()
 
         bybit_balance_response = client.Wallet.Wallet_getBalance(coin=USDT).result()
         balance=bybit_balance_response[0][RESULT][USDT][WALLET_BALANCE]

@@ -221,16 +221,18 @@ class CryptoExchangePlatform(ABC):
                             self.cep__open_long_spot, \
                             client, symbol), retry_period=0.5)
 
-    def CEP__OPEN_LONG(self, client, account):
+    #def CEP__OPEN_LONG(self, client, account):
+    def CEP__OPEN_LONG(self, client, account_contract_type, symbol, \
+                        leverage, engaged_balance, entryPrice):
         self.called_function_name="CEP__OPEN_LONG"
-        if (account.account_contract_type == SPOT):
-            ret = self.CEP__OPEN_LONG_SPOT(client, account.symbol)
-        elif (account.account_contract_type == FUTURES):
+        if (account_contract_type == SPOT):
+            ret = self.CEP__OPEN_LONG_SPOT(client, symbol)
+        elif (account_contract_type == FUTURES):
             ret = self.CEP__OPEN_LONG_FUTURES(client, \
-                                account.symbol, \
-                                account.leverage, \
-                                account.engaged_balance, \
-                                account.entryPrice)
+                                symbol, \
+                                leverage, \
+                                engaged_balance, \
+                                entryPrice)
         else:
             ret = 1
 
