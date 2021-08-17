@@ -181,9 +181,8 @@ class CEP__Bybit(CryptoExchangePlatform):
                         account.markPrice = 0
                         account.entryPrice = round(float(elt[ENTRY_PRICE]), 0)
                         account.leverage = elt[LEVERAGE]
-                        # UNDERSTAND DIFFERENCE BETWEEN positionAmt AND engaged_balance
-                        account.positionAmt = 0
-                        account.engaged_balance = float(elt[POSITION_VALUE])
+                        account.positionAmt = elt[SIZE]
+                        account.engaged_balance = abs(float(elt[POSITION_VALUE]/elt[POSITION_MARGIN]))
                         account.balance = float(elt[POSITION_MARGIN])
                         if (elt[SIDE]) == BUY:
                             return LONG 

@@ -448,7 +448,7 @@ class WinySloth:
                         strategy.master_api.api_key._api_secret_key), \
                         strategy.master_api.account_contract_type, \
                         strategy.master_api.symbol)
-            
+
             strategy_current_side = master_ep_obj.CEP__COMPUTE_ACCOUNT_SIDE( \
                                         strategy.master_api, ep_return)
             
@@ -464,7 +464,7 @@ class WinySloth:
                 if (ret_update_master == 0):
                     ret_update_slave = self.WinySloth__SlaveManagement(strategy)
                 
-                self.Winy_Sloth__SendEmail(self, MASTER, \
+                self.Winy_Sloth__SendEmail(MASTER, \
                         strategy.strategy_file_path.split('/')[-1][:-len(TXT)], \
                         strategy.master_api.side, ret_update_master=ret_update_master, \
                         ret_update_slave=ret_update_slave)
