@@ -13,7 +13,7 @@ from errors import *
 import traceback
 import argparse
 import time
-
+import csv
 
 class WinySloth:
     """
@@ -51,8 +51,9 @@ class WinySloth:
     WinySloth__Main()
     """
     def __init__(self):
-        (self.mode, self.strategies_folder_path) = \
-                                self.WinySloth__ReadArguments()
+        (self.mode, \
+        self.strategies_folder_path, \
+        self.history_file) = self.WinySloth__ReadArguments()
         self.strategies = []
         init_return = self.WinySloth__Init()
         if (init_return):
@@ -99,10 +100,13 @@ class WinySloth:
         """
         mode = ERROR_MODE
         strat_folder_path = ""
+        stat_folder_path = ""
 
         parser = argparse.ArgumentParser()
         parser.add_argument("-m", "--mode", type=str, choices=['d', DEBUG, RUN], default='run', help="Mode of execution")
         parser.add_argument("-f", "--folder", type=str, default='strategies', help="Path of the folder containing strategy files")
+        parser.add_argument("-p", "--history", type=str, default='stats', help="Path of the folder containing statistics files")
+        
         args = parser.parse_args()
         if (args.mode == 'run'):
             mode = RUN
@@ -116,7 +120,12 @@ class WinySloth:
         else:
             strat_folder_path = ERROR_STRATEGY_PATH_FOLDER
         
-        return (mode, strat_folder_path)
+        if (os.path.exists(os.path.join(os.getcwd(), args.history))):
+            stat_folder_path = args.history + "/" + HISTORY_FILE_NAME
+        else:
+            stat_folder_path = ERROR_STATISTICS_PATH_FOLDER
+        
+        return (mode, strat_folder_path, stat_folder_path)
     
     def WinySloth__FindNbStrategies(self):
         #NOT USED
@@ -160,7 +169,8 @@ class WinySloth:
     
         Description : Initialisation of a WinySloth object
         """
-        if ((self.strategies_folder_path != ERROR_STRATEGY_PATH_FOLDER) and (self.mode != ERROR_MODE)):
+        if ((self.strategies_folder_path != ERROR_STRATEGY_PATH_FOLDER) and \
+            (self.mode != ERROR_MODE) and (self.history_file != ERROR_STATISTICS_PATH_FOLDER)):
             try:
                 strategies_files_list = self.WinySloth__FindAllStrategiesFiles()
 
@@ -425,6 +435,24 @@ class WinySloth:
     def WinySloth__FindExchangePlatform(self, elt):
         return elt.find_exchange_platform_class()
     """
+    def WinySloth__SaveTrade(self, strategy_name, timestamp, symbol, \
+                                    side, price):
+        if (self.mode != DEBUG):
+            try:
+                with open(self.history_file, "a+", encoding=UTF8, newline='') as trade_history_file:
+                    data = [[strategy_name, timestamp, symbol, side, price]]
+                    writer = csv.writer(f)
+                    writer.writerows(data)
+
+                    trade_history_file.close()
+                return 0
+            except:
+                print("An error during the writing of statistics file. \
+                {}.\n {} {}".format(self.history_file, sys.exc_info(), \
+                traceback.format_exc()))
+                return 1
+        else: 
+            return 0
 
     def WinySloth__Main(self):
         """
@@ -468,6 +496,12 @@ class WinySloth:
                         strategy.strategy_file_path.split('/')[-1][:-len(TXT)], \
                         strategy.master_api.side, ret_update_master=ret_update_master, \
                         ret_update_slave=ret_update_slave)
+                """
+                self.WinySloth__SaveTrade( \
+                                        strategy.strategy_file_path.split('/')[-1][:-len(TXT)], \
+                                        str(int(time.time()*1000)), strategy.master_api.symbol, \
+                                        strategy.master_api.side, None)
+                """
             else:
                 sleep(WAIT_DEFAULT)
                 #print("Position up to date\n")

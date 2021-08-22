@@ -314,9 +314,9 @@ class CEP__Bybit(CryptoExchangePlatform):
         else:
             bybit_response = cep_response[RESULT]
             if (len(bybit_response) != 0):
-                if (bybit_response[0][SIDE] == SELL):
+                if (bybit_response[0][SIDE] == SELL.upper()):
                     return OUT
-                elif (bybit_response[0][SIDE] == BUY):
+                elif (bybit_response[0][SIDE] == BUY.upper()):
                     return LONG
                 else:
                     return account.side
