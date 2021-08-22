@@ -107,7 +107,8 @@ class Account():
         Description : Function that closes an opened long trade
         """
         client = self.api_key.exchange_platform_obj.CEP__CLIENT( \
-                                    self.api_key._api_key, self.api_key._api_secret_key)
+                                    self.api_key._api_key, self.api_key._api_secret_key, \
+                                    self.account_contract_type)
         return self.api_key.exchange_platform_obj.CEP__CLOSE_LONG( \
                                     client, self.account_contract_type, self.symbol)
 
@@ -122,7 +123,8 @@ class Account():
         Description : Function that closes an opened short trade
         """
         client = self.api_key.exchange_platform_obj.CEP__CLIENT( \
-                                    self.api_key._api_key, self.api_key._api_secret_key)
+                                    self.api_key._api_key, self.api_key._api_secret_key, \
+                                    self.account_contract_type)
         return self.api_key.exchange_platform_obj.CEP__CLOSE_SHORT( \
                                     client, self.symbol)
 
@@ -137,7 +139,8 @@ class Account():
         Description : Function that opens a long trade
         """
         client = self.api_key.exchange_platform_obj.CEP__CLIENT(self.api_key._api_key, \
-                                                            self.api_key._api_secret_key)
+                                                            self.api_key._api_secret_key, \
+                                                            self.account_contract_type)
         return self.api_key.exchange_platform_obj.CEP__OPEN_LONG(client, \
                                                 self.account_contract_type, self.symbol, \
                                                 self.leverage, self.engaged_balance, self.entryPrice)
@@ -153,7 +156,8 @@ class Account():
         Description : Function that opens a short trade
         """
         client = self.api_key.exchange_platform_obj.CEP__CLIENT( \
-                                    self.api_key._api_key, self.api_key._api_secret_key)
+                                    self.api_key._api_key, self.api_key._api_secret_key, \
+                                    self.account_contract_type)
         return self.api_key.exchange_platform_obj.CEP__OPEN_SHORT(client, self.symbol, \
                                                         self.leverage, \
                                                         self.engaged_balance, \

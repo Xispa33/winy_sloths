@@ -10,36 +10,177 @@ from datetime import *
 import traceback
 from abc import ABC, abstractmethod
 from crypto_exchange_platform import *
+import hashlib
+import hmac
+import json
+import requests
+import urllib3
+import time
 
+BALANCES = "balances"
 BUY = "Buy"
+COIN = 'coin'
 MARKET = "Market"
 SELL = "Sell"
 ENTRY_PRICE = "entry_price"
 POSITION_VALUE = "position_value"
 POSITION_MARGIN = "position_margin"
+BYBIT_BASIC_ENDPOINT="https://api.bybit.com"
+BYBIT_SERVER_TIME_ENDPOINT = "/v2/public/time"
+BYBIT_SPOT_ORDER_HISTORY = "/spot/v1/history-orders"
+BYBIT_SPOT_WALLET_BALANCE = "/spot/v1/account"
+BYBIT_SPOT_CREATE_ORDER = "/spot/v1/order"
+TIME_NOW = 'time_now'
+RET_CODE = "ret_code"
+GET = "get"
+POST = "post"
+TIMESTAMP = "timestamp"
+API_KEY = "api_key"
+SIGN = "sign"
+LIMIT = "limit"
+QTY = "qty"
 
 class CEP__Bybit(CryptoExchangePlatform):
     def __init__(self):
         super().__init__()
         self.name = BYBIT
+        self.api_key = ""
+        self.api_secret_key = ""
 
-    def cep__client(self, api_key, api_secret_key): 
+    def cep__client(self, api_key, api_secret_key, account_contract_type): 
         self.called_function_name = "cep__client"
-        return (bybit.bybit(test=False, api_key=api_key, api_secret=api_secret_key))
+        if (account_contract_type != SPOT):
+            self.api_key = ""
+            self.api_secret_key = ""
+            return (bybit.bybit(test=False, api_key=api_key, api_secret=api_secret_key))
+        else:
+            self.api_key = api_key
+            self.api_secret_key = api_secret_key
+            return 0
+
+
+    def create_request_body(self, request_parameters):
+        self.called_function_name = "create_request_body"
+        params = {
+            API_KEY: self.api_key,
+        }
+        params.update(request_parameters)
+        sign = ''
+        for key in sorted(params.keys()):
+            v = params[key]
+            if isinstance(params[key], bool):
+                if params[key]:
+                    v = 'true'
+                else :
+                    v = 'false'
+            sign += key + '=' + v + '&'
+        sign = sign[:-1]
+
+        hash = hmac.new(str.encode(self.api_secret_key), sign.encode("utf-8"), hashlib.sha256)
+        signature = hash.hexdigest()
+        sign_real = {
+            SIGN: signature
+        }
+        body = dict(params,**sign_real)
+        return (body, sign)
+
+    def send_request_body(self, body, sign, request_type, endpoint):
+        self.called_function_name = "send_request_body"
+        url = BYBIT_BASIC_ENDPOINT + endpoint
+        
+        urllib3.disable_warnings()
+        url = url + "?" + sign + '&sign='+body[SIGN]
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
+        #headers = {"Content-Type": "application/json"}
+        
+        if (request_type == GET):
+            response = requests.get(url, headers=headers,verify=False)
+            
+        elif (request_type == POST):
+            response = requests.post(url, headers=headers,verify=False)
+        else:
+            raise ValueError('The request type is incorrect')
+        
+        json_response = json.loads(response.text)
+        if (json_response[RET_CODE] != 0):
+            raise ValueError('Request was not sent successfully. \
+            Error code is {}'.format(json_response[RET_CODE]))
+        else:
+            return json_response
+
+    def send_request(self, request_type, endpoint, request_parameters):
+        self.called_function_name = "send_request"
+
+        body,sign = self.create_request_body(request_parameters)
+        bybit_response = self.send_request_body(body, sign, request_type, endpoint)
+        return bybit_response
+
+    def get_timestamp(self):
+        self.called_function_name = "get_timestamp"
+        
+        request_parameters = {}
+        bybit_response = self.send_request(GET, BYBIT_SERVER_TIME_ENDPOINT, request_parameters)
+        timestamp = bybit_response[TIME_NOW]
+
+        if (int(float(timestamp)) == 0):
+            raise ValueError('Timestamp was equal to 0')
+        else:
+            return int(float(timestamp))
+    
+    def get_spot_last_trade(self, symbol):
+        self.called_function_name = "get_spot_last_trade"
+        request_parameters = {SYMBOL:symbol, LIMIT:"1", TIMESTAMP: str(int(time.time()*1000))}
+
+        bybit_response = self.send_request(GET, BYBIT_SPOT_ORDER_HISTORY, request_parameters)
+        
+        return bybit_response
+
+    def create_spot_order(self, symbol, side, _type, qty):
+        self.called_function_name = "create_spot_order"
+        request_parameters = {SYMBOL:symbol, SIDE:side, \
+                              TYPE:_type, QTY:qty,
+                              TIMESTAMP: str(int(time.time()*1000))}
+
+        bybit_response = self.send_request(POST, BYBIT_SPOT_CREATE_ORDER, request_parameters)
+        
+        return bybit_response
+
+    def get_asset_balance(self):
+        self.called_function_name = "get_asset_balance"
+        request_parameters = {TIMESTAMP: str(int(time.time()*1000))}
+
+        bybit_response = self.send_request(GET, BYBIT_SPOT_WALLET_BALANCE, request_parameters)
+        
+        return bybit_response
 
     def cep__futures_account_trades(self, client, symbol):
         self.called_function_name = "cep__futures_account_trades"
         return client.LinearPositions.LinearPositions_myPosition(symbol=symbol).result()
     
     def cep__spot_account_trades(self, client, symbol):
-        #ESSENTIAL
         self.called_function_name="cep__spot_account_trades"
-        return 0
+        bybit_spot_history = self.get_spot_last_trade(symbol)
+        return bybit_spot_history
 
 
     def cep__close_long_spot(self, client, symbol):
         self.called_function_name="cep__close_long_spot"
-        #ESSENTIAL
+
+        precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
+
+        assets_list = self.get_asset_balance()[RESULT][BALANCES]
+        
+        for elt in assets_list:
+            if (elt[COIN] == self.ALL_SYMBOLS_DICT[symbol][ASSET_IDX]):
+                available_asset = round(float(elt[FREE]) - (5*10**(-precision-1)), precision)
+                break
+
+        if (available_asset < (1*10**(-precision))):
+            available_asset = 1*10**(-precision)
+        
+        self.create_spot_order(symbol=symbol, side=SELL, _type=MARKET, \
+                            qty=str(available_asset))
+        
         return 0
 
     def cep__close_long_futures(self, client, symbol):
@@ -53,6 +194,7 @@ class CEP__Bybit(CryptoExchangePlatform):
                 if (elt[SIZE] > 0):
                     size = elt[SIZE]
                     break
+            
             client.LinearOrder.LinearOrder_new(side=SELL, symbol=symbol, \
                             order_type=MARKET, qty=size, \
                             time_in_force=GOODTILLCANCEL, reduce_only=True, \
@@ -64,7 +206,16 @@ class CEP__Bybit(CryptoExchangePlatform):
     
     def cep__open_long_spot(self, client, symbol):
         self.called_function_name="cep__open_long_spot"
-        #ESSENTIAL
+
+        assets_list = self.get_asset_balance()[RESULT][BALANCES]
+
+        for elt in assets_list:
+            if (elt[COIN] == USDT):
+                available_usdt = round(float(elt[FREE]) - 0.05, 1)
+        
+        self.create_spot_order(symbol=symbol, side=BUY, _type=MARKET, \
+                            qty=str(available_usdt))
+        
         return 0
 
     def cep__open_long_futures(self, client, symbol, leverage, \
@@ -157,13 +308,20 @@ class CEP__Bybit(CryptoExchangePlatform):
     
     def cep__compute_side_spot_account(self, account, cep_response):
         self.called_function_name="cep__compute_side_spot_account"
-        # ESSENTIAL
-        if (not isinstance(cep_response, tuple)):
+        if (not isinstance(cep_response, dict)):
             #print("Bybit return was crap ! \n")
             return account.side
         else:
-            bybit_response = cep_response[0][RESULT]
-            return account.side
+            bybit_response = cep_response[RESULT]
+            if (len(bybit_response) != 0):
+                if (bybit_response[0][SIDE] == SELL):
+                    return OUT
+                elif (bybit_response[0][SIDE] == BUY):
+                    return LONG
+                else:
+                    return account.side
+            else:
+                return account.side
         
     
     def cep__compute_side_futures_account(self, account, cep_response):
@@ -195,5 +353,3 @@ class CEP__Bybit(CryptoExchangePlatform):
         self.called_function_name="cep__compute_engaged_balance"
         #USELESS
         return 0
-        
-    

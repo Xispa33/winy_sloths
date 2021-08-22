@@ -46,7 +46,7 @@ class CEP__Binance(CryptoExchangePlatform):
         super().__init__()
         self.name = BINANCE
 
-    def cep__client(self, api_key, api_secret_key): 
+    def cep__client(self, api_key, api_secret_key, account_contract_type): 
         self.called_function_name = "cep__client"
         return (Client(api_key, api_secret_key))
 
@@ -274,7 +274,7 @@ class CEP__Binance(CryptoExchangePlatform):
             else:
                 asset_dict = self.CEP__GET_ASSET_BALANCE( \
                                 self.CEP__CLIENT(account.api_key._api_key, \
-                                account.api_key._api_secret_key))
+                                account.api_key._api_secret_key, None))
             
                 if (not isinstance(asset_dict, dict)):
                     return account.side
@@ -319,7 +319,7 @@ class CEP__Binance(CryptoExchangePlatform):
                     account.positionAmt = float(long_list[POSITION_AMT])
                     account.balance = float(self.CEP__GET_FUTURES_ACCOUNT_BALANCE( \
                                             self.CEP__CLIENT(account.api_key._api_key, \
-                                            account.api_key._api_secret_key))[BALANCE])
+                                            account.api_key._api_secret_key, None))[BALANCE])
                     ret = self.cep__compute_engaged_balance(account, binance_response)
                     if ret == 1:
                         return OUT
@@ -336,7 +336,7 @@ class CEP__Binance(CryptoExchangePlatform):
                     account.positionAmt = float(short_list[POSITION_AMT])
                     account.balance = float(self.CEP__GET_FUTURES_ACCOUNT_BALANCE( \
                                             self.CEP__CLIENT(account.api_key._api_key, \
-                                            account.api_key._api_secret_key))[BALANCE])
+                                            account.api_key._api_secret_key, None))[BALANCE])
                     ret = self.cep__compute_engaged_balance(account, binance_response)
                     if ret == 1:
                         return OUT
@@ -354,7 +354,7 @@ class CEP__Binance(CryptoExchangePlatform):
                 
                 bin_ret = self.CEP__GET_FUTURES_ACCOUNT_BALANCE( \
                                 self.CEP__CLIENT(account.api_key._api_key, \
-                                                 account.api_key._api_secret_key))
+                                                 account.api_key._api_secret_key, None))
                 if (isinstance(bin_ret, int)):
                     return account.side
                 else:
@@ -381,5 +381,5 @@ class CEP__Binance(CryptoExchangePlatform):
             ".format(cep_response, \
             account.exchange_platform_obj.CEP__GET_FUTURES_ACCOUNT_BALANCE( \
                                 account.exchange_platform_obj.CEP__CLIENT( \
-                                account.api_key._api_key, account.api_key._api_secret_key))))
+                                account.api_key._api_key, account.api_key._api_secret_key, None))))
             return 1

@@ -445,7 +445,7 @@ class WinySloth:
 
             ep_return = master_ep_obj.CEP__GET_ACCOUNT_HISTORY( \
                         master_ep_obj.CEP__CLIENT(strategy.master_api.api_key._api_key, \
-                        strategy.master_api.api_key._api_secret_key), \
+                        strategy.master_api.api_key._api_secret_key, strategy.master_api.account_contract_type), \
                         strategy.master_api.account_contract_type, \
                         strategy.master_api.symbol)
 

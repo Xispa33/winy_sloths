@@ -95,12 +95,12 @@ class CryptoExchangePlatform(ABC):
 
 
     @abstractmethod
-    def cep__client(self, api_key, api_secret_key): pass
+    def cep__client(self, api_key, api_secret_key, account_contract_type): pass
 
-    def CEP__CLIENT(self, api_key, api_secret_key):
+    def CEP__CLIENT(self, api_key, api_secret_key, account_contract_type):
         self.called_function_name="CEP__CLIENT"
         return self.CEP__BaseFunction(functools.partial(self.cep__client, \
-                            api_key, api_secret_key), \
+                            api_key, api_secret_key, account_contract_type), \
                             retry=MAX_RETRY*4)
 
     @abstractmethod
