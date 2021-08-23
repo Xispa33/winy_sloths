@@ -167,8 +167,8 @@ class CEP__Bybit(CryptoExchangePlatform):
         self.called_function_name="cep__close_long_spot"
 
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
-
         assets_list = self.get_asset_balance()[RESULT][BALANCES]
+        available_asset = 0
         
         for elt in assets_list:
             if (elt[COIN] == self.ALL_SYMBOLS_DICT[symbol][ASSET_IDX]):
@@ -206,9 +206,8 @@ class CEP__Bybit(CryptoExchangePlatform):
     
     def cep__open_long_spot(self, client, symbol):
         self.called_function_name="cep__open_long_spot"
-
         assets_list = self.get_asset_balance()[RESULT][BALANCES]
-
+        available_usdt = 0
         for elt in assets_list:
             if (elt[COIN] == USDT):
                 available_usdt = round(float(elt[FREE]) - 0.05, 1)
