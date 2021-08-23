@@ -78,6 +78,7 @@ class CryptoExchangePlatform(ABC):
     def CEP__BaseFunction(self, api_service, retry=MAX_RETRY, retry_period=WAIT_DEFAULT):
         err_cpt = 0
         ret = 1
+        api_ret = ""
 
         while (err_cpt < retry) and (ret == 1):
             try:

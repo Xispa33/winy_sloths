@@ -103,7 +103,7 @@ class CEP__Binance(CryptoExchangePlatform):
         usdt_asset = client.get_asset_balance(asset=USDT)[FREE]
         asset_round=round(float(usdt_asset)-0.05,1)
         client.create_order(symbol=symbol, side=BUY, type=MARKET, \
-                            quoteOrderQty=asset_round, \
+                            quoteOrderQty=abs(asset_round), \
                             timestamp=client.get_server_time())
         return 0
 

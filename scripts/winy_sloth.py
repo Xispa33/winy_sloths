@@ -67,20 +67,26 @@ class WinySloth:
                     try:
                         self.WinySloth__Main()
                     except:
-                        print("An error occured. An email should have been sent around {}\n \
-                            {}\n {}\n".format(str(datetime.now()), sys.exc_info(), \
-                            traceback.format_exc()))
+                        message = "An error occured. An email should have been sent around {}\n \
+                        {}\n {}\n".format(str(datetime.now()), sys.exc_info(), \
+                        traceback.format_exc())
+                        print(message)
                         
                         with open(ERRORS_FILE, "a+") as error_file:
-                            Errors.Errors__SendEmail(Errors(error_messages="WARNING : \
+                            mail_msg = "WARNING : \
                                 Winy Sloth had to restart.\nThe error raised the following \
                                 message: \nsys.exc_info() = {}. traceback.format_exc() = {}. \
-                                ".format(sys.exc_info(), traceback.format_exc()), \
-                                error_criticity=HIGH_C))
+                                ".format(sys.exc_info(), traceback.format_exc())
+
+                            error = Errors(error_messages=mail_msg, error_criticity=HIGH_C, \
+                                            mode = self.mode)
+                            Errors.Errors__SendEmail(error)
+                            error_file.write(message)
                             error_file.close()
                         sleep(2)
                         self.strategies = []
                         self.__init__()
+                        
             elif (self.mode == DEBUG):
                 start_time = time.time()
                 end_time = time.time()
@@ -338,13 +344,11 @@ class WinySloth:
                 errors.error_criticity = HIGH_C
                 errors.error_messages = "Master update of strategy {} unsuccessful.".format(strategy)
                 Errors.Errors__SendEmail(errors)
-                sys.exit()
             else:
                 if (ep_platform_found == False):
                     errors.error_criticity = HIGH_C
                     errors.error_messages = "Echange platform of strategy {} was not found.".format(strategy)
                     Errors.Errors__SendEmail(errors)
-                    sys.exit()
                 else:
                     if (ret_update_slave == 0):
                         result = SUCCESSFUL
@@ -353,6 +357,7 @@ class WinySloth:
                     else:
                         result = UNSUCCESSFUL
                         errors.error_criticity = HIGH_C
+                        message = "ret_update_slave = 1"
                         
                     errors.error_messages = \
                         "Update of strategy {} {}.\n{}.\
