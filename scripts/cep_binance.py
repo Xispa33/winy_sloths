@@ -380,6 +380,6 @@ class CEP__Binance(CryptoExchangePlatform):
             print("WS should be restarting.\n{} \n {}. \
             ".format(cep_response, \
             account.exchange_platform_obj.CEP__GET_FUTURES_ACCOUNT_BALANCE( \
-                                account.exchange_platform_obj.CEP__CLIENT( \
+                                account.api_key.exchange_platform_obj.CEP__CLIENT( \
                                 account.api_key._api_key, account.api_key._api_secret_key, None))))
             return 1
