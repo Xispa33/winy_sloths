@@ -6,8 +6,8 @@ import sys
 from binance.client import Client
 from constants import *
 from errors import *
-sys.path.append(os.getcwd() + CEPS_PATH + "binance")
-sys.path.append(os.getcwd() + CEPS_PATH + "bybit")
+sys.path.append(sys.path[0] + CEPS_PATH + "binance")
+sys.path.append(sys.path[0] + CEPS_PATH + "bybit")
 from cep_binance import *
 from cep_bybit import *
 
