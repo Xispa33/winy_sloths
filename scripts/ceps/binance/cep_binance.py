@@ -351,7 +351,7 @@ class CEP__Binance(CryptoExchangePlatform):
                 account.entryPrice = round(float(binance_response[0][ENTRY_PRICE]), 0)
                 account.leverage = binance_response[0][LEVERAGE]
                 account.positionAmt = float(binance_response[0][POSITION_AMT])
-                
+                account.markPrice = round(float(binance_response[0][MARK_PRICE]), 0)
                 bin_ret = self.CEP__GET_FUTURES_ACCOUNT_BALANCE( \
                                 self.CEP__CLIENT(account.api_key._api_key, \
                                                  account.api_key._api_secret_key, None))

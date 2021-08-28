@@ -381,5 +381,6 @@ class CryptoExchangePlatform(ABC):
         self.called_function_name="CEP__GET_SYMBOL_PRICE"
         return self.CEP__BaseFunction(functools.partial( \
                             self.cep__get_symbol_price, \
-                            client, symbol))
+                            client, symbol), retry=5, \
+                            retry_period=0.1)
         

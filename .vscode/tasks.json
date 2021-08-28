@@ -1,0 +1,17 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "2.0.0",
+    "tasks": [{
+        "label": "export",
+        "command": "export",
+        "args": ["PYTHONPATH=/usr/lib/python3.8:/usr/lib/python3.8/lib-dynload:/usr/local/lib/python3.8/dist-packages:/usr/lib/python3/dist-packages:/usr/local/Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7/lib/python3.7:/usr/local/Cellar/python/3.7.7/Frameworks/Python.framework/Versions/3.7/lib/python3.7/lib-dynload:/Users/brice/Library/Python/3.7/lib/python/site-packages"],
+        "type": "shell"
+    }, {
+        "label": "echotest",
+        "command": "echo",
+        "args": ["$PYTHONPATH"],
+        "type": "shell"
+    }]
+}
