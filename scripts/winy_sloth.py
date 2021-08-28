@@ -86,7 +86,7 @@ class WinySloth:
                         sleep(2)
                         self.strategies = []
                         self.__init__()
-                        
+
             elif (self.mode == DEBUG):
                 start_time = time.time()
                 end_time = time.time()
@@ -440,13 +440,20 @@ class WinySloth:
     def WinySloth__FindExchangePlatform(self, elt):
         return elt.find_exchange_platform_class()
     """
-    def WinySloth__SaveTrade(self, strategy_name, timestamp, symbol, \
-                                    side, price):
+    def WinySloth__SaveTrade(self, strategy, timestamp, symbol, \
+                                    side, engaged_balance, price):
         if (self.mode != DEBUG):
             try:
+                leverage = engaged_balance
+                strategy_name = strategy.strategy_file_path.split('/')[-1][:-len(TXT)]
+                if (price == 0):
+                    master_ep_obj = strategy.master_api.api_key.exchange_platform_obj
+                    price = master_ep_obj.CEP__GET_SYMBOL_PRICE(master_ep_obj.CEP__CLIENT(strategy.master_api.api_key._api_key, \
+                                strategy.master_api.api_key._api_secret_key, strategy.master_api.account_contract_type), \
+                                strategy.master_api.symbol)
                 with open(self.history_file, "a+", encoding=UTF8, newline='') as trade_history_file:
-                    data = [[strategy_name, timestamp, symbol, side, price]]
-                    writer = csv.writer(f)
+                    data = [[strategy_name, timestamp, symbol, side, leverage, price]]
+                    writer = csv.writer(trade_history_file)
                     writer.writerows(data)
 
                     trade_history_file.close()
@@ -491,6 +498,11 @@ class WinySloth:
                     print("===\nBinance return = {}\nNew position = {}\n===".format(ep_return, \
                                                 strategy_current_side))
 
+                self.WinySloth__SaveTrade(strategy, \
+                                        str(int(time.time()*1000)), strategy.master_api.symbol, \
+                                        strategy.master_api.side, strategy.master_api.engaged_balance, \
+                                        strategy.master_api.markPrice)
+
                 ret_update_master = self.WinySloth__Update(strategy, strategy_current_side)
                 
                 #GESTION DES SLAVES 
@@ -501,12 +513,7 @@ class WinySloth:
                         strategy.strategy_file_path.split('/')[-1][:-len(TXT)], \
                         strategy.master_api.side, ret_update_master=ret_update_master, \
                         ret_update_slave=ret_update_slave)
-                """
-                self.WinySloth__SaveTrade( \
-                                        strategy.strategy_file_path.split('/')[-1][:-len(TXT)], \
-                                        str(int(time.time()*1000)), strategy.master_api.symbol, \
-                                        strategy.master_api.side, None)
-                """
+                
             else:
                 sleep(WAIT_DEFAULT)
                 #print("Position up to date\n")

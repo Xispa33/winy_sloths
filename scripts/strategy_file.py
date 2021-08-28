@@ -92,7 +92,7 @@ class Account():
         self.entryPrice = 0
         self.leverage = 0
         self.positionAmt = 0
-        self.engaged_balance = 0
+        self.engaged_balance = 1
         self.balance = 0
         self.account_mode = ONE_WAY
     
@@ -268,8 +268,9 @@ class StrategyFile:
         """
         slaves_list = []
 
-        for slaves in info_strategy_file_slave:
-            slaves_list.append(SlaveAccount(slaves.strip('\n').split(" "), \
-                                account_contract_type, symbol))
+        for slave in info_strategy_file_slave:
+            if (len(slave) > MIN_SLAVE_CHAR):
+                slaves_list.append(SlaveAccount(slave.strip('\n').split(" "), \
+                                    account_contract_type, symbol))
 
         return slaves_list

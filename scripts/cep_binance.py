@@ -283,7 +283,7 @@ class CEP__Binance(CryptoExchangePlatform):
                     asset_usdt=float(asset_dict[FREE])
 
                     if binance_response[SIDE] == BUY and \
-                       round(float(asset_usdt),1) < MIN_WALLET_IN_USDT: 
+                       round(float(asset_usdt),1) < MIN_WALLET_IN_USDT:
                         return LONG
                     elif binance_response[SIDE] == SELL and \
                          round(float(asset_usdt),1) > MIN_WALLET_IN_USDT:
@@ -383,3 +383,9 @@ class CEP__Binance(CryptoExchangePlatform):
                                 account.api_key.exchange_platform_obj.CEP__CLIENT( \
                                 account.api_key._api_key, account.api_key._api_secret_key, None))))
             return 1
+
+    def cep__get_symbol_price(self, client, symbol):
+        self.called_function_name="cep__get_symbol_price"
+    
+        info = client.get_symbol_ticker(symbol=symbol)
+        return info[PRICE]

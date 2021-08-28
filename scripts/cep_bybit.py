@@ -30,6 +30,7 @@ BYBIT_SERVER_TIME_ENDPOINT = "/v2/public/time"
 BYBIT_SPOT_ORDER_HISTORY = "/spot/v1/history-orders"
 BYBIT_SPOT_WALLET_BALANCE = "/spot/v1/account"
 BYBIT_SPOT_CREATE_ORDER = "/spot/v1/order"
+BYBIT_SPOT_SYMBOL_PRICE = "/spot/quote/v1/ticker/price"
 TIME_NOW = 'time_now'
 RET_CODE = "ret_code"
 GET = "get"
@@ -352,3 +353,16 @@ class CEP__Bybit(CryptoExchangePlatform):
         self.called_function_name="cep__compute_engaged_balance"
         #USELESS
         return 0
+    
+    def get_symbol_price(self, symbol):
+        self.called_function_name = "get_symbol_price"
+        request_parameters = {SYMBOL:symbol, TIMESTAMP: str(int(time.time()*1000))}
+
+        bybit_response = self.send_request(GET, BYBIT_SPOT_SYMBOL_PRICE, request_parameters)
+        
+        return bybit_response
+
+    def cep__get_symbol_price(self, symbol):
+        self.called_function_name="cep__get_symbol_price"
+        price = self.get_symbol_price(symbol)
+        return price[RESULT][PRICE]

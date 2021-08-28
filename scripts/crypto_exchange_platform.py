@@ -372,4 +372,14 @@ class CryptoExchangePlatform(ABC):
     def CEP__COMPUTE_ENGAGED_BALANCE(self, account, cep_response):
         self.called_function_name="CEP__COMPUTE_ENGAGED_BALANCE"
         return self.cep__compute_engaged_balance(account, cep_response)
+
+    @abstractmethod
+    def cep__get_symbol_price(self, client, symbol): pass
+    
+    
+    def CEP__GET_SYMBOL_PRICE(self, client, symbol):
+        self.called_function_name="CEP__GET_SYMBOL_PRICE"
+        return self.CEP__BaseFunction(functools.partial( \
+                            self.cep__get_symbol_price, \
+                            client, symbol))
         
