@@ -455,7 +455,7 @@ class WinySloth:
                                     side, engaged_balance, price):
         if (self.mode != DEBUG):
             try:
-                leverage = engaged_balance
+                leverage = engaged_balance if side != OUT else 1
                 strategy_name = strategy.strategy_file_path.split('/')[-1][:-len(TXT)]
                 if (price == 0):
                     master_ep_obj = strategy.master_api.api_key.exchange_platform_obj
