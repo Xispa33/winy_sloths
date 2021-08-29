@@ -75,6 +75,8 @@ class CEP__Binance(CryptoExchangePlatform):
         self.called_function_name="cep__close_long_futures"
         last_trade = []
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
+        found = False
+        ret = {}
 
         if last_trade == []:
             last_trade = self.CEP__FUTURES_ACCOUNT_TRADES(client, symbol)
@@ -84,8 +86,13 @@ class CEP__Binance(CryptoExchangePlatform):
         for dic in last_trade:
             if dic[POSITION_SIDE] == LONG:
                 ret = dic
-        
-        position_amt = round(float(ret[POSITION_AMT]), precision)
+                found = True
+
+        if (found):
+            position_amt = round(float(ret[POSITION_AMT]), precision)
+        else:
+            position_amt = 0.0
+
         if (position_amt != 0.0):
             client.futures_create_order(symbol=symbol, positionside=LONG, \
                                         side=SELL, type=MARKET, \
