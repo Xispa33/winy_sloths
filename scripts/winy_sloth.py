@@ -382,6 +382,8 @@ class WinySloth:
                                 master_api.symbol)
         else:
             slave.entryPrice = 1
+        
+        slave.entryPrice = master_api.entryPrice
     
     def WinySloth__SlaveManagement(self, strategy):
         """
@@ -495,8 +497,7 @@ class WinySloth:
             master_ep_obj = strategy.master_api.api_key.exchange_platform_obj
 
             ep_return = master_ep_obj.CEP__GET_ACCOUNT_HISTORY( \
-                        master_ep_obj.CEP__CLIENT(strategy.master_api.api_key._api_key, \
-                        strategy.master_api.api_key._api_secret_key, strategy.master_api.account_contract_type), \
+                        master_ep_obj.client, \
                         strategy.master_api.account_contract_type, \
                         strategy.master_api.symbol)
 

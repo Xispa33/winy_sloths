@@ -3,7 +3,6 @@
 
 import os
 import sys
-from binance.client import Client
 from constants import *
 from errors import *
 sys.path.append(sys.path[0] + CEPS_PATH + "binance")
@@ -37,9 +36,8 @@ class ApiKey:
     def __init__(self, info_strategy_file):
         self.exchange_platform_name = info_strategy_file[ \
                                     OFFSET_EXCHANGE_PLATFORM]
-        self._api_key = info_strategy_file[OFFSET_API_KEY]
-        self._api_secret_key = info_strategy_file[ \
-                                        OFFSET_API_SECRET_KEY]
+        self.client = Client(info_strategy_file[OFFSET_API_KEY], \
+                            info_strategy_file[ OFFSET_API_SECRET_KEY])
 
         self.exchange_platform_obj = self.find_exchange_platform_class()
 

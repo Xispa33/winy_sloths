@@ -2,19 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import bybit
+import sys
+sys.path.append(sys.path[0] + "/../..")
 from constants import *
 import os
-import sys
-from time import *
 from datetime import *
 import traceback
 from abc import ABC, abstractmethod
 from crypto_exchange_platform import *
-import hashlib
-import hmac
-import json
-import requests
-import urllib3
 import time
 
 BALANCES = "balances"
@@ -35,7 +30,6 @@ TIME_NOW = 'time_now'
 RET_CODE = "ret_code"
 GET = "get"
 POST = "post"
-TIMESTAMP = "timestamp"
 API_KEY = "api_key"
 SIGN = "sign"
 LIMIT = "limit"
@@ -47,6 +41,9 @@ class CEP__Bybit(CryptoExchangePlatform):
         self.name = BYBIT
         self.api_key = ""
         self.api_secret_key = ""
+        self.REQUEST_ACK_OK = 0
+        self.BASIC_TESTNET_ENDPOINT = ""
+        self.BASIC_ENDPOINT = BYBIT_BASIC_ENDPOINT
 
     def cep__client(self, api_key, api_secret_key, account_contract_type): 
         self.called_function_name = "cep__client"
@@ -59,6 +56,13 @@ class CEP__Bybit(CryptoExchangePlatform):
             self.api_secret_key = api_secret_key
             return 0
 
+    def check_response(self, response):
+        json_response = json.loads(response.text)
+        if (json_response[RET_CODE] != self.REQUEST_ACK_OK):
+            raise ValueError('Request was not sent successfully. \
+            Error code is {}'.format(json_response[RET_CODE]))
+        else:
+            return json_response
 
     def create_request_body(self, request_parameters):
         self.called_function_name = "create_request_body"
@@ -77,7 +81,7 @@ class CEP__Bybit(CryptoExchangePlatform):
             sign += key + '=' + v + '&'
         sign = sign[:-1]
 
-        hash = hmac.new(str.encode(self.api_secret_key), sign.encode("utf-8"), hashlib.sha256)
+        hash = hmac.new(str.encode(self.api_secret_key), sign.encode(UTF8), hashlib.sha256)
         signature = hash.hexdigest()
         sign_real = {
             SIGN: signature
@@ -103,7 +107,7 @@ class CEP__Bybit(CryptoExchangePlatform):
             raise ValueError('The request type is incorrect')
         
         json_response = json.loads(response.text)
-        if (json_response[RET_CODE] != 0):
+        if (json_response[RET_CODE] != self.REQUEST_ACK_OK):
             raise ValueError('Request was not sent successfully. \
             Error code is {}'.format(json_response[RET_CODE]))
         else:
@@ -267,7 +271,9 @@ class CEP__Bybit(CryptoExchangePlatform):
         bybit_balance_response = client.Wallet.Wallet_getBalance(coin=USDT).result()
         balance=bybit_balance_response[0][RESULT][USDT][WALLET_BALANCE]
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
-        quantity=round(((float(balance)*engaged_balance/entryPrice) - (5*10**(-precision - 1))), precision)
+        quantity = round(((float(balance)*abs(engaged_balance)/entryPrice) - \
+                                                    (5*10**(-precision - 1))), precision)
+
         if (quantity < (1*10**(-precision))):
             quantity = 1*10**(-precision)
 

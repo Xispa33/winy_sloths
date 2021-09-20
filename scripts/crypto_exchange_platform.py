@@ -4,12 +4,27 @@
 from constants import *
 import os
 import sys
-from time import *
-from datetime import *
+import datetime
 import traceback
 from abc import ABC, abstractmethod
 import functools
+import hashlib
+import hmac
+import json
+import requests
+import urllib3
 
+
+
+API_KEY = "api_key"
+SIGN = "sign"
+GET = "get"
+POST = "post"
+
+class Client:
+    def __init__(self, api_key, api_secret_key):
+        self._api_key = api_key
+        self._api_secret_key = api_secret_key
 class CryptoExchangePlatform(ABC):
     """
     A class used to represent a cryptocurrency exchange platform. 
@@ -71,7 +86,10 @@ class CryptoExchangePlatform(ABC):
         self.name = ""
         self.called_function_name = ""
         self.ALL_SYMBOLS_DICT = {BTCUSDT:(BTC,3), ETHUSDT:(ETH,2), BNBUSDT:(BNB,2)}
-    
+        self.BASIC_ENDPOINT = ""
+        self.BASIC_TESTNET_ENDPOINT = ""
+        self.REQUEST_ACK_OK = 0
+
     def get_called_function_name(self):
         return (self.called_function_name + "_" + self.name)
 
@@ -94,6 +112,17 @@ class CryptoExchangePlatform(ABC):
         
         return api_ret
 
+    @abstractmethod
+    def create_request_body(self, request_parameters): pass
+
+    @abstractmethod
+    def send_request_body(self, body, sign, request_type, endpoint): pass
+
+    @abstractmethod
+    def send_request(self, request_type, endpoint, request_parameters): pass
+
+    @abstractmethod
+    def check_response(self, response): pass
 
     @abstractmethod
     def cep__client(self, api_key, api_secret_key, account_contract_type): pass
@@ -105,24 +134,24 @@ class CryptoExchangePlatform(ABC):
                             retry=MAX_RETRY*4)
 
     @abstractmethod
-    def cep__futures_account_trades(self, client, symbol): pass
+    def cep__futures_account_trades(self, symbol): pass
 
-    def CEP__FUTURES_ACCOUNT_TRADES(self, client, symbol):
+    def CEP__FUTURES_ACCOUNT_TRADES(self, symbol):
         self.called_function_name="CEP__FUTURES_ACCOUNT_TRADES"
         return self.CEP__BaseFunction(functools.partial( \
                             self.cep__futures_account_trades, \
-                            client, symbol))
+                            symbol))
 
     @abstractmethod
-    def cep__spot_account_trades(self, client, symbol): pass
+    def cep__spot_account_trades(self, symbol, limit='1'): pass
 
-    def CEP__SPOT_ACCOUNT_TRADES(self, client, symbol):
+    def CEP__SPOT_ACCOUNT_TRADES(self, symbol, limit='1'):
         self.called_function_name="CEP__SPOT_ACCOUNT_TRADES"
         return self.CEP__BaseFunction(functools.partial( \
                             self.cep__spot_account_trades, \
-                            client, symbol))
+                            symbol, limit))
 
-    def CEP__GET_ACCOUNT_HISTORY(self, client, account_type, symbol):
+    def CEP__GET_ACCOUNT_HISTORY(self, account_type, symbol):
         """
         Name : I__GET_ACCOUNT_HISTORY()
         
@@ -143,9 +172,9 @@ class CryptoExchangePlatform(ABC):
         """
         self.called_function_name="CEP__GET_ACCOUNT_HISTORY"
         if (account_type == SPOT):
-            ret = self.CEP__SPOT_ACCOUNT_TRADES(client, symbol)
+            ret = self.CEP__SPOT_ACCOUNT_TRADES(symbol)
         elif (account_type == FUTURES):
-            ret = self.CEP__FUTURES_ACCOUNT_TRADES(client, symbol)
+            ret = self.CEP__FUTURES_ACCOUNT_TRADES(symbol)
         else:
             ret = 1
         
@@ -285,7 +314,7 @@ class CryptoExchangePlatform(ABC):
                             self.cep__get_asset_balance, \
                             client), retry_period=0.5)
 
-
+    """
     @abstractmethod
     def cep__set_stop_loss_long(self, client, symbol, engaged_balance, \
                                 entryPrice, mode, risk=RISK): pass
@@ -298,8 +327,8 @@ class CryptoExchangePlatform(ABC):
                             client, symbol, engaged_balance, \
                             entryPrice, mode, risk=RISK), \
                             retry_period=0.5)
-
-
+    """
+    """
     @abstractmethod
     def cep__set_stop_loss_short(self, client, symbol, engaged_balance, \
                                 entryPrice, mode, risk=RISK): pass
@@ -311,7 +340,8 @@ class CryptoExchangePlatform(ABC):
                             self.cep__set_stop_loss_short, \
                             client, symbol, engaged_balance, \
                             entryPrice, mode, risk=RISK), retry_period=0.5)
-    
+    """
+    """
     @abstractmethod
     def cep__clear_stop_loss(self, client, symbol): pass
 
@@ -340,7 +370,7 @@ class CryptoExchangePlatform(ABC):
             return 1
         
         return ret
-
+    """
     @abstractmethod
     def cep__compute_side_spot_account(self, account, cep_response): pass
 
@@ -364,7 +394,7 @@ class CryptoExchangePlatform(ABC):
         else:
             return account.side
     
-
+    """
     @abstractmethod
     #PLATFORM SPECIFIC
     def cep__compute_engaged_balance(self, account, cep_response): pass
@@ -372,7 +402,7 @@ class CryptoExchangePlatform(ABC):
     def CEP__COMPUTE_ENGAGED_BALANCE(self, account, cep_response):
         self.called_function_name="CEP__COMPUTE_ENGAGED_BALANCE"
         return self.cep__compute_engaged_balance(account, cep_response)
-
+    """
     @abstractmethod
     def cep__get_symbol_price(self, client, symbol): pass
     

@@ -10,6 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
+            //"preLaunchTask": "Prepare Debug",
             "args": ["--mode", "debug", "--folder", "$PWD/strategies", "--history", "$PWD/stats"]
         }
     ]
