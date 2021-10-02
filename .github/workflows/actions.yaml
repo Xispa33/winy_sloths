@@ -30,7 +30,7 @@ jobs:
       - name: Generate sphinx documentation
         run: |
           echo ${{ github.repository }}
-          cd docs ; sphinx-apidoc -o . .. ; make html; ls; pwd
+          cd docs ; sphinx-apidoc -o . .. ; make html
       
       # TO UNCOMMENT
       - name: Publish Artifact
