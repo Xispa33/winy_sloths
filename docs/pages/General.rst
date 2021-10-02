@@ -22,7 +22,7 @@ A quel besoin repond-il ?
 
 Le copy-trading est une branche du trading social, où les positions d'une 
 personne sont copiées sur les comptes d'autres personnes. L'ouverture ou la 
-fermeture d'une position peuvent aussi bien être déclenché par un trade,
+fermeture d'une position peuvent aussi bien être déclenchée par un trade,
 que par une alerte. Le copy-trading est une pratique très répandue et 
 conseillé aux personnes débutantes en trading.
 
@@ -39,6 +39,11 @@ intelligence forment le système global.
 | Le système global se compose également de plusieurs comptes associés à une plateforme d'échange. Un compte appelé "maître", géré par l'intelligence et plusieurs comptes "esclaves" contrôlés par WS. En parallèle de l'execution de l'intelligence, WS se charge lui, en continue, d'observer l'historique du compte maître. 
 
 | Lorsque l'historique du compte maitre évolue (émission d'un ordre d'achat ou de vente), tous les comptes esclaves sont mis à jour par WS de la même manière que le compte maître.
+.. figure:: ws_diagram.png
+   :scale: 50 %
+   :alt: ws diagram
+
+   Figure : Schéma fonctionnement WS
 
 Aspects techniques
 ------------------
