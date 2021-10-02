@@ -1,0 +1,5 @@
+Full sphinx install (with extensions):
+pip3 install -U sphinx 
+pip3 install sphinxcontrib-needs
+pip3 install sphinxcontrib-plantuml
+pip3 install sphinx-test-reports
