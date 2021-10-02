@@ -5,7 +5,8 @@ name: Winy Sloths Continuous Integration
 # Controls when the action will run. 
 on:
   push: 
-    branches: [ new_feature/tests ]
+    #branches: [ new_feature/tests ]
+    branches: [ feature_binance ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
@@ -37,16 +38,16 @@ jobs:
         with:
           path: ${{ github.workspace }}/docs/_build/html
           name: doc
-
-  sonarcloud:
-    name: SonarCloud
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  
+  #sonarcloud:
+  #  name: SonarCloud
+  #  runs-on: self-hosted
+  #  steps:
+  #    - uses: actions/checkout@v2
+  #      with:
+  #        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+  #    - name: SonarCloud Scan
+  #      uses: SonarSource/sonarcloud-github-action@master
+  #      env:
+  #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+  #        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
