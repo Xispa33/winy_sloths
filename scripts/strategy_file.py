@@ -5,8 +5,8 @@ import os
 import sys
 from constants import *
 from errors import *
-sys.path.append(sys.path[0] + CEPS_PATH + "binance")
-sys.path.append(sys.path[0] + CEPS_PATH + "bybit")
+sys.path.append(os.getenv('CEPS_DIR') + "binance")
+sys.path.append(os.getenv('CEPS_DIR') + "bybit")
 from cep_binance import *
 from cep_bybit import *
 
@@ -33,15 +33,15 @@ class ApiKey:
     find_exchange_platform_class()
     
     """
-    def __init__(self, info_strategy_file):
+    def __init__(self, info_strategy_file, mode=DEBUG):
         self.exchange_platform_name = info_strategy_file[ \
                                     OFFSET_EXCHANGE_PLATFORM]
         self.client = Client(info_strategy_file[OFFSET_API_KEY], \
-                            info_strategy_file[ OFFSET_API_SECRET_KEY])
+                            info_strategy_file[OFFSET_API_SECRET_KEY])
 
-        self.exchange_platform_obj = self.find_exchange_platform_class()
+        self.exchange_platform_obj = self.find_exchange_platform_class(mode)
 
-    def find_exchange_platform_class(self):
+    def find_exchange_platform_class(self, mode):
         klass = globals()[CEP + self.exchange_platform_name]
         return klass()
         
@@ -73,9 +73,9 @@ class Account():
     open_long_from_short()
     open_short_from_long()
     """
-    def __init__(self, info_strategy_file, rtype=None, account_contract_type=None, symbol=None):
-        #super().__init__(info_strategy_file)
-        self.api_key = ApiKey(info_strategy_file)
+    def __init__(self, info_strategy_file, rtype=None, \
+                account_contract_type=None, symbol=None, mode=DEBUG):
+        self.api_key = ApiKey(info_strategy_file, mode)
         self.account_rtype = rtype if rtype != None else ""
         self.side = info_strategy_file[OFFSET_SIDE]
         
@@ -192,7 +192,6 @@ class Account():
             return self.open_short()
         else:
             return 1
-        
 
 class SlaveAccount(Account):
     """
@@ -248,7 +247,7 @@ class StrategyFile:
     StrategyFile__InitSlaves()
 
     """
-    def __init__(self, strategy_file_path, info_strategy_file_master, info_strategy_file_slave):
+    def __init__(self, strategy_file_path, info_strategy_file_master, info_strategy_file_slave, mode=DEBUG):
         self.strategy_file_path = strategy_file_path
         self.master_api = MasterAccount(info_strategy_file_master)
         self.slave_apis = self.StrategyFile__InitSlaves(info_strategy_file_slave, \
