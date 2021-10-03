@@ -68,6 +68,7 @@ jobs:
       - name: Generate sphinx documentation
         run: |
           echo ${{ github.repository }}
+          ls
           cd docs ; sphinx-apidoc -o . .. ; make html; cd ..
       
       - name: Publish Artifact
