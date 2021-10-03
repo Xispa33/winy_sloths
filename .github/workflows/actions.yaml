@@ -44,6 +44,7 @@ jobs:
           echo "END OF UNIT TESTS"
 
   documentation:
+    needs: unittest
     # The type of runner that the job will run on
     runs-on: self-hosted
 
