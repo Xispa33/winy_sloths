@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import bybit
+#import bybit
 import sys
 sys.path.append(sys.path[0] + "/../..")
 from constants import *
@@ -20,7 +20,6 @@ SELL = "Sell"
 ENTRY_PRICE = "entry_price"
 POSITION_VALUE = "position_value"
 POSITION_MARGIN = "position_margin"
-BYBIT_BASIC_ENDPOINT="https://api.bybit.com"
 BYBIT_SERVER_TIME_ENDPOINT = "/v2/public/time"
 BYBIT_SPOT_ORDER_HISTORY = "/spot/v1/history-orders"
 BYBIT_SPOT_WALLET_BALANCE = "/spot/v1/account"
@@ -42,8 +41,10 @@ class CEP__Bybit(CryptoExchangePlatform):
         self.api_key = ""
         self.api_secret_key = ""
         self.REQUEST_ACK_OK = 0
-        self.BASIC_TESTNET_ENDPOINT = ""
-        self.BASIC_ENDPOINT = BYBIT_BASIC_ENDPOINT
+        self.SPOT_TESTNET_ENDPOINT = 'https://testnet.binance.vision/api'
+        self.SPOT_REAL_ENDPOINT = 'https://api.bybit.com'
+        self.FUTURES_TESTNET_ENDPOINT = 'https://testnet.binancefuture.com'
+        self.FUTURES_REAL_ENDPOINT = 'https://fapi.binance.com'
 
     def cep__client(self, api_key, api_secret_key, account_contract_type): 
         self.called_function_name = "cep__client"
