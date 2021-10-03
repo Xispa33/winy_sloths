@@ -42,6 +42,12 @@ jobs:
           ./tests/run_test.bash ALL ALL ALL USDT ALL
           find . -name "*.xml"
           echo "END OF UNIT TESTS"
+        
+        - uses: actions/upload-artifact@master
+            with:
+              name: tu_reports
+              path: |
+                  ${{ github.workspace }}/build/*.xml
 
   documentation:
     needs: unittest
@@ -53,11 +59,16 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      - uses: actions/download-artifact@master
+          with:
+            name: tu_reports
+            path: |
+              ${{ github.workspace }}/build/*.xml
+
       # Runs a set of commands using the runners shell
       - name: Generate sphinx documentation
         run: |
           echo ${{ github.repository }}
-          find . -name "*.xml"
           cd docs ; sphinx-apidoc -o . .. ; make html; cd ..
       
       - name: Publish Artifact
