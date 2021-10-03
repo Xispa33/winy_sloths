@@ -47,7 +47,8 @@ jobs:
         with:
               name: tu_reports
               path: |
-                  ${{ github.workspace }}/build/*.xml
+                  ${{ github.workspace }}/docs/pages/tu_spot.xml
+                  ${{ github.workspace }}/docs/pages/tu_futures.xml
 
   documentation:
     needs: unittest
@@ -62,8 +63,6 @@ jobs:
       - uses: actions/download-artifact@master
         with:
             name: tu_reports
-            path: |
-              ${{ github.workspace }}/build/*.xml
 
       # Runs a set of commands using the runners shell
       - name: Generate sphinx documentation
