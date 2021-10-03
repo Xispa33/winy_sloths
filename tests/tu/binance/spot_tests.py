@@ -35,6 +35,7 @@ class TestSpot(unittest.TestCase):
                 retry_period=2)
         self.assertIsInstance(ret, dict)
         self.assertGreater(round(float(ret[PRICE]),2), 0)
+        sleep(1)
 
     def test_get_asset_balance(self):
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
@@ -44,6 +45,7 @@ class TestSpot(unittest.TestCase):
                 retry_period=2)
         self.assertIsInstance(ret, dict)
         self.assertGreater(round(float(ret[FREE]),2), 0)
+        sleep(1)
     
     def test_get_symbol_price_ticker(self):
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
@@ -54,6 +56,7 @@ class TestSpot(unittest.TestCase):
         self.assertIsInstance(ret, dict)
         self.assertEqual(ret[SYMBOL], self.symbol)
         self.assertGreater(round(float(ret[PRICE]),2), 0)
+        sleep(1)
     
     def test_get_order_book(self):
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
@@ -62,8 +65,8 @@ class TestSpot(unittest.TestCase):
                 retry=MAX_RETRY, \
                 retry_period=2)
         self.assertIsInstance(ret, dict)
+        sleep(1)
 
-    
     def test_get_aggregate_trades(self):
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
                 self.obj_binance.cep__get_aggregate_trades, \
@@ -71,6 +74,7 @@ class TestSpot(unittest.TestCase):
                 retry=MAX_RETRY, \
                 retry_period=2)
         self.assertIsInstance(ret, list)
+        sleep(1)
 
     def test_get_exchange_info(self):
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
@@ -78,6 +82,7 @@ class TestSpot(unittest.TestCase):
                 retry=MAX_RETRY, \
                 retry_period=2)
         self.assertIsInstance(ret['symbols'], list)
+        sleep(1)
 
     def test_spot_account_trades(self):
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
@@ -86,6 +91,7 @@ class TestSpot(unittest.TestCase):
                 retry=MAX_RETRY, \
                 retry_period=2)
         self.assertIsInstance(ret, list)
+        sleep(1)
     
     def test_compute_side(self):
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
@@ -95,12 +101,18 @@ class TestSpot(unittest.TestCase):
 
         ret = self.obj_binance.cep__compute_side_spot_account(self.account, ret)
         self.assertEqual(ret, OUT)
+        sleep(1)
     
+    """
     def test_open_close_order(self):
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
                 self.obj_binance.cep__open_long_spot, \
-                self.symbol, False, 1))
+                self.symbol, False, 1), \
+                retry=10, \
+                retry_period=0.5)
         self.assertEqual(ret, 0)
+        
+        sleep(2)
 
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
                 self.obj_binance.cep__spot_account_trades, \
@@ -115,10 +127,12 @@ class TestSpot(unittest.TestCase):
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
                 self.obj_binance.cep__close_long_spot, \
                 self.symbol, False, 1), \
-                retry=MAX_RETRY*10, \
+                retry=10, \
                 retry_period=0.5)
         self.assertEqual(ret, 0)
         
+        sleep(2)
+
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
                 self.obj_binance.cep__spot_account_trades, \
                 self.symbol))
@@ -134,7 +148,8 @@ class TestSpot(unittest.TestCase):
                 USDT), \
                 retry=MAX_RETRY, \
                 retry_period=2)
-        self.assertLess(round(float(ret[FREE]),2), 50)
+        self.assertGreater(round(float(ret[FREE]),2), 50)
+    """
 
 if __name__ == '__main__':
     unittest.main()

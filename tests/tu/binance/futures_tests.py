@@ -30,16 +30,19 @@ class TestFuturesBinance(unittest.TestCase):
         ret = self.obj_binance.cep__futures_time()
         self.assertIsInstance(ret, int)
         self.assertGreater(ret, int(time.time()*1000) - 3600)
+        sleep(1)
     
     def test_get_futures_account_balance(self):
         ret = self.obj_binance.cep__get_futures_account_balance(self.asset)
         print(ret)
         self.assertIsInstance(ret, dict)
         self.assertEqual(ret[ASSET], self.asset)
+        sleep(1)
     
     def test_get_futures_account_trades(self):
         ret = self.obj_binance.cep__futures_account_trades(self.symbol)
         self.assertIsInstance(ret, list)
+        sleep(1)
     
     def test_get_symbol_price_futures(self):
         ret = self.obj_binance.cep__get_symbol_price_futures(self.symbol)
@@ -47,6 +50,7 @@ class TestFuturesBinance(unittest.TestCase):
         self.assertEqual(ret[SYMBOL], self.symbol)
         self.assertIsInstance(ret[SYMBOL], str)
         self.assertGreater(float(ret[PRICE]), 0)
+        sleep(1)
 
     """
     def test_open_long_futures(self, symbol):

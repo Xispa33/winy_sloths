@@ -12,11 +12,37 @@ on:
     inputs:
       version:
         description: WS Version
-        default: v1.0.2
+        default: v2.0.0
         required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  unittest:
+    # The type of runner that the job will run on
+    runs-on: self-hosted
+    
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2 
+
+      # Runs a set of commands using the runners shell
+      - name: Run unit tests
+        env:
+            GMAIL_PASSWORD_KEY: ${{ secrets.GMAIL_PASSWORD_KEY }}
+            API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
+            API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
+            API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
+            API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
+
+        run: |
+          echo ${{ github.repository }}
+          echo "START OF UNIT TESTS"
+          pwd
+          ./tests/run_test.bash ALL ALL ALL USDT ALL
+          
+          echo "END OF UNIT TESTS"
+
   documentation:
     # The type of runner that the job will run on
     runs-on: self-hosted
@@ -30,15 +56,14 @@ jobs:
       - name: Generate sphinx documentation
         run: |
           echo ${{ github.repository }}
-          cd docs ; sphinx-apidoc -o . .. ; make html
+          cd docs ; sphinx-apidoc -o . .. ; make html; cd ..
       
-      # TO UNCOMMENT
       - name: Publish Artifact
         uses: actions/upload-artifact@v2
         with:
           path: ${{ github.workspace }}/docs/_build/html
           name: doc
-  
+
   #sonarcloud:
   #  name: SonarCloud
   #  runs-on: self-hosted
