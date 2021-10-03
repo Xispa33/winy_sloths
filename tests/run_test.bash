@@ -87,7 +87,7 @@ elif [ $TEST_TYPE == "ALL" ] && [ $CONTRACT_TYPE == "ALL" ] \
                 output_file="${build_dir}/${test_type}_${contract_type}.xml"
                 xmlmerge ${build_dir}/*.xml > ${output_file}
 
-                #cp ${output_file} ./docs/pages
+                mv ${output_file} ./docs/pages
             done
         done
 
