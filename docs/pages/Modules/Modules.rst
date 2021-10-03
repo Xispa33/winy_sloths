@@ -5,12 +5,7 @@ Modules
 .. toctree::
    :maxdepth: 4
 
-This is explains everything.
-
-interface_binance.py
---------------------
-
-.. include:: interface_binance.rst
+This explains everything.
 
 strategy_file.py
 --------------------
