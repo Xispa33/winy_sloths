@@ -40,7 +40,7 @@ jobs:
           echo "START OF UNIT TESTS"
           pwd
           ./tests/run_test.bash ALL ALL ALL USDT ALL
-          
+          find . -name "*.xml"
           echo "END OF UNIT TESTS"
 
   documentation:
