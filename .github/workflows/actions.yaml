@@ -68,7 +68,6 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Generate sphinx documentation
         run: |
-          mv tu_spot.xml tu_futures.xml docs/pages
           cd docs ; sphinx-apidoc -o . .. ; make html; cd ..
       
       - name : Publish Test Report
