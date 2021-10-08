@@ -105,7 +105,7 @@ class TestSpot(unittest.TestCase):
 
         ret = self.obj_binance.cep__compute_side_spot_account(self.account, ret)
         self.assertEqual(ret, OUT)
-        self.open_close_flag = isinstance(ret, list)*self.open_close_flag
+        self.open_close_flag = isinstance(ret, list) & self.open_close_flag
         sleep(1)
 
     @unittest.skipIf(open_close_flag==False, "This test was skipped because the account position side is not out.")
