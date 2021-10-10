@@ -55,7 +55,7 @@ jobs:
                   
   EoT:
       needs: UnitTest
-      if: false
+      if: ${{ github.event.inputs.symbol }} = BTC & ${{ github.event.inputs.platform }} = BINANCE & ${{ github.event.inputs.test_type }} = TU
       runs-on: self-hosted
       steps:
         - run: echo "UnitTest ended with error"; exit 1;
