@@ -6,6 +6,12 @@ name: Winy Sloths Continuous Integration
 on:
   push: 
     branches: [ feature_binance ]
+  env:
+    GMAIL_PASSWORD_KEY: ${{ secrets.GMAIL_PASSWORD_KEY }}
+    API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
+    API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
+    API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
+    API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
   workflow_dispatch:
     inputs:
         test_type:
@@ -38,13 +44,6 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Run unit tests
-        env:
-            GMAIL_PASSWORD_KEY: ${{ secrets.GMAIL_PASSWORD_KEY }}
-            API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
-            API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
-            API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
-            API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
-
         run: |
           ./tests/run_test.bash TU SPOT BTC USDT BINANCE
           echo "test type = ${{ github.event.inputs.test_type }}"
