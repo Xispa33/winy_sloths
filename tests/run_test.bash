@@ -64,7 +64,8 @@ elif [ $TEST_TYPE == "ALL" ] && [ $CONTRACT_TYPE == "ALL" ] \
         declare -a test_type=("tu")
         declare -a platform_list=("binance")
         declare -a contract_type_list=("futures" "spot")
-        declare -a cmd_symbol_list=("BTCUSDT" "ETHUSDT" "BNBUSDT")
+        #declare -a cmd_symbol_list=("BTCUSDT" "ETHUSDT" "BNBUSDT")
+        declare -a cmd_symbol_list=("BTCUSDT")
 
         ######################### SPOT ##########################
         

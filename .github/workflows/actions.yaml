@@ -17,7 +17,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  unittest:
+  UnitTests:
     # The type of runner that the job will run on
     runs-on: self-hosted
     
@@ -45,14 +45,11 @@ jobs:
                   ${{ github.workspace }}/docs/pages/tu_spot.xml
                   ${{ github.workspace }}/docs/pages/tu_futures.xml
                   ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BTCUSDT.xml
-                  ${{ github.workspace }}/build/tu/futures/tu_futures_binance_ETHUSDT.xml
-                  ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BNBUSDT.xml
                   ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BTCUSDT.xml
-                  ${{ github.workspace }}/build/tu/spot/tu_spot_binance_ETHUSDT.xml
-                  ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BNBUSDT.xml
+                  
 
   documentation:
-    needs: unittest
+    needs: UnitTest
     # The type of runner that the job will run on
     runs-on: self-hosted
 
@@ -76,11 +73,7 @@ jobs:
         with: 
           report_paths: |
             ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BTCUSDT.xml
-            ${{ github.workspace }}/build/tu/futures/tu_futures_binance_ETHUSDT.xml
-            ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BNBUSDT.xml
             ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BTCUSDT.xml
-            ${{ github.workspace }}/build/tu/spot/tu_spot_binance_ETHUSDT.xml
-            ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BNBUSDT.xml
       
       #UNCOMMENT TO HAVE DOC AS ARTEFACT
       #- name: Publish Artifact
@@ -90,7 +83,7 @@ jobs:
       #    name: doc
 
   sonarcloud:
-    needs: unittest
+    needs: UnitTest
     name: SonarCloud
     runs-on: self-hosted
     steps:
@@ -106,3 +99,9 @@ jobs:
   #        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 
+  EoT:
+      needs: UnitTest
+      if: false
+      runs-on: self-hosted
+      steps:
+        - run: echo "UnitTest ended with error"; exit 1;
