@@ -52,8 +52,8 @@ if [ $TEST_TYPE != "ALL" ] && [ $CONTRACT_TYPE != "ALL" ] && [ $PLATFORM != "ALL
 
     SCRIPT_DIR=${PWD}/scripts/ CEPS_DIR=${PWD}/scripts/ceps/ \
     SYMBOL=${cmd_symbol} ASSET=${ASSET} \
-    python3 -m pytest ${path} -v
-    #python3 -m pytest --junitxml ${output_file} ${path} -v
+    python3 -m pytest --junitxml ${output_file} ${path} -v
+    #python3 -m pytest ${path} -v
     
     
     #rm -rf tmp/

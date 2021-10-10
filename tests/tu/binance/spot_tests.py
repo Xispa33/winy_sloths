@@ -18,6 +18,13 @@ import pytest
 
 #python3 -m pytest --junitxml result.xml tests/tu/spot_tests.py -vxk "not test_compute_side"      
 #SCRIPT_DIR=$PWD/scripts/ CEPS_DIR=$PWD/scripts/ceps/ SYMBOL=BTCUSDT ASSET=USDT python3 -m pytest tests/tu/binance/spot_tests.py -v
+class SequentialTestLoader(unittest.TestLoader):
+    def getTestCaseNames(self, testCaseClass):
+        test_names = super().getTestCaseNames(testCaseClass)
+        print(test_names)
+        testcase_methods = list(testCaseClass.__dict__.keys())
+        test_names.sort(key=testcase_methods.index)
+        return test_names
 
 class TestSpot(unittest.TestCase):
     symbol = os.getenv('SYMBOL')
@@ -156,4 +163,4 @@ class TestSpot(unittest.TestCase):
         self.assertGreater(round(float(ret[FREE]),2), 50)
         
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(testLoader=SequentialTestLoader())
