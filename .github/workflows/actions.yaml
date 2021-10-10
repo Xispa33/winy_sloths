@@ -56,12 +56,12 @@ jobs:
                   ${{ github.workspace }}/docs/pages/tu_futures.xml
                   ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BTCUSDT.xml
                   ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BTCUSDT.xml
-  EoT:
+  EndTest:
       needs: BTC_Unit_Test
       if: ${{ github.event.inputs.symbol }} = BTC & ${{ github.event.inputs.platform }} = BINANCE & ${{ github.event.inputs.test_type }} = TU & ${{ github.event.inputs.contract }} = SPOT
       runs-on: self-hosted
       steps:
-        - run: echo "UnitTest ended with error"; exit 1;
+        - run: echo "UnitTest ended with error"; exit 0;
   TU:
       needs: BTC_Unit_Test
       if: ${{ github.event.inputs.test_type }} = TU
@@ -73,7 +73,7 @@ jobs:
   
   ValidationTest:
       needs: TU
-      if: ${{ github.event.inputs.test_type }} = TV
+      if: ${{ github.event.inputs.test_type }} == TV
       runs-on: self-hosted
       steps:
         - run: echo "This should correspond to validation tests"; exit 0;
