@@ -4,22 +4,20 @@ name: Winy Sloths Continuous Integration
 
 # Controls when the action will run. 
 on:
-  # Allows  you to run this workflow manually from the Actions tab
   workflow_dispatch:
-    branches: [ feature_binance ]
     inputs:
-      version:
-        description: WS Version
-        default: v2.0.0
-        required: true
-      test_type:
-        description: Type of test to play, either TU, TV or ALL
-        default: TU
-        required: true
-      symbol:
-        description: Symbol to test, either BTC, ETH or BNB
-        default: BTC
-        required: true
+        version:
+          description: WS Version
+          default: v2.0.0
+          required: true
+        test_type:
+          description: Type of test to play, either TU, TV or ALL
+          default: TU
+          required: true
+        symbol:
+          description: Symbol to test, either BTC, ETH or BNB
+          default: BTC
+          required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
