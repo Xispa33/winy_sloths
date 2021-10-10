@@ -4,6 +4,9 @@ name: Winy Sloths Continuous Integration
 
 # Controls when the action will run. 
 on:
+  push: 
+    #branches: [ new_feature/tests ]
+    branches: [ feature_binance ]
   workflow_dispatch:
     inputs:
         version:
