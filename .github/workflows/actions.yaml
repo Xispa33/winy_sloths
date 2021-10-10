@@ -58,7 +58,7 @@ jobs:
                   ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BTCUSDT.xml
   EndTest:
       needs: BTC_Unit_Test
-      if: ${{ github.event.inputs.symbol == BTC && github.event.inputs.test_type == TU }}
+      if: ${{ github.event.inputs.symbol == 'BTC' && github.event.inputs.test_type == 'TU' }}
       runs-on: self-hosted
       steps:
         - run: echo "UnitTest ended with error"; exit 0;
