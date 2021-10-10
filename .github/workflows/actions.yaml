@@ -9,19 +9,19 @@ on:
   workflow_dispatch:
     inputs:
         test_type:
-          description: Test type (TU, TV or ALL)
+          description: 'Test type (TU, TV or ALL)'
           required: true
           default: 'TU'
         symbol:
-          description: Symbol (BTC, ETH or BNB)
+          description: 'Symbol (BTC, ETH or BNB)'
           required: true
           default: 'BTC'
         platform:
-          description: Exchange platform (BINANCE, BYBIT or ALL)
+          description: 'Exchange platform (BINANCE, BYBIT or ALL)'
           required: true
           default: 'BINANCE'
         Contract:
-          description: Contract (SPOT, FUTURES or ALL)
+          description: 'Contract (SPOT, FUTURES or ALL)'
           required: true
           default: 'SPOT'
 
