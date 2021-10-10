@@ -47,6 +47,8 @@ jobs:
 
         run: |
           ./tests/run_test.bash TU SPOT BTC USDT BINANCE
+          echo "test type = ${github.event.inputs.test_type}"
+          echo "symbol = ${github.event.inputs.symbol}"
       
       - uses: actions/upload-artifact@master
         with:
