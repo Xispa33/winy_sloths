@@ -44,8 +44,8 @@ jobs:
             API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
             API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
             API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
-            AAA: ${{ github.event.inputs.symbol }}
-            BBB: ${{ github.event.inputs.test_type }}
+            AAA: ${{ inputs.symbol }}
+            BBB: ${{ inputs.test_type }}
 
         run: |
           ./tests/run_test.bash TU SPOT BTC USDT BINANCE
