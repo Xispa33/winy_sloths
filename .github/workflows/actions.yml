@@ -1,0 +1,111 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Winy Sloths Continuous Integration
+
+# Controls when the action will run. 
+on:
+  workflow_dispatch:
+    inputs:
+        version:
+          description: WS Version
+          default: v2.0.0
+          required: true
+        test_type:
+          description: Type of test to play, either TU, TV or ALL
+          default: TU
+          required: true
+        symbol:
+          description: Symbol to test, either BTC, ETH or BNB
+          default: BTC
+          required: true
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  UnitTest:
+    # The type of runner that the job will run on
+    runs-on: self-hosted
+    
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a set of commands using the runners shell
+      - name: Run unit tests
+        env:
+            GMAIL_PASSWORD_KEY: ${{ secrets.GMAIL_PASSWORD_KEY }}
+            API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
+            API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
+            API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
+            API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
+
+        run: |
+          ./tests/run_test.bash ALL ALL ALL USDT ALL
+      
+      - uses: actions/upload-artifact@master
+        with:
+              name: tu_reports
+              path: |
+                  ${{ github.workspace }}/docs/pages/tu_spot.xml
+                  ${{ github.workspace }}/docs/pages/tu_futures.xml
+                  ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BTCUSDT.xml
+                  ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BTCUSDT.xml
+                  
+  EoT:
+      needs: UnitTest
+      if: false
+      runs-on: self-hosted
+      steps:
+        - run: echo "UnitTest ended with error"; exit 1;
+
+  documentation:
+    needs: UnitTest
+    if: true
+    # The type of runner that the job will run on
+    runs-on: self-hosted
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@master
+        with:
+            name: tu_reports
+
+      # Runs a set of commands using the runners shell
+      - name: Generate sphinx documentation
+        run: |
+          cd docs ; sphinx-apidoc -o . .. ; make html; cd ..
+      
+      - name : Publish Test Report
+        uses: mikepenz/action-junit-report@v2
+        if: always() # always run even if the previous step fails
+        with: 
+          report_paths: |
+            ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BTCUSDT.xml
+            ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BTCUSDT.xml
+      
+      #UNCOMMENT TO HAVE DOC AS ARTEFACT
+      #- name: Publish Artifact
+      #  uses: actions/upload-artifact@v2
+      #  with:
+      #    path: ${{ github.workspace }}/docs/_build/html
+      #    name: doc
+
+  sonarcloud:
+    needs: UnitTest
+    if: true
+    name: SonarCloud
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarCloud Scan
+  #      uses: SonarSource/sonarcloud-github-action@master
+        run: |
+          echo "Sonar Scan to add later"
+  #      env:
+  #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+  #        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
