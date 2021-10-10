@@ -11,19 +11,19 @@ on:
         test_type:
           description: Test type (TU, TV or ALL)
           required: true
-          default: TU
+          default: 'TU'
         symbol:
           description: Symbol (BTC, ETH or BNB)
           required: true
-          default: BTC
+          default: 'BTC'
         platform:
           description: Exchange platform (BINANCE, BYBIT or ALL)
           required: true
-          default: BINANCE
+          default: 'BINANCE'
         Contract:
           description: Contract (SPOT, FUTURES or ALL)
           required: true
-          default: SPOT
+          default: 'SPOT'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -44,13 +44,11 @@ jobs:
             API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
             API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
             API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
-            AAA: ${{ inputs.symbol }}
-            BBB: ${{ inputs.test_type }}
 
         run: |
           ./tests/run_test.bash TU SPOT BTC USDT BINANCE
-          echo "test type = ${AAA}"
-          echo "symbol = ${BBB}"
+          echo "test type = ${{ github.event.inputs.test_type }}"
+          echo "symbol = ${{ github.event.inputs.symbol }}"
       
       - uses: actions/upload-artifact@master
         with:
