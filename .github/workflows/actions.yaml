@@ -17,7 +17,7 @@ on:
         default: TU
         required: true
       symbol:
-        description: , either BTC, ETH or BNB
+        description: Symbol to test, either BTC, ETH or BNB
         default: BTC
         required: true
 
