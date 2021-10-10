@@ -45,9 +45,7 @@ jobs:
             API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
 
         run: |
-          ./tests/run_test.bash TU SPOT BTC USDT BINANCE
-          echo "test type = ${{ github.event.inputs.test_type }}"
-          echo "symbol = ${{ github.event.inputs.symbol }}"
+          ./tests/run_test.bash ${{ github.event.inputs.contract.default }} ${{ github.event.inputs.symbol.default }} USDT ${{ github.event.inputs.platform.default }}
       
       - uses: actions/upload-artifact@master
         with:
