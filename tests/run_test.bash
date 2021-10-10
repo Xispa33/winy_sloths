@@ -27,7 +27,7 @@ else
     ASSET=$4
     PLATFORM=$5
 
-    [ $TEST_TYPE == "TU" ] || [ $TEST_TYPE == "TV" ] || [ $TEST_TYPE == "ALL" ] && echo "TEST_TYPE = ${TEST_TYPE}" || exit 1
+    [ $TEST_TYPE == "TU" ] || [ $TEST_TYPE == "TV" ] && echo "TEST_TYPE = ${TEST_TYPE}" || exit 1
     [ $CONTRACT_TYPE == "SPOT" ] || [ $CONTRACT_TYPE == "FUTURES" ] || [ $CONTRACT_TYPE == "ALL" ] && echo "CONTRACT_TYPE = ${CONTRACT_TYPE}" || exit 1
     [ $SYMBOL == "BTC" ] || [ $SYMBOL == "ETH" ] || [ $SYMBOL == "BNB" ] || [ $SYMBOL == "ALL" ] && echo "SYMBOL = ${SYMBOL}" || exit 1
     [[ $ASSET == "USDT" ]] && echo "ASSET = ${ASSET}" || exit 1
@@ -37,38 +37,36 @@ fi
 
 rm -rf build/
 path="./tests/"
-cmd_symbol=${SYMBOL}${ASSET}
+if [ $SYMBOL != "ALL" ]; then
+    cmd_symbol=${SYMBOL}${ASSET}
+fi
 cmd_asset=${ASSET}
-
 test_type=$(convert2lower ${TEST_TYPE})
 platform=$(convert2lower ${PLATFORM})
 contract_type=$(convert2lower ${CONTRACT_TYPE})
 
-if [ $TEST_TYPE != "ALL" ] && [ $CONTRACT_TYPE != "ALL" ] && [ $PLATFORM != "ALL" ]; then
-    build_dir="build/${test_type}"
-    mkdir -p ${build_dir}
-    path="${path}/${test_type}/${platform}/${contract_type}_tests.py"
-    output_file="${build_dir}/${test_type}_${contract_type}.xml"
+declare -a test_type=($test_type)
 
-    SCRIPT_DIR=${PWD}/scripts/ CEPS_DIR=${PWD}/scripts/ceps/ \
-    SYMBOL=${cmd_symbol} ASSET=${ASSET} \
-    python3 -m pytest --junitxml ${output_file} ${path} -v
-    #python3 -m pytest ${path} -v
-    
-    
-    #rm -rf tmp/
-elif [ $TEST_TYPE == "ALL" ] && [ $CONTRACT_TYPE == "ALL" ] \
-  && [ $PLATFORM == "ALL" ] && [ $SYMBOL == "ALL" ]; then
-    ################################### TU #####################################
-        #TO MODIF
-        declare -a test_type=("tu")
-        declare -a platform_list=("binance")
-        declare -a contract_type_list=("futures" "spot")
-        #declare -a cmd_symbol_list=("BTCUSDT" "ETHUSDT" "BNBUSDT")
-        declare -a cmd_symbol_list=("BTCUSDT")
+if [ $CONTRACT_TYPE == "ALL" ]; then
+    declare -a contract_type_list=("futures" "spot")
+else
+    declare -a contract_type_list=(${contract_type})
+fi
+if [ $SYMBOL == "ALL" ]; then
+    #declare -a cmd_symbol_list=("BTCUSDT" "ETHUSDT" "BNBUSDT")
+    declare -a cmd_symbol_list=("BTCUSDT")
+else
+    declare -a cmd_symbol_list=(${cmd_symbol})
+fi
+if [ $PLATFORM == "ALL" ]; then
+    #declare -a platform_list=("binance" "bybit")
+    declare -a platform_list=("binance")
+else
+    declare -a platform_list=(${platform})
+fi
 
-        ######################### SPOT ##########################
-        
+        ######################### TU ##########################
+if [ ${TEST_TYPE} == "TU" ]; then        
         for platform in "${platform_list[@]}"
         do
             for contract_type in "${contract_type_list[@]}"
@@ -92,14 +90,9 @@ elif [ $TEST_TYPE == "ALL" ] && [ $CONTRACT_TYPE == "ALL" ] \
             done
         done
 
-    ################################### TV #####################################
-    test_type="TV"
-    #TO UPDATE
-
-    #TO UPDATE WHEN TV ARE READY
-    if [ ${TEST_TYPE} == "TV" ]; then
-        echo "Concatener fichier xml en 1 pour mesure de couverture"
-    fi
+        ######################### TV ##########################
+elif [${TEST_TYPE} == "TV"]; then
+    echo "TV to play"
 fi
 
 #SCRIPT_DIR=$PWD/scripts/ CEPS_DIR=$PWD/scripts/ceps/ SYMBOL=BTCUSDT ASSET=USDT python3 -m pytest tests/tu/binance/spot_tests.py -v
