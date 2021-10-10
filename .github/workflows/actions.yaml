@@ -5,21 +5,20 @@ name: Winy Sloths Continuous Integration
 # Controls when the action will run. 
 on:
   push: 
-    #branches: [ new_feature/tests ]
     branches: [ feature_binance ]
   workflow_dispatch:
     inputs:
-        version:
-          description: WS Version
-          default: v2.0.0
-          required: true
         test_type:
-          description: Type of test to play, either TU, TV or ALL
+          description: Test type (TU, TV or ALL)
           default: TU
           required: true
         symbol:
-          description: Symbol to test, either BTC, ETH or BNB
+          description: Symbol (BTC, ETH or BNB)
           default: BTC
+          required: true
+        platform:
+          description: Exchange platform (BINANCE, BYBIT or ALL)
+          default: BINANCE
           required: true
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -60,6 +59,12 @@ jobs:
       runs-on: self-hosted
       steps:
         - run: echo "UnitTest ended with error"; exit 1;
+  
+  ValidationTest:
+      needs: UnitTest
+      runs-on: self-hosted
+      steps:
+        - run: echo "This should correspond to validation tests"; exit 0;
 
   documentation:
     needs: UnitTest
