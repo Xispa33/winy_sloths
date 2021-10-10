@@ -4,7 +4,7 @@ name: Winy Sloths Continuous Integration
 
 # Controls when the action will run. 
 on:
-  # Allows you to run this workflow manually from the Actions tab
+  # Allows  you to run this workflow manually from the Actions tab
   workflow_dispatch:
     branches: [ feature_binance ]
     inputs:
