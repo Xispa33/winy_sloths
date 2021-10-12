@@ -67,9 +67,9 @@ jobs:
       runs-on: self-hosted
       steps:
         - run: |
-          echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
-          ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT BYBIT
-          exit 0
+            echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
+            ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT BYBIT
+            exit 0
 
   TU_BYBIT: 
       name: Bybit unitary tests
@@ -83,19 +83,19 @@ jobs:
       runs-on: self-hosted
       steps:
         - run: |
-          echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
-          ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT BYBIT
-          exit 0
+            echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
+            ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT BYBIT
+            exit 0
 
   ValidationTest:
-      needs: TU
+      needs: [ TU_BYBIT, TU_BINANCE, TU_ALL ]
       if: ${{ github.event.inputs.test_type == 'TV' }} 
       runs-on: self-hosted
       steps:
         - run: echo "This should correspond to validation tests"; exit 0;
 
   documentation:
-    needs: [TU, ValidationTest]
+    needs: [ValidationTest]
     if: success()
     # The type of runner that the job will run on
     runs-on: self-hosted
