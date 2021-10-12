@@ -102,6 +102,12 @@ jobs:
             echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
             ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT ALL
             exit 0
+  EndTUTest:
+      needs: [ TU_BYBIT, TU_BINANCE, TU_ALL ]
+      if: ${{ github.event.inputs.test_type == 'TU' }}
+      runs-on: self-hosted
+      steps:
+        - run: echo "UnitTest ended with success"; exit 0;
 
   ValidationTest:
       needs: [ TU_BYBIT, TU_BINANCE, TU_ALL ]
