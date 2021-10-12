@@ -64,7 +64,8 @@ jobs:
         - run: echo "Running Binance TU"; exit 0;
 
   TU_BYBIT: 
-      needs: Bybit unitary tests
+      name: Bybit unitary tests
+      needs: TU_BTC
       if: ${{  github.event.inputs.platform == 'BYBIT' }}
       runs-on: self-hosted
       steps:
