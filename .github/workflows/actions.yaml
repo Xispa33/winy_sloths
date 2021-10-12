@@ -58,45 +58,34 @@ jobs:
   TU_BINANCE:
       name: Binance unitary tests 
       needs: TU_BTC
+      env:
+        API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
+        API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
+        API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
+        API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
       if: ${{  github.event.inputs.platform == 'BINANCE' }}
       runs-on: self-hosted
       steps:
-        - run: echo "Running Binance TU"; exit 0;
+        - run: |
+          echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
+          ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT BYBIT
+          exit 0
 
   TU_BYBIT: 
       name: Bybit unitary tests
-      needs: TU_BTC
-      if: ${{  github.event.inputs.platform == 'BYBIT' }}
-      runs-on: self-hosted
-      steps:
-        - run: echo "Running Bybit TU"; exit 0;
-
-  EndTest:
-      needs: TU_BTC
-      if: ${{ github.event.inputs.symbol == 'BTC' && github.event.inputs.test_type == 'TU' && github.event.inputs.contract == 'SPOT' && github.event.inputs.platform == 'BINANCE' }}
-      runs-on: self-hosted
-      steps:
-        - run: echo "UnitTest ended with success"; exit 0;
-  TU:
-      name: All unitary tests 
       needs: TU_BTC
       env:
         API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
         API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
         API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
         API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
-      if: ${{ github.event.inputs.test_type == 'TU' && (github.event.inputs.symbol != 'BTC' || github.event.inputs.contract == 'SPOT' || github.event.inputs.platform == 'BINANCE') }} 
+      if: ${{  github.event.inputs.platform == 'BYBIT' }}
       runs-on: self-hosted
       steps:
         - run: |
-            echo "Running TU with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
-            ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT ${{ github.event.inputs.platform }}
-  EndTUTest:
-      needs: TU
-      if: ${{ github.event.inputs.test_type == 'TU' }}
-      runs-on: self-hosted
-      steps:
-        - run: echo "UnitTest ended with success"; exit 0;
+          echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
+          ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT BYBIT
+          exit 0
 
   ValidationTest:
       needs: TU
