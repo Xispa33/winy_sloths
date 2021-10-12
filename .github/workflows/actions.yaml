@@ -47,14 +47,15 @@ jobs:
         run: |
           ./tests/run_test.bash TU SPOT BTC USDT BINANCE
       
-      - uses: actions/upload-artifact@master
-        with:
-              name: tu_reports
-              path: |
-                  ${{ github.workspace }}/docs/pages/tu_spot.xml
-                  ${{ github.workspace }}/docs/pages/tu_futures.xml
-                  ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BTCUSDT.xml
-                  ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BTCUSDT.xml
+      #- uses: actions/upload-artifact@master
+      #  with:
+      #        name: tu_reports
+      #        path: |
+      #            ${{ github.workspace }}/docs/pages/tu_spot.xml
+      #            ${{ github.workspace }}/docs/pages/tu_futures.xml
+      #            ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BTCUSDT.xml
+      #            ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BTCUSDT.xml
+
   TU_BINANCE:
       name: Binance unitary tests 
       needs: TU_BTC
@@ -68,7 +69,7 @@ jobs:
       steps:
         - run: |
             echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
-            ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT BYBIT
+            ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT BINANCE
             exit 0
 
   TU_BYBIT: 
