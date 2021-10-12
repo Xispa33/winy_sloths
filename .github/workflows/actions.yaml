@@ -146,7 +146,7 @@ jobs:
       #    name: doc
 
   sonarcloud:
-    needs: [TU, ValidationTest]
+    needs: [ValidationTest]
     if: success()
     name: SonarCloud
     runs-on: self-hosted
