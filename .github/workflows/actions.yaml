@@ -27,7 +27,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  BTC_Unit_Test:
+  TU_BTC:
     # The type of runner that the job will run on
     runs-on: self-hosted
     
@@ -45,7 +45,7 @@ jobs:
             API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
 
         run: |
-          ./tests/run_test.bash SPOT BTC USDT BINANCE
+          ./tests/run_test.bash TU SPOT BTC USDT BINANCE
       
       - uses: actions/upload-artifact@master
         with:
@@ -55,15 +55,30 @@ jobs:
                   ${{ github.workspace }}/docs/pages/tu_futures.xml
                   ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BTCUSDT.xml
                   ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BTCUSDT.xml
+  TU_BINANCE:
+      name: Binance unitary tests 
+      needs: TU_BTC
+      if: ${{  github.event.inputs.platform == 'BINANCE' }}
+      runs-on: self-hosted
+      steps:
+        - run: echo "Running Binance TU"; exit 0;
+
+  TU_BYBIT: 
+      needs: Bybit unitary tests
+      if: ${{  github.event.inputs.platform == 'BYBIT' }}
+      runs-on: self-hosted
+      steps:
+        - run: echo "Running Bybit TU"; exit 0;
+
   EndTest:
-      needs: BTC_Unit_Test
+      needs: TU_BTC
       if: ${{ github.event.inputs.symbol == 'BTC' && github.event.inputs.test_type == 'TU' && github.event.inputs.contract == 'SPOT' && github.event.inputs.platform == 'BINANCE' }}
       runs-on: self-hosted
       steps:
         - run: echo "UnitTest ended with success"; exit 0;
   TU:
       name: All unitary tests 
-      needs: BTC_Unit_Test
+      needs: TU_BTC
       env:
         API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
         API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
