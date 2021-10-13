@@ -28,6 +28,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   TU_BTC:
+    name: BTC Test
     # The type of runner that the job will run on
     runs-on: self-hosted
     
@@ -59,33 +60,53 @@ jobs:
   TU_BINANCE:
       name: Binance unitary tests 
       needs: TU_BTC
+      runs-on: self-hosted
       env:
         API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
         API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
         API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
         API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
-      if: ${{  github.event.inputs.platform == 'BINANCE' || github.event.inputs.platform == 'ALL' }}
-      runs-on: self-hosted
       steps:
-        - run: |
-            echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
-            ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT BINANCE
-            exit 0
+        SPOT_BINANCE:
+          name: Spot
+          if: ${{  (github.event.inputs.platform == 'BINANCE' || github.event.inputs.platform == 'ALL') && (github.event.inputs.contract == 'ALL' || github.event.inputs.contract == 'SPOT')}}
+          run: |
+                echo "Running TU Binance with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
+                ./tests/run_test.bash TU SPOT ${{ github.event.inputs.symbol }} USDT BINANCE
+                exit 0
+      
+        FUTURES_BINANCE:
+          name: Futures
+          if: ${{  (github.event.inputs.platform == 'BINANCE' || github.event.inputs.platform == 'ALL') && (github.event.inputs.contract == 'ALL' || github.event.inputs.contract == 'FUTURES')}}
+          run: |
+                echo "Running TU Binance with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
+                ./tests/run_test.bash TU FUTURES ${{ github.event.inputs.symbol }} USDT BINANCE
+                exit 0
 
   TU_BYBIT: 
       name: Bybit unitary tests
       needs: TU_BTC
+      runs-on: self-hosted
       env:
         API_KEY_MASTER_SPOT_2: ${{ secrets.API_KEY_MASTER_SPOT_2 }}
         API_KEY_MASTER_SECRET_SPOT_2: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_2 }}
         API_KEY_MASTER_FUTURES_2: ${{ secrets.API_KEY_MASTER_FUTURES_2 }}
         API_KEY_MASTER_SECRET_FUTURES_2: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_2 }}
-      if: ${{  github.event.inputs.platform == 'BYBIT' || github.event.inputs.platform == 'ALL' }}
-      runs-on: self-hosted
       steps:
-        - run: |
+        SPOT_BYBIT:
+          name: SPOT
+          if: ${{  (github.event.inputs.platform == 'BYBIT' || github.event.inputs.platform == 'ALL') && (github.event.inputs.contract == 'ALL' || github.event.inputs.contract == 'SPOT')}}
+          run: |
             echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
-            ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT BYBIT
+            ./tests/run_test.bash TU SPOT ${{ github.event.inputs.symbol }} USDT BYBIT
+            exit 0
+        
+        FUTURES_BYBIT:
+          name: FUTURES
+          if: ${{  (github.event.inputs.platform == 'BYBIT' || github.event.inputs.platform == 'ALL') && (github.event.inputs.contract == 'ALL' || github.event.inputs.contract == 'FUTURES')}}
+          run: |
+            echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
+            ./tests/run_test.bash TU FUTURES ${{ github.event.inputs.symbol }} USDT BYBIT
             exit 0
   
   TV_BINANCE:
