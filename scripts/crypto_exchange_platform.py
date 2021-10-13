@@ -390,7 +390,7 @@ class CryptoExchangePlatform(ABC):
     def CEP__COMPUTE_SIDE_SPOT_ACCOUNT(self, account, cep_response):
         self.called_function_name="CEP__COMPUTE_SIDE_SPOT_ACCOUNT"
         return self.cep__compute_side_spot_account(account, cep_response)
-    
+
     @abstractmethod
     def cep__compute_side_futures_account(self, account, cep_response): pass
 

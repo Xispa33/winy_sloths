@@ -135,7 +135,7 @@ class CEP__Binance(CryptoExchangePlatform):
         return self.futures_position_information(symbol=symbol)
 
     def get_futures_account_balance(self, asset):
-        self.called_function_name = "futures_position_information"
+        self.called_function_name = "get_futures_account_balance"
         request_parameters = {TIMESTAMP: str(int(time.time()*1000))}
         binance_response = self.send_request(GET, FUTURES_ACCOUNT_BALANCE, request_parameters)
         for dic in binance_response:
@@ -148,7 +148,7 @@ class CEP__Binance(CryptoExchangePlatform):
         return self.get_futures_account_balance(asset)
 
     def compute_side_futures_account(self, account, cep_response):
-        self.called_function_name="cep__compute_side_futures_account"
+        self.called_function_name="compute_side_futures_account"
         if (isinstance(cep_response, int)):
             return account.side
         else:

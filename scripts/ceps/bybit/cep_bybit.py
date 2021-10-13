@@ -1,51 +1,31 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-#import bybit
 import sys
-sys.path.append(sys.path[0] + "/../..")
-from constants import *
 import os
+sys.path.append(os.getenv('SCRIPT_DIR'))
+from constants import *
 from datetime import *
 import traceback
 from abc import ABC, abstractmethod
 from crypto_exchange_platform import *
 import time
-
-BALANCES = "balances"
-BUY = "Buy"
-COIN = 'coin'
-MARKET = "Market"
-SELL = "Sell"
-ENTRY_PRICE = "entry_price"
-POSITION_VALUE = "position_value"
-POSITION_MARGIN = "position_margin"
-BYBIT_SERVER_TIME_ENDPOINT = "/v2/public/time"
-BYBIT_SPOT_ORDER_HISTORY = "/spot/v1/history-orders"
-BYBIT_SPOT_WALLET_BALANCE = "/spot/v1/account"
-BYBIT_SPOT_CREATE_ORDER = "/spot/v1/order"
-BYBIT_SPOT_SYMBOL_PRICE = "/spot/quote/v1/ticker/price"
-TIME_NOW = 'time_now'
-RET_CODE = "ret_code"
-GET = "get"
-POST = "post"
-API_KEY = "api_key"
-SIGN = "sign"
-LIMIT = "limit"
-QTY = "qty"
+from constants_bybit import *
 
 class CEP__Bybit(CryptoExchangePlatform):
     def __init__(self):
         super().__init__()
         self.name = BYBIT
+        self.SPOT_TESTNET_ENDPOINT = 'https://api-testnet.bybit.com'
+        self.SPOT_REAL_ENDPOINT = 'https://api.bybit.com'
+        self.FUTURES_TESTNET_ENDPOINT = 'https://api-testnet.bybit.com'
+        self.FUTURES_REAL_ENDPOINT = 'https://api.bybit.com'
+        self.REQUEST_ACK_OK = 0
+        self.CEP__Init_Dicts()
         self.api_key = ""
         self.api_secret_key = ""
-        self.REQUEST_ACK_OK = 0
-        self.SPOT_TESTNET_ENDPOINT = 'https://testnet.binance.vision/api'
-        self.SPOT_REAL_ENDPOINT = 'https://api.bybit.com'
-        self.FUTURES_TESTNET_ENDPOINT = 'https://testnet.binancefuture.com'
-        self.FUTURES_REAL_ENDPOINT = 'https://fapi.binance.com'
 
+    """
     def cep__client(self, api_key, api_secret_key, account_contract_type): 
         self.called_function_name = "cep__client"
         if (account_contract_type != SPOT):
@@ -56,6 +36,13 @@ class CEP__Bybit(CryptoExchangePlatform):
             self.api_key = api_key
             self.api_secret_key = api_secret_key
             return 0
+    """
+    def cep__client(self, api_key, api_secret_key, account_contract_type): 
+        self.called_function_name = "cep__client"
+        self.api_key = api_key
+        self.api_secret_key = api_secret_key
+        self.BASIC_ENDPOINT = self.BASIC_ENDPOINT[account_contract_type]
+        return 0
 
     def check_response(self, response):
         json_response = json.loads(response.text)
@@ -92,7 +79,7 @@ class CEP__Bybit(CryptoExchangePlatform):
 
     def send_request_body(self, body, sign, request_type, endpoint):
         self.called_function_name = "send_request_body"
-        url = BYBIT_BASIC_ENDPOINT + endpoint
+        url = self.BASIC_ENDPOINT + endpoint
         
         urllib3.disable_warnings()
         url = url + "?" + sign + '&sign='+body[SIGN]
@@ -121,25 +108,65 @@ class CEP__Bybit(CryptoExchangePlatform):
         bybit_response = self.send_request_body(body, sign, request_type, endpoint)
         return bybit_response
 
-    def get_timestamp(self):
-        self.called_function_name = "get_timestamp"
-        
-        request_parameters = {}
-        bybit_response = self.send_request(GET, BYBIT_SERVER_TIME_ENDPOINT, request_parameters)
-        timestamp = bybit_response[TIME_NOW]
+    def get_asset_balance(self, asset):
+        self.called_function_name = "get_asset_balance"
+        request_parameters = {TIMESTAMP: str(int(time.time()*1000))}
 
-        if (int(float(timestamp)) == 0):
-            raise ValueError('Timestamp was equal to 0')
-        else:
-            return int(float(timestamp))
+        bybit_response = self.send_request(GET, BYBIT_SPOT_WALLET_BALANCE, request_parameters)
+        
+        for coin_dict in bybit_response[RESULT][BALANCES]:
+            if coin_dict[COIN] == asset:
+                return coin_dict
+        
+        return 1
+
+    def cep__get_asset_balance(self, asset):
+        self.called_function_name="cep__get_asset_balance"
+        return self.get_asset_balance(asset)
     
-    def get_spot_last_trade(self, symbol):
-        self.called_function_name = "get_spot_last_trade"
-        request_parameters = {SYMBOL:symbol, LIMIT:"1", TIMESTAMP: str(int(time.time()*1000))}
+    def get_avg_price(self, symbol):
+        self.called_function_name="get_avg_price"
+        request_parameters = {SYMBOL:symbol}
+        binance_response = self.send_request(GET, BYBIT_SPOT_SYMBOL_LAST_TRADE_PRICE, request_parameters)
+        return binance_response[RESULT]
+    
+    def cep__get_avg_price(self, symbol):
+        self.called_function_name="cep__get_avg_price"
+        return self.get_avg_price(symbol)
 
-        bybit_response = self.send_request(GET, BYBIT_SPOT_ORDER_HISTORY, request_parameters)
+    def get_symbol_price_ticker(self, symbol):
+        self.called_function_name="get_symbol_price_ticker"
+        request_parameters = {SYMBOL:symbol}
+        binance_response = self.send_request(GET, BYBIT_SPOT_SYMBOL_PRICE_TICKER, request_parameters)
+        return binance_response[RESULT]
+
+    def cep__get_symbol_price_ticker(self, symbol):
+        self.called_function_name="cep__get_symbol_price_ticker"
+        return self.get_symbol_price_ticker(symbol)
+
+    def get_order_book(self, symbol):
+        self.called_function_name="get_order_book"
+        request_parameters = {SYMBOL:symbol}
+        binance_response = self.send_request(GET, BYBIT_SPOT_SYMBOL_ORDER_BOOK, request_parameters)
+        return binance_response
+
+    def cep__get_order_book(self, symbol):
+        self.called_function_name="cep__get_order_book"
+        return self.get_order_book(symbol)
+
+    def get_exchange_info(self):
+        self.called_function_name="get_exchange_info"
         
-        return bybit_response
+        #binance_response = requests.get(self.BASIC_ENDPOINT + SPOT_GET_EXCHANGE_INFO[0])
+        binance_response = self.send_request(GET, BYBIT_SPOT_QUERY_SYMBOL, {})
+        return binance_response
+        #return binance_response.json()
+
+    def cep__get_exchange_info(self):
+        self.called_function_name="cep__get_exchange_info"
+        return self.get_exchange_info()[RESULT]
+
+    
 
     def create_spot_order(self, symbol, side, _type, qty):
         self.called_function_name = "create_spot_order"
@@ -150,24 +177,6 @@ class CEP__Bybit(CryptoExchangePlatform):
         bybit_response = self.send_request(POST, BYBIT_SPOT_CREATE_ORDER, request_parameters)
         
         return bybit_response
-
-    def get_asset_balance(self):
-        self.called_function_name = "get_asset_balance"
-        request_parameters = {TIMESTAMP: str(int(time.time()*1000))}
-
-        bybit_response = self.send_request(GET, BYBIT_SPOT_WALLET_BALANCE, request_parameters)
-        
-        return bybit_response
-
-    def cep__futures_account_trades(self, client, symbol):
-        self.called_function_name = "cep__futures_account_trades"
-        return client.LinearPositions.LinearPositions_myPosition(symbol=symbol).result()
-    
-    def cep__spot_account_trades(self, client, symbol):
-        self.called_function_name="cep__spot_account_trades"
-        bybit_spot_history = self.get_spot_last_trade(symbol)
-        return bybit_spot_history
-
 
     def cep__close_long_spot(self, client, symbol):
         self.called_function_name="cep__close_long_spot"
@@ -189,6 +198,115 @@ class CEP__Bybit(CryptoExchangePlatform):
         
         return 0
 
+    def get_spot_last_trade(self, symbol, limit):
+        self.called_function_name = "get_spot_last_trade"
+        
+        request_parameters = {SYMBOL:symbol, LIMIT:str(limit), \
+                            TIMESTAMP: str(int(time.time()*1000))}
+        bybit_response = self.send_request(GET, BYBIT_SPOT_ORDER_HISTORY, \
+                                            request_parameters)
+        return bybit_response[RESULT]
+    
+    def cep__spot_account_trades(self, symbol, limit='1'):
+        self.called_function_name="cep__spot_account_trades"
+        bybit_spot_history = self.get_spot_last_trade(symbol, limit)
+        return bybit_spot_history
+    
+    def cep__open_long_spot(self, client, symbol):
+        self.called_function_name="cep__open_long_spot"
+        assets_list = self.get_asset_balance()[RESULT][BALANCES]
+        available_usdt = 0
+        for elt in assets_list:
+            if (elt[COIN] == USDT):
+                available_usdt = round(float(elt[FREE]) - 0.05, 1)
+        
+        self.create_spot_order(symbol=symbol, side=BUY, _type=MARKET, \
+                            qty=str(available_usdt))
+        
+        return 0
+
+    def get_symbol_price(self, symbol):
+        self.called_function_name = "get_symbol_price"
+        request_parameters = {SYMBOL:symbol, TIMESTAMP: str(int(time.time()*1000))}
+
+        bybit_response = self.send_request(GET, BYBIT_SPOT_SYMBOL_PRICE, request_parameters)
+        
+        return bybit_response[RESULT][PRICE]
+
+    def cep__get_symbol_price(self, symbol):
+        self.called_function_name="cep__get_symbol_price"
+        price = self.get_symbol_price(symbol)
+        return price
+    
+    ######################################### FUTURES #########################################
+    """
+    cep__futures_account_trades
+    cep__close_long_futures
+    cep__open_long_futures
+    cep__close_short
+    cep__open_short
+    cep__get_futures_account_balance
+    cep__get_asset_balance
+    cep__compute_side_futures_account
+    """
+
+    def futures_time(self):
+        self.called_function_name = "futures_time"
+        
+        bybit_response = self.send_request(GET, BYBIT_SERVER_TIME_ENDPOINT, {})
+        timestamp = bybit_response[TIME_NOW]
+
+        if (int(float(timestamp)) == 0):
+            raise ValueError('Timestamp was equal to 0')
+        else:
+            return int(float(timestamp))
+    
+    def cep__futures_time(self):
+        self.called_function_name = "cep__futures_time"
+        return self.futures_time()
+
+    def get_futures_account_balance(self, asset):
+        self.called_function_name = "get_futures_account_balance"
+        request_parameters = {TIMESTAMP: str(int(time.time()*1000))}
+        binance_response = self.send_request(GET, BYBIT_FUTURES_WALLET_BALANCE, request_parameters)
+        """
+        for dic in binance_response:
+            if dic[ASSET] == asset:
+                ret = dic
+        return ret
+        """
+        return binance_response[RESULT][asset]
+
+    def cep__get_futures_account_balance(self, asset):
+        self.called_function_name = "cep__get_futures_account_balance"
+        return self.get_futures_account_balance(asset)
+    
+    def futures_account_trades(self, symbol):
+        self.called_function_name = "get_spot_last_trade"
+        
+        request_parameters = {SYMBOL:symbol, \
+                            TIMESTAMP: str(int(time.time()*1000))}
+        bybit_response = self.send_request(GET, BYBIT_FUTURES_POSITION, \
+                                            request_parameters)
+        return bybit_response[RESULT]
+
+    def cep__futures_account_trades(self, symbol):
+        self.called_function_name = "cep__futures_account_trades"
+        return self.futures_account_trades(symbol)
+
+    def get_symbol_price_futures(self, symbol):
+        self.called_function_name="get_symbol_price_futures"
+        
+        request_parameters = {SYMBOL:symbol}
+        binance_response = self.send_request(GET, \
+                                BYBIT_FUTURES_SYMBOL_LASTEST_INFO, \
+                                request_parameters)
+        return binance_response[RESULT]
+
+    def cep__get_symbol_price_futures(self, symbol):
+        self.called_function_name="cep__get_symbol_price_futures"
+        return self.get_symbol_price_futures(symbol)
+
     def cep__close_long_futures(self, client, symbol):
         self.called_function_name="cep__close_long_futures"
         bybit_positions=client.LinearPositions.LinearPositions_myPosition( \
@@ -208,20 +326,6 @@ class CEP__Bybit(CryptoExchangePlatform):
             return 0
         else: 
             return 1
-
-    
-    def cep__open_long_spot(self, client, symbol):
-        self.called_function_name="cep__open_long_spot"
-        assets_list = self.get_asset_balance()[RESULT][BALANCES]
-        available_usdt = 0
-        for elt in assets_list:
-            if (elt[COIN] == USDT):
-                available_usdt = round(float(elt[FREE]) - 0.05, 1)
-        
-        self.create_spot_order(symbol=symbol, side=BUY, _type=MARKET, \
-                            qty=str(available_usdt))
-        
-        return 0
 
     def cep__open_long_futures(self, client, symbol, leverage, \
                                 engaged_balance, entryPrice):
@@ -284,18 +388,6 @@ class CEP__Bybit(CryptoExchangePlatform):
 
         return 0
 
-    def cep__get_futures_account_balance(self, client):
-        self.called_function_name="cep__get_futures_account_balance"
-        #USELESS
-        return 0
-
-
-    def cep__get_asset_balance(self, client):
-        self.called_function_name="cep__get_asset_balance"
-        #USELESS
-        return 0
-    
-
     def cep__set_stop_loss_long(self, client, symbol, engaged_balance, \
                                 entryPrice, mode, risk=RISK):
         self.called_function_name="cep__set_stop_loss_long"
@@ -312,14 +404,13 @@ class CEP__Bybit(CryptoExchangePlatform):
         self.called_function_name="cep__clear_stop_loss"
         return 0
     
-    
     def cep__compute_side_spot_account(self, account, cep_response):
         self.called_function_name="cep__compute_side_spot_account"
-        if (not isinstance(cep_response, dict)):
+        if (not isinstance(cep_response, list)):
             #print("Bybit return was crap ! \n")
             return account.side
         else:
-            bybit_response = cep_response[RESULT]
+            bybit_response = cep_response
             if (len(bybit_response) != 0):
                 if (bybit_response[0][SIDE] == SELL.upper()):
                     return OUT
@@ -329,7 +420,6 @@ class CEP__Bybit(CryptoExchangePlatform):
                     return account.side
             else:
                 return account.side
-        
     
     def cep__compute_side_futures_account(self, account, cep_response):
         self.called_function_name="cep__compute_side_futures_account"
@@ -355,21 +445,7 @@ class CEP__Bybit(CryptoExchangePlatform):
                             return SHORT
                 return account.side
 
-    
     def cep__compute_engaged_balance(self, account, cep_response):
         self.called_function_name="cep__compute_engaged_balance"
         #USELESS
         return 0
-    
-    def get_symbol_price(self, symbol):
-        self.called_function_name = "get_symbol_price"
-        request_parameters = {SYMBOL:symbol, TIMESTAMP: str(int(time.time()*1000))}
-
-        bybit_response = self.send_request(GET, BYBIT_SPOT_SYMBOL_PRICE, request_parameters)
-        
-        return bybit_response
-
-    def cep__get_symbol_price(self, symbol):
-        self.called_function_name="cep__get_symbol_price"
-        price = self.get_symbol_price(symbol)
-        return price[RESULT][PRICE]
