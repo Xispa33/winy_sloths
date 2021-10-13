@@ -89,6 +89,7 @@ jobs:
             exit 0
   
   TV_BINANCE:
+      name: Binance validation tests
       needs: [ TU_BINANCE ]
       if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BINANCE' }} 
       runs-on: self-hosted
@@ -96,13 +97,15 @@ jobs:
         - run: echo "This should correspond to validation tests"; exit 0;
   
   TV_BYBIT:
+      name: Bybit validation tests
       needs: [ TU_BYBIT ]
       if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BYBIT' }} 
       runs-on: self-hosted
       steps:
         - run: echo "This should correspond to validation tests"; exit 0;
 
-  documentation:
+  Documentation:
+    name: Documentation generation
     needs: [TV_BYBIT, TV_BINANCE]
     if: success()
     # The type of runner that the job will run on
