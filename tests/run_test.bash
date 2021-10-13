@@ -31,7 +31,7 @@ else
     [ $CONTRACT_TYPE == "SPOT" ] || [ $CONTRACT_TYPE == "FUTURES" ] || [ $CONTRACT_TYPE == "ALL" ] && echo "CONTRACT_TYPE = ${CONTRACT_TYPE}" || exit 1
     [ $SYMBOL == "BTC" ] || [ $SYMBOL == "ETH" ] || [ $SYMBOL == "BNB" ] || [ $SYMBOL == "ALL" ] && echo "SYMBOL = ${SYMBOL}" || exit 1
     [[ $ASSET == "USDT" ]] && echo "ASSET = ${ASSET}" || exit 1
-    [ $PLATFORM == "BINANCE" ] || [ $PLATFORM == "ALL" ] && echo "PLATFORM = ${PLATFORM}" || exit 1
+    [ $PLATFORM == "BINANCE" ] || [ $PLATFORM == "BYBIT" ] || [ $PLATFORM == "ALL" ] && echo "PLATFORM = ${PLATFORM}" || exit 1
     
 fi
 
@@ -59,8 +59,7 @@ else
     declare -a cmd_symbol_list=(${cmd_symbol})
 fi
 if [ $PLATFORM == "ALL" ]; then
-    #declare -a platform_list=("binance" "bybit")
-    declare -a platform_list=("binance")
+    declare -a platform_list=("binance" "bybit")
 else
     declare -a platform_list=(${platform})
 fi
