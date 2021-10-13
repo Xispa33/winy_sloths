@@ -238,6 +238,23 @@ class CEP__Bybit(CryptoExchangePlatform):
         price = self.get_symbol_price(symbol)
         return price
     
+    def cep__compute_side_spot_account(self, account, cep_response):
+        self.called_function_name="cep__compute_side_spot_account"
+        if (not isinstance(cep_response, list)):
+            #print("Bybit return was crap ! \n")
+            return account.side
+        else:
+            bybit_response = cep_response
+            if (len(bybit_response) != 0):
+                if (bybit_response[0][SIDE] == SELL.upper()):
+                    return OUT
+                elif (bybit_response[0][SIDE] == BUY.upper()):
+                    return LONG
+                else:
+                    return account.side
+            else:
+                return account.side
+
     ######################################### FUTURES #########################################
     """
     cep__futures_account_trades
@@ -269,12 +286,6 @@ class CEP__Bybit(CryptoExchangePlatform):
         self.called_function_name = "get_futures_account_balance"
         request_parameters = {TIMESTAMP: str(int(time.time()*1000))}
         binance_response = self.send_request(GET, BYBIT_FUTURES_WALLET_BALANCE, request_parameters)
-        """
-        for dic in binance_response:
-            if dic[ASSET] == asset:
-                ret = dic
-        return ret
-        """
         return binance_response[RESULT][asset]
 
     def cep__get_futures_account_balance(self, asset):
@@ -306,7 +317,7 @@ class CEP__Bybit(CryptoExchangePlatform):
     def cep__get_symbol_price_futures(self, symbol):
         self.called_function_name="cep__get_symbol_price_futures"
         return self.get_symbol_price_futures(symbol)
-
+    #TODO
     def cep__close_long_futures(self, client, symbol):
         self.called_function_name="cep__close_long_futures"
         bybit_positions=client.LinearPositions.LinearPositions_myPosition( \
@@ -326,7 +337,7 @@ class CEP__Bybit(CryptoExchangePlatform):
             return 0
         else: 
             return 1
-
+    #TODO
     def cep__open_long_futures(self, client, symbol, leverage, \
                                 engaged_balance, entryPrice):
         self.called_function_name="cep__open_long_futures"
@@ -346,7 +357,7 @@ class CEP__Bybit(CryptoExchangePlatform):
                     close_on_trigger=False).result()
 
         return 0
-
+    #TODO
     def cep__close_short(self, client, symbol):
         self.called_function_name="cep__close_short"
 
@@ -366,7 +377,7 @@ class CEP__Bybit(CryptoExchangePlatform):
             return 0
         else: 
             return 1
-    
+    #TODO
     def cep__open_short(self, client, symbol, leverage, engaged_balance, \
                                             entryPrice):
         self.called_function_name="cep__open_short"
@@ -404,23 +415,6 @@ class CEP__Bybit(CryptoExchangePlatform):
         self.called_function_name="cep__clear_stop_loss"
         return 0
     
-    def cep__compute_side_spot_account(self, account, cep_response):
-        self.called_function_name="cep__compute_side_spot_account"
-        if (not isinstance(cep_response, list)):
-            #print("Bybit return was crap ! \n")
-            return account.side
-        else:
-            bybit_response = cep_response
-            if (len(bybit_response) != 0):
-                if (bybit_response[0][SIDE] == SELL.upper()):
-                    return OUT
-                elif (bybit_response[0][SIDE] == BUY.upper()):
-                    return LONG
-                else:
-                    return account.side
-            else:
-                return account.side
-    
     def cep__compute_side_futures_account(self, account, cep_response):
         self.called_function_name="cep__compute_side_futures_account"
         if (not isinstance(cep_response, tuple)):
@@ -444,8 +438,3 @@ class CEP__Bybit(CryptoExchangePlatform):
                         elif (elt[SIDE]) == SELL:
                             return SHORT
                 return account.side
-
-    def cep__compute_engaged_balance(self, account, cep_response):
-        self.called_function_name="cep__compute_engaged_balance"
-        #USELESS
-        return 0

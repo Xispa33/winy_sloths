@@ -189,4 +189,4 @@ class TestFuturesBinance(unittest.TestCase):
         self.assertEqual(ret, OUT)
     """
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(testLoader=SequentialTestLoader())

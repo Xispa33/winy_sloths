@@ -16,7 +16,13 @@ from password import *
 
 #python3 -m pytest --junitxml result.xml tests/tu/spot_tests.py -vxk "not test_compute_side"      
 #SCRIPT_DIR=$PWD/scripts/ CEPS_DIR=$PWD/scripts/ceps/ SYMBOL=BTCUSDT ASSET=USDT python3 -m pytest tests/tu/binance/futures_tests.py -v
-
+class SequentialTestLoader(unittest.TestLoader):
+    def getTestCaseNames(self, testCaseClass):
+        test_names = super().getTestCaseNames(testCaseClass)
+        testcase_methods = list(testCaseClass.__dict__.keys())
+        test_names.sort(key=testcase_methods.index)
+        return test_names
+        
 class TestFuturesBybit(unittest.TestCase):
     symbol = os.getenv('SYMBOL')
     asset = os.getenv('ASSET')
@@ -28,33 +34,63 @@ class TestFuturesBybit(unittest.TestCase):
     open_close_flag = True
 
     def test_get_futures_time(self):
-        ret = self.obj_bybit.cep__futures_time()
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__futures_time), \
+                retry=MAX_RETRY, \
+                retry_period=2)
         self.assertIsInstance(ret, int)
         real_time = str(int(time.time()*1000))[:-3]
         self.assertGreater(ret, int(real_time) - 3600)
         sleep(1)
 
     def test_get_futures_account_balance(self):
-        ret = self.obj_bybit.cep__get_futures_account_balance(self.asset)
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__get_futures_account_balance, \
+                self.asset), \
+                retry=MAX_RETRY, \
+                retry_period=2)
         self.assertIsInstance(ret, dict)
         #self.assertEqual(ret[ASSET], self.asset)
         sleep(1)
     
     def test_get_futures_account_trades(self):
-        ret = self.obj_bybit.cep__futures_account_trades(self.symbol)
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__futures_account_trades, \
+                self.symbol), \
+                retry=MAX_RETRY, \
+                retry_period=2)
         self.assertIsInstance(ret, list)
         sleep(1)
-    
     
     def test_get_symbol_price_futures(self):
-        ret = self.obj_bybit.cep__get_symbol_price_futures(self.symbol)
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__get_symbol_price_futures, \
+                self.symbol), \
+                retry=MAX_RETRY, \
+                retry_period=2)
         self.assertIsInstance(ret, list)
-        #self.assertEqual(ret[SYMBOL], self.symbol)
-        #self.assertIsInstance(ret[SYMBOL], str)
-        #self.assertGreater(float(ret[PRICE]), 0)
         sleep(1)
 
-    #compute side
+    def test_compute_side_futures_account(self):
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__futures_account_trades, \
+                self.symbol), \
+                retry=MAX_RETRY, \
+                retry_period=2)
+        self.assertIsInstance(ret, list)
+
+        pos = self.obj_bybit.cep__compute_side_futures_account(self.account, ret)
+        self.assertEqual(pos, OUT)
+        sleep(1)
+    
+    @unittest.skipIf(open_close_flag==False, "This test was skipped because the account position side is not out.")
+    def test_open_close_long_futures(self):
+        self.assertEqual(20, 20)
+    
+    @unittest.skipIf(open_close_flag==False, "This test was skipped because the account position side is not out.")
+    def test_open_close_short_futures(self):
+        self.assertEqual(20, 20)
+
     """
     def test_open_long_futures(self, symbol):
         price = ?
@@ -139,4 +175,4 @@ class TestFuturesBybit(unittest.TestCase):
         self.assertEqual(ret, OUT)
     """
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(testLoader=SequentialTestLoader())

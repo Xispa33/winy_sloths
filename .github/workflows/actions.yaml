@@ -64,7 +64,7 @@ jobs:
         API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
         API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
         API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
-      if: ${{  github.event.inputs.platform == 'BINANCE' }}
+      if: ${{  github.event.inputs.platform == 'BINANCE' || github.event.inputs.platform == 'ALL' }}
       runs-on: self-hosted
       steps:
         - run: |
@@ -80,7 +80,7 @@ jobs:
         API_KEY_MASTER_SECRET_SPOT_2: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_2 }}
         API_KEY_MASTER_FUTURES_2: ${{ secrets.API_KEY_MASTER_FUTURES_2 }}
         API_KEY_MASTER_SECRET_FUTURES_2: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_2 }}
-      if: ${{  github.event.inputs.platform == 'BYBIT' }}
+      if: ${{  github.event.inputs.platform == 'BYBIT' || github.event.inputs.platform == 'ALL' }}
       runs-on: self-hosted
       steps:
         - run: |
@@ -88,49 +88,22 @@ jobs:
             ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT BYBIT
             exit 0
   
-  TU_ALL: 
-      name: Binance, Bybit unitary tests
-      needs: TU_BTC
-      env:
-        API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
-        API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
-        API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
-        API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
-        API_KEY_MASTER_SPOT_2: ${{ secrets.API_KEY_MASTER_SPOT_2 }}
-        API_KEY_MASTER_SECRET_SPOT_2: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_2 }}
-        API_KEY_MASTER_FUTURES_2: ${{ secrets.API_KEY_MASTER_FUTURES_2 }}
-        API_KEY_MASTER_SECRET_FUTURES_2: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_2 }}
-      if: ${{  github.event.inputs.platform == 'ALL' }}
-      runs-on: self-hosted
-      steps:
-        - run: |
-            echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
-            ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT ALL
-            exit 0
-
   TV_BINANCE:
-      needs: [ TU_BINANCE, TU_ALL ]
+      needs: [ TU_BINANCE ]
       if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BINANCE' }} 
       runs-on: self-hosted
       steps:
         - run: echo "This should correspond to validation tests"; exit 0;
   
   TV_BYBIT:
-      needs: [ TU_BYBIT, TU_ALL ]
+      needs: [ TU_BYBIT ]
       if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BYBIT' }} 
       runs-on: self-hosted
       steps:
         - run: echo "This should correspond to validation tests"; exit 0;
 
-  TV_ALL:
-      needs: [ TU_ALL ]
-      if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'ALL' }} 
-      runs-on: self-hosted
-      steps:
-        - run: echo "This should correspond to validation tests"; exit 0;
-
   documentation:
-    needs: [TV_ALL]
+    needs: [TV_BYBIT, TV_BINANCE]
     if: success()
     # The type of runner that the job will run on
     runs-on: self-hosted
@@ -165,7 +138,7 @@ jobs:
       #    name: doc
 
   sonarcloud:
-    needs: [TV_ALL]
+    needs: [TV_BYBIT, TV_BINANCE]
     if: success()
     name: SonarCloud
     runs-on: self-hosted
