@@ -71,6 +71,13 @@ jobs:
             echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
             ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT BINANCE
             exit 0
+        
+      name: Futures
+        if: ${{  (github.event.inputs.platform == 'BINANCE' || github.event.inputs.platform == 'ALL') && (github.event.inputs.contract == 'ALL' || github.event.inputs.contract == 'FUTURES')}}
+        run: |
+          echo "Running TU Binance with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
+          ./tests/run_test.bash TU FUTURES ${{ github.event.inputs.symbol }} USDT BINANCE
+          exit 0
 
   TU_BYBIT: 
       name: Bybit unitary tests
