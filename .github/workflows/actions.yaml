@@ -122,7 +122,7 @@ jobs:
   
   TV_BYBIT:
       name: Bybit validation tests
-      needs: [ TU_BYBIT ]
+      needs: [ TU_BYBIT_SPOT, TU_BYBIT_FUTURES ]
       if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BYBIT' }} 
       runs-on: self-hosted
       steps:
