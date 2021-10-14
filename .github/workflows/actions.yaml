@@ -56,28 +56,33 @@ jobs:
       #            ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BTCUSDT.xml
       #            ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BTCUSDT.xml
 
-  TU_BINANCE:
-      name: Binance unitary tests 
+  TU_BINANCE_SPOT:
+      name: Binance Spot unitary tests 
       needs: TU_BTC
       env:
         API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
         API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
-        API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
-        API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
-      if: ${{  github.event.inputs.platform == 'BINANCE' || github.event.inputs.platform == 'ALL' }}
+      if: ${{  (github.event.inputs.platform == 'BINANCE' || github.event.inputs.platform == 'ALL') && (github.event.inputs.contract == 'ALL' || github.event.inputs.contract == 'SPOT')}}
       runs-on: self-hosted
       steps:
         - run: |
             echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
-            ./tests/run_test.bash TU ${{ github.event.inputs.contract }} ${{ github.event.inputs.symbol }} USDT BINANCE
+            ./tests/run_test.bash TU SPOT ${{ github.event.inputs.symbol }} USDT BINANCE
             exit 0
-        
-      name: Futures
-        if: ${{  (github.event.inputs.platform == 'BINANCE' || github.event.inputs.platform == 'ALL') && (github.event.inputs.contract == 'ALL' || github.event.inputs.contract == 'FUTURES')}}
-        run: |
-          echo "Running TU Binance with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
-          ./tests/run_test.bash TU FUTURES ${{ github.event.inputs.symbol }} USDT BINANCE
-          exit 0
+  
+  TU_BINANCE_FUTURES:
+      name: Binance Futures unitary tests 
+      needs: TU_BTC
+      env:
+        API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
+        API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
+      if: ${{  (github.event.inputs.platform == 'BINANCE' || github.event.inputs.platform == 'ALL') && (github.event.inputs.contract == 'ALL' || github.event.inputs.contract == 'FUTURES')}}
+      runs-on: self-hosted
+      steps:
+        - run: |
+            echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
+            ./tests/run_test.bash TU FUTURES ${{ github.event.inputs.symbol }} USDT BINANCE
+            exit 0
 
   TU_BYBIT: 
       name: Bybit unitary tests
@@ -97,7 +102,7 @@ jobs:
   
   TV_BINANCE:
       name: Binance validation tests
-      needs: [ TU_BINANCE ]
+      needs: [ TU_BINANCE_SPOT, TU_BINANCE_FUTURES ]
       if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BINANCE' }} 
       runs-on: self-hosted
       steps:
