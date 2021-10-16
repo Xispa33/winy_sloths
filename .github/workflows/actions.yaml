@@ -41,6 +41,13 @@ jobs:
       - run: |
          echo "Running Pylint analysis"; exit 0
 
+  UML_GENERATION:
+    name: UML diagram generation
+    runs-on: self-hosted
+    steps:
+      - run: |
+         echo "Creating UML diagram"; exit 0
+
   TU_BINANCE_SPOT:
       name: Binance spot unitary tests
       needs: [UML_GENERATION, LINTER]
