@@ -34,9 +34,23 @@ jobs:
       #            ${{ github.workspace }}/docs/pages/tu_futures.xml
       #            ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BTCUSDT.xml
       #            ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BTCUSDT.xml
+  LINTER:
+    name: Pylint analysis
+    runs-on: self-hosted
+    steps:
+      - run: |
+        echo "Running Pylint analysis"; exit 0
+  
+  UML_GENERATION:
+    name: UML diagram generation
+    runs-on: self-hosted
+    steps:
+      - run: |
+        echo "Creating UML diagram"; exit 0
 
   TU_BINANCE_SPOT:
-      name: Binance spot unitary tests 
+      name: Binance spot unitary tests
+      needs: [UML_GENERATION, LINTER]
       env:
         API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
         API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
@@ -50,6 +64,7 @@ jobs:
   
   TU_BINANCE_FUTURES:
       name: Binance futures unitary tests 
+      needs: [UML_GENERATION, LINTER]
       env:
         API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
         API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
@@ -63,6 +78,7 @@ jobs:
 
   TU_BYBIT_SPOT: 
       name: Bybit spot unitary tests
+      needs: [UML_GENERATION, LINTER]
       env:
         API_KEY_MASTER_SPOT_2: ${{ secrets.API_KEY_MASTER_SPOT_2 }}
         API_KEY_MASTER_SECRET_SPOT_2: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_2 }}
@@ -76,6 +92,7 @@ jobs:
   
   TU_BYBIT_FUTURES: 
       name: Bybit futures unitary tests
+      needs: [UML_GENERATION, LINTER]
       env:
         API_KEY_MASTER_FUTURES_2: ${{ secrets.API_KEY_MASTER_FUTURES_2 }}
         API_KEY_MASTER_SECRET_FUTURES_2: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_2 }}
@@ -89,7 +106,7 @@ jobs:
   
   TV_BINANCE_SPOT:
       name: Binance spot validation tests
-      needs: [ TU_BINANCE_SPOT ]
+      needs: [ TU_BINANCE_SPOT, TU_BINANCE_SPOT ]
       if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BINANCE' && github.event.inputs.contract == 'SPOT' }} 
       runs-on: self-hosted
       steps:
