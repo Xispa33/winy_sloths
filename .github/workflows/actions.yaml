@@ -111,25 +111,41 @@ jobs:
             ./tests/run_test.bash TU FUTURES ${{ github.event.inputs.symbol }} USDT BYBIT
             exit 0
   
-  TV_BINANCE:
-      name: Binance validation tests
-      needs: [ TU_BINANCE_SPOT, TU_BINANCE_FUTURES ]
-      if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BINANCE' }} 
+  TV_BINANCE_SPOT:
+      name: Binance spot validation tests
+      needs: [ TU_BINANCE_SPOT ]
+      if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BINANCE' && github.event.inputs.contract == 'SPOT' }} 
       runs-on: self-hosted
       steps:
         - run: echo "This should correspond to validation tests"; exit 0;
   
-  TV_BYBIT:
-      name: Bybit validation tests
-      needs: [ TU_BYBIT_SPOT, TU_BYBIT_FUTURES ]
-      if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BYBIT' }} 
+  TV_BINANCE_FUTURES:
+      name: Binance futures validation tests
+      needs: [ TU_BINANCE_FUTURES ]
+      if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BINANCE' && github.event.inputs.contract == 'FUTURES' }} 
+      runs-on: self-hosted
+      steps:
+        - run: echo "This should correspond to validation tests"; exit 0;
+  
+  TV_BYBIT_SPOT:
+      name: Bybit spot validation tests
+      needs: [ TU_BYBIT_SPOT ]
+      if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BYBIT' && github.event.inputs.contract == 'SPOT' }} 
+      runs-on: self-hosted
+      steps:
+        - run: echo "This should correspond to validation tests"; exit 0;
+
+  TV_BYBIT_FUTURES:
+      name: Bybit futures validation tests
+      needs: [ TU_BYBIT_FUTURES ]
+      if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BYBIT' && github.event.inputs.contract == 'FUTURES' }} 
       runs-on: self-hosted
       steps:
         - run: echo "This should correspond to validation tests"; exit 0;
 
   Documentation:
     name: Documentation generation
-    needs: [TV_BYBIT, TV_BINANCE]
+    needs: [TV_BYBIT_SPOT, TV_BYBIT_FUTURES, TV_BINANCE_SPOT, TV_BINANCE_FUTURES]
     if: success()
     # The type of runner that the job will run on
     runs-on: self-hosted
@@ -164,7 +180,7 @@ jobs:
       #    name: doc
 
   sonarcloud:
-    needs: [TV_BYBIT, TV_BINANCE]
+    needs: [TV_BYBIT_SPOT, TV_BYBIT_FUTURES, TV_BINANCE_SPOT, TV_BINANCE_FUTURES]
     if: success()
     name: SonarCloud
     runs-on: self-hosted
