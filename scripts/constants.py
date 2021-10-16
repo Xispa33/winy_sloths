@@ -97,5 +97,10 @@ WALLET_BALANCE = 'wallet_balance'
 WARNING = "WARNING"
 WITHDRAW_AVAILABLE = "withdrawAvailable"
 
+API_KEY = "api_key"
+SIGN = "sign"
+GET = "get"
+POST = "post"
+
 # A RENDRE SPECIFIQUE A LA CEP
 CORRESPONDANCE_DICT = {INFO_C:"INFO", MEDIUM_C:"WARNING", HIGH_C: "ERROR"}
