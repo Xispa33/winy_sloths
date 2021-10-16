@@ -25,27 +25,7 @@ on:
           default: 'SPOT'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs:
-  TU_BTC:
-    # The type of runner that the job will run on
-    runs-on: self-hosted
-    
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      # Runs a set of commands using the runners shell
-      - name: Run unitary tests on BTC spot
-        env:
-            API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
-            API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
-            API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
-            API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
-
-        run: |
-          ./tests/run_test.bash TU SPOT BTC USDT BINANCE
-      
+jobs: 
       #- uses: actions/upload-artifact@master
       #  with:
       #        name: tu_reports
@@ -57,7 +37,6 @@ jobs:
 
   TU_BINANCE_SPOT:
       name: Binance spot unitary tests 
-      needs: TU_BTC
       env:
         API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
         API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
@@ -71,7 +50,6 @@ jobs:
   
   TU_BINANCE_FUTURES:
       name: Binance futures unitary tests 
-      needs: TU_BTC
       env:
         API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
         API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
@@ -85,7 +63,6 @@ jobs:
 
   TU_BYBIT_SPOT: 
       name: Bybit spot unitary tests
-      needs: TU_BTC
       env:
         API_KEY_MASTER_SPOT_2: ${{ secrets.API_KEY_MASTER_SPOT_2 }}
         API_KEY_MASTER_SECRET_SPOT_2: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_2 }}
@@ -99,7 +76,6 @@ jobs:
   
   TU_BYBIT_FUTURES: 
       name: Bybit futures unitary tests
-      needs: TU_BTC
       env:
         API_KEY_MASTER_FUTURES_2: ${{ secrets.API_KEY_MASTER_FUTURES_2 }}
         API_KEY_MASTER_SECRET_FUTURES_2: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_2 }}
