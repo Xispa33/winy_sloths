@@ -178,23 +178,25 @@ class CEP__Bybit(CryptoExchangePlatform):
         
         return bybit_response
 
-    def cep__close_long_spot(self, client, symbol):
+    def cep__close_long_spot(self, symbol, compute_avg_price, pct):
         self.called_function_name="cep__close_long_spot"
 
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
-        assets_list = self.get_asset_balance()[RESULT][BALANCES]
-        available_asset = 0
-        
-        for elt in assets_list:
-            if (elt[COIN] == self.ALL_SYMBOLS_DICT[symbol][ASSET_IDX]):
-                available_asset = round(float(elt[FREE]) - (5*10**(-precision-1)), precision)
-                break
-
+        asset = self.ALL_SYMBOLS_DICT[symbol][ASSET_IDX]
+        min_asset = 1*10**(-precision)
+        available_asset = float(self.get_asset_balance(asset=asset)[FREE])
         if (available_asset < (1*10**(-precision))):
             available_asset = 1*10**(-precision)
+
+        while (available_asset >= min_asset):
+            available_asset = round(float(available_asset)*pct - 5*10**(-precision-1),precision+1)
         
-        self.create_spot_order(symbol=symbol, side=SELL, _type=MARKET, \
-                            qty=str(available_asset))
+            bybit_response = self.create_spot_order(symbol=symbol, \
+                            side=SELL, _type=MARKET, qty=str(available_asset))
+            time.sleep(0.3)
+            available_asset = float(self.get_asset_balance(asset=asset)[FREE])
+            if (available_asset < (1*10**(-precision))):
+                break
         
         return 0
 
@@ -212,17 +214,16 @@ class CEP__Bybit(CryptoExchangePlatform):
         bybit_spot_history = self.get_spot_last_trade(symbol, limit)
         return bybit_spot_history
     
-    def cep__open_long_spot(self, client, symbol):
+    def cep__open_long_spot(self, symbol, compute_avg_price, pct):
         self.called_function_name="cep__open_long_spot"
-        assets_list = self.get_asset_balance()[RESULT][BALANCES]
-        available_usdt = 0
-        for elt in assets_list:
-            if (elt[COIN] == USDT):
-                available_usdt = round(float(elt[FREE]) - 0.05, 1)
-        
-        self.create_spot_order(symbol=symbol, side=BUY, _type=MARKET, \
-                            qty=str(available_usdt))
-        
+        available_usdt = self.get_asset_balance(asset=USDT)[FREE]
+        available_usdt = round(float(available_usdt) - 0.05,2)
+        while (available_usdt > 10):
+            bybit_response = self.create_spot_order(symbol=symbol, side=BUY, _type=MARKET, \
+                                qty=str(available_usdt))
+            time.sleep(0.3)
+            available_usdt = self.get_asset_balance(asset=USDT)[FREE]
+            available_usdt = round(float(available_usdt)*pct - 0.05,2)
         return 0
 
     def get_symbol_price(self, symbol):
@@ -317,87 +318,208 @@ class CEP__Bybit(CryptoExchangePlatform):
     def cep__get_symbol_price_futures(self, symbol):
         self.called_function_name="cep__get_symbol_price_futures"
         return self.get_symbol_price_futures(symbol)
-    #TODO
-    def cep__close_long_futures(self, client, symbol):
-        self.called_function_name="cep__close_long_futures"
-        bybit_positions=client.LinearPositions.LinearPositions_myPosition( \
-                            symbol=symbol).result()
+    
+    def futures_create_order(self, symbol, side, positionSide, _type, quantity):
+        self.called_function_name = "futures_create_order"
+        request_parameters = {SYMBOL:symbol, \
+                              SIDE:side, 
+                              'order_type':MARKET, \
+                              QTY:quantity, \
+                              'time_in_force':GOODTILLCANCEL, 
+                              'close_on_trigger':False, \
+                              TIMESTAMP: str(int(time.time()*1000))}
+        if ((side == SELL and positionSide == LONG) or (side == BUY and positionSide == SHORT)):
+            request_parameters['reduce_only'] = TRUE
+        else:
+            request_parameters['reduce_only'] = FALSE
+        binance_response = self.send_request(POST, BYBIT_FUTURES_PLACE_ORDER, request_parameters)
+        
+        #LONG:
+        """
+        side=BUY, 
+        symbol=symbol, 
+        order_type=MARKET, \
+        qty=quantity, 
+        time_in_force=GOODTILLCANCEL, 
+        reduce_only=False, \
+        close_on_trigger=False
+        """
+        #CLOSE LONG
+        """
+        side=SELL, 
+        symbol=symbol, \
+        order_type=MARKET, 
+        qty=size, \
+        time_in_force=GOODTILLCANCEL, 
+        reduce_only=True, \
+        close_on_trigger=False
+        """
+        #SHORT
+        """
+        side=SELL, 
+        symbol=symbol, 
+        order_type=MARKET, \
+        qty=quantity, 
+        time_in_force=GOODTILLCANCEL, 
+        reduce_only=False, \
+        close_on_trigger=False
+        """
+        #CLOSE SHORT
+        """
+        side=BUY, 
+        symbol=symbol, \
+        order_type=MARKET, 
+        qty=size, \
+        time_in_force=GOODTILLCANCEL, 
+        reduce_only=True, \
+        close_on_trigger=False).result()
+        """
+        return binance_response
+    
+    def cep__get_my_futures_positions(self, symbol):
+        self.called_function_name="cep__get_my_futures_positions"
 
-        if (isinstance(bybit_positions, tuple)):
-            bybit_positions = bybit_positions[0][RESULT]
+        request_parameters = {SYMBOL:symbol, \
+                            TIMESTAMP: str(int(time.time()*1000))}
+        bybit_response = self.send_request(GET, \
+                                BYBIT_FUTURES_MY_POSITIONS, \
+                                request_parameters)
+        return bybit_response[RESULT]
+
+    def cep__futures_change_leverage(self, symbol, leverage):
+        self.called_function_name="cep__futures_change_leverage"
+        request_parameters = {SYMBOL:symbol, 
+                            'buy_leverage':str(leverage), \
+                            'sell_leverage':str(leverage), \
+                            TIMESTAMP: str(int(time.time()*1000))}
+        
+        bybit_response = self.send_request(POST, \
+                                BYBIT_FUTURES_SET_LEVERAGE, \
+                                request_parameters)
+        return bybit_response
+
+    #TODO
+    def cep__close_long_futures(self, symbol):
+        self.called_function_name="cep__close_long_futures"
+        bybit_positions = self.cep__get_my_futures_positions(symbol)
+
+        if (isinstance(bybit_positions, list)):
             for elt in bybit_positions:
                 if (elt[SIZE] > 0):
                     size = elt[SIZE]
+                    leverage = elt[LEVERAGE]
                     break
-            
-            client.LinearOrder.LinearOrder_new(side=SELL, symbol=symbol, \
-                            order_type=MARKET, qty=size, \
-                            time_in_force=GOODTILLCANCEL, reduce_only=True, \
-                            close_on_trigger=False).result()
-            return 0
+
+            bybit_response = self.futures_create_order(symbol, SELL, LONG, MARKET, str(size))[RESULT]
+        
+            if (leverage > BYBIT_DEFAULT_LEVERAGE):
+                self.CEP__BaseFunction(functools.partial( \
+                    self.cep__futures_change_leverage, \
+                    symbol, BYBIT_DEFAULT_LEVERAGE), \
+                    retry=MAX_RETRY, \
+                    retry_period=1)
+
+            return bybit_response
         else: 
             return 1
     #TODO
-    def cep__open_long_futures(self, client, symbol, leverage, \
-                                engaged_balance, entryPrice):
+    def cep__open_long_futures(self, symbol, leverage, \
+                                engaged_balance, entryPrice, pct):
         self.called_function_name="cep__open_long_futures"
-        client.Positions.Positions_saveLeverage(symbol=symbol, \
-                                            leverage=str(leverage)).result()
-
-        bybit_balance_response = client.Wallet.Wallet_getBalance(coin=USDT).result()
-        balance=bybit_balance_response[0][RESULT][USDT][WALLET_BALANCE]
+        balance = self.cep__get_futures_account_balance(USDT)['available_balance']
+        if (leverage > BYBIT_DEFAULT_LEVERAGE):
+            leverage = BYBIT_MAX_LEVERAGE
+        
+        self.CEP__BaseFunction(functools.partial( \
+                self.cep__futures_change_leverage, \
+                symbol, leverage), \
+                retry=MAX_RETRY, \
+                retry_period=1)
+        
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
         quantity=round(((float(balance)*engaged_balance/entryPrice) - \
                                                 (5*10**(-precision - 1))), precision)
         if (quantity < (1*10**(-precision))):
             quantity = 1*10**(-precision)
+        
+        if (pct > 1):
+            raise ValueError("Parameter pct has to be less than 1")
+        quantity = quantity*pct
 
-        client.LinearOrder.LinearOrder_new(side=BUY, symbol=symbol, order_type=MARKET, \
-                    qty=quantity, time_in_force=GOODTILLCANCEL, reduce_only=False, \
-                    close_on_trigger=False).result()
-
-        return 0
+        while (balance > 30):
+            bybit_response = self.futures_create_order(symbol, BUY, LONG, MARKET, str(quantity))[RESULT]
+            
+            balance = self.cep__get_futures_account_balance(USDT)['available_balance']
+            precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
+            quantity=round(((float(balance)*engaged_balance/entryPrice) - \
+                                                    (5*10**(-precision - 1))), precision)
+            if (quantity < (1*10**(-precision))):
+                quantity = 1*10**(-precision)
+            quantity = quantity*pct
+            time.sleep(0.5)
+        return bybit_response
     #TODO
-    def cep__close_short(self, client, symbol):
+    def cep__close_short(self, symbol):
         self.called_function_name="cep__close_short"
+        
+        bybit_positions = self.cep__get_my_futures_positions(symbol)
 
-        bybit_positions=client.LinearPositions.LinearPositions_myPosition( \
-                            symbol=symbol).result()
-
-        if (isinstance(bybit_positions, tuple)):
-            bybit_positions = bybit_positions[0][RESULT]
+        if (isinstance(bybit_positions, list)):
             for elt in bybit_positions:
                 if (elt[SIZE] > 0):
                     size = elt[SIZE]
+                    leverage = elt[LEVERAGE]
                     break
-            client.LinearOrder.LinearOrder_new(side=BUY, symbol=symbol, \
-                            order_type=MARKET, qty=size, \
-                            time_in_force=GOODTILLCANCEL, reduce_only=True, \
-                            close_on_trigger=False).result()
-            return 0
+
+            bybit_response = self.futures_create_order(symbol, BUY, SHORT, MARKET, str(size))[RESULT]
+        
+            if (leverage > BYBIT_DEFAULT_LEVERAGE):
+                self.CEP__BaseFunction(functools.partial( \
+                    self.cep__futures_change_leverage, \
+                    symbol, BYBIT_DEFAULT_LEVERAGE), \
+                    retry=MAX_RETRY, \
+                    retry_period=1)
+
+            return bybit_response
         else: 
             return 1
-    #TODO
-    def cep__open_short(self, client, symbol, leverage, engaged_balance, \
-                                            entryPrice):
-        self.called_function_name="cep__open_short"
         
-        client.Positions.Positions_saveLeverage(symbol=symbol, leverage=str(leverage)).result()
+    #TODO
+    def cep__open_short(self, symbol, leverage, engaged_balance, \
+                                            entryPrice, pct):
+        self.called_function_name="cep__open_short"
 
-        bybit_balance_response = client.Wallet.Wallet_getBalance(coin=USDT).result()
-        balance=bybit_balance_response[0][RESULT][USDT][WALLET_BALANCE]
+        balance = self.cep__get_futures_account_balance(USDT)['available_balance']
+        if (leverage > BYBIT_DEFAULT_LEVERAGE):
+            leverage = BYBIT_MAX_LEVERAGE
+        self.CEP__BaseFunction(functools.partial( \
+            self.cep__futures_change_leverage, \
+            symbol, leverage), \
+            retry=MAX_RETRY, \
+            retry_period=1)
+        
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
-        quantity = round(((float(balance)*abs(engaged_balance)/entryPrice) - \
-                                                    (5*10**(-precision - 1))), precision)
-
+        quantity=round(((float(balance)*abs(engaged_balance)/entryPrice) - \
+                                                (5*10**(-precision - 1))), precision)
         if (quantity < (1*10**(-precision))):
             quantity = 1*10**(-precision)
+        
+        if (pct > 1):
+            raise ValueError("Parameter pct has to be less than 1")
+        quantity = quantity*pct
 
-        client.LinearOrder.LinearOrder_new(side=SELL, symbol=symbol, order_type=MARKET, \
-                    qty=quantity, time_in_force=GOODTILLCANCEL, reduce_only=False, \
-                    close_on_trigger=False).result()
-
-        return 0
+        while (balance > 30):
+            bybit_response = self.futures_create_order(symbol, SELL, SHORT, MARKET, str(quantity))[RESULT]
+            
+            balance = self.cep__get_futures_account_balance(USDT)['available_balance']
+            precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
+            quantity=round(((float(balance)*engaged_balance/entryPrice) - \
+                                                    (5*10**(-precision - 1))), precision)
+            if (quantity < (1*10**(-precision))):
+                quantity = 1*10**(-precision)
+            quantity = quantity*pct
+            time.sleep(0.5)
+        return bybit_response
 
     def cep__set_stop_loss_long(self, client, symbol, engaged_balance, \
                                 entryPrice, mode, risk=RISK):

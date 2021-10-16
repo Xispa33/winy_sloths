@@ -3,10 +3,9 @@
 name: Winy Sloths Continuous Integration
 
 # Controls when the action will run. 
-on:
-  push: 
-    branches: [ feature_binance ]
+on: 
   workflow_dispatch:
+    branches: [ feature_binance ]
     inputs:
         test_type:
           description: 'Test type (TU, TV or ALL)'

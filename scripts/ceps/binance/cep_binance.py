@@ -107,7 +107,7 @@ class CEP__Binance(CryptoExchangePlatform):
         return 0
 
     ################################# FUTURES #########################################
-    #OK
+    
     def futures_time(self):
         self.called_function_name = "futures_time"
         
@@ -119,22 +119,22 @@ class CEP__Binance(CryptoExchangePlatform):
             raise ValueError('Timestamp was equal to 0')
         else:
             return int(float(timestamp))
-    #OK
+    
     def cep__futures_time(self):
         self.called_function_name = "cep__futures_time"
         return self.futures_time()
-    #OK
+    
     def futures_position_information(self, symbol):
         self.called_function_name = "futures_position_information"
         request_parameters = {SYMBOL:symbol, \
                               TIMESTAMP: str(int(time.time()*1000))}
         query_response = self.send_request(GET, FUTURES_POSITION_INFORMATION, request_parameters)
         return query_response
-    #OK
+    
     def cep__futures_account_trades(self, symbol):
         self.called_function_name = "cep__futures_account_trades"
         return self.futures_position_information(symbol=symbol)
-    #OK
+    
     def get_futures_account_balance(self, asset):
         self.called_function_name = "get_futures_account_balance"
         request_parameters = {TIMESTAMP: str(int(time.time()*1000))}
@@ -143,11 +143,11 @@ class CEP__Binance(CryptoExchangePlatform):
             if dic[ASSET] == asset:
                 ret = dic
         return ret 
-    #OK
+    
     def cep__get_futures_account_balance(self, asset):
         self.called_function_name = "cep__get_futures_account_balance"
         return self.get_futures_account_balance(asset)
-    #OK
+    
     def compute_side_futures_account(self, account, cep_response):
         self.called_function_name="compute_side_futures_account"
         if (isinstance(cep_response, int)):
@@ -179,48 +179,58 @@ class CEP__Binance(CryptoExchangePlatform):
                     return LONG
             else:
                 return account.side
-    #OK
+    
     def cep__compute_side_futures_account(self, account, cep_response):
         self.called_function_name="cep__compute_side_futures_account"
         return self.compute_side_futures_account(account, cep_response)
-    #OK
+    
     def futures_change_position_mode(self, dualSidePosition=FALSE):
         self.called_function_name = "futures_change_position_mode"
         request_parameters = {DUAL_SIDE_POSITION:dualSidePosition, TIMESTAMP: str(int(time.time()*1000))}
         binance_response = self.send_request(POST, FUTURES_CHANGE_POSITION_MODE, request_parameters)
         return binance_response
-    #OK
+    
     def cep__futures_change_position_mode(self, dualSidePosition=FALSE):
         self.called_function_name = "cep__futures_change_position_mode"
         return self.futures_change_position_mode(dualSidePosition)
-    #OK
+    
+    def get_futures_open_orders(self, symbol):
+        self.called_function_name = "get_futures_open_orders"
+        request_parameters = {SYMBOL:symbol, TIMESTAMP: str(int(time.time()*1000))}
+        binance_response = self.send_request(GET, FUTURES_OPEN_ORDERS, request_parameters)
+        return binance_response
+    
+    def cep__get_futures_open_orders(self, symbol):
+        self.called_function_name = "cep__get_futures_open_orders"
+        return self.get_futures_open_orders(symbol)
+    
     def futures_position_mode(self):
         self.called_function_name = "futures_position_mode"
         request_parameters = {TIMESTAMP: str(int(time.time()*1000))}
         binance_response = self.send_request(GET, FUTURES_POSITION_MODE, request_parameters)
         return binance_response
-    #OK
+    
     def cep__futures_position_mode(self):
         self.called_function_name = "cep__futures_position_mode"
         return self.futures_position_mode()
-    #OK
+    
     def futures_change_leverage(self, symbol, leverage):
         self.called_function_name = "futures_change_leverage"
         request_parameters = {SYMBOL:symbol, LEVERAGE:str(leverage), TIMESTAMP: str(int(time.time()*1000))}
         binance_response = self.send_request(POST, FUTURES_CHANGE_LEVERAGE, request_parameters)
         return binance_response
-    #OK
+    
     def cep__futures_change_leverage(self, symbol, leverage):
         self.called_function_name = "cep__futures_change_leverage"
         return self.futures_change_leverage(symbol, leverage)
-    #OK
+    
     def get_symbol_price_futures(self, symbol):
         self.called_function_name="get_symbol_price_futures"
         
         request_parameters = {SYMBOL:symbol}
         binance_response = self.send_request(GET, FUTURES_TICKER_PRICE, request_parameters)
         return binance_response
-    #OK
+    
     def cep__get_symbol_price_futures(self, symbol):
         self.called_function_name="cep__get_symbol_price_futures"
         return self.get_symbol_price_futures(symbol)
@@ -230,13 +240,13 @@ class CEP__Binance(CryptoExchangePlatform):
         request_parameters = {SYMBOL:symbol, \
                             SIDE:side, POSITION_SIDE:positionSide, \
                             TYPE:_type, QUANTITY:str(quantity), \
+                            'newOrderRespType':'RESULT', \
                             TIMESTAMP: str(int(time.time()*1000))}
         binance_response = self.send_request(POST, FUTURES_CREATE_ORDER, request_parameters)
-        #TODO
-        #Checker la valeur de retour
-    #TODO
+        return binance_response
+    
     def open_long_futures(self, symbol, leverage, \
-                        engaged_balance, entryPrice):
+                        engaged_balance, entryPrice, pct):
         self.called_function_name="open_long_futures"
 
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
@@ -244,7 +254,9 @@ class CEP__Binance(CryptoExchangePlatform):
         if (len(ret) == 1):
             self.futures_change_position_mode(dualSidePosition=TRUE)
         
-        self.futures_change_leverage(symbol, leverage)
+        if (leverage >= BINANCE_DEFAULT_LEVERAGE):
+            leverage = BINANCE_MAX_LEVERAGE = 18
+            #self.cep__futures_change_leverage(symbol, leverage)
         
         #Need slave available balance
         bin_ret = self.cep__get_futures_account_balance(asset=USDT)
@@ -259,62 +271,80 @@ class CEP__Binance(CryptoExchangePlatform):
             raise ValueError("bin_ret variable is bad.\nType is:{}\nValue is:{}\n".format( \
                 type(bin_ret), bin_ret))
         #balance=ret[WITHDRAW_AVAILABLE]
-        balance = ret['maxWithdrawAmount']
+        balance = ret[MAX_WITHDRAW_AMOUNT]
 
         quantity=round(((float(balance)*engaged_balance/float(entryPrice)) - \
                                                     (5*10**(-precision-1))),precision)
-
+        
+        if (pct > 1):
+            raise ValueError("Parameter pct has to be less than 1")
+        
+        quantity = quantity*pct
+        
         if (quantity < (1*10**(-precision))):
             quantity = 1*10**(-precision)
         
-        self.futures_create_order(symbol=symbol, side=BUY, positionSide=LONG, \
-                                    _type=MARKET, quantity=quantity)
+        binance_response = self.futures_create_order(symbol=symbol, \
+                                        side=BUY, positionSide=LONG, \
+                                        _type=MARKET, quantity=quantity)
         
-        return 0
-    #TODO
+        return binance_response
+    
     def cep__open_long_futures(self, symbol, leverage, \
-                               engaged_balance, entryPrice):
+                               engaged_balance, entryPrice, pct):
         self.called_function_name="cep__open_long_futures"
         return self.open_long_futures(symbol, leverage, \
-                               engaged_balance, entryPrice)
+                               engaged_balance, entryPrice, pct)
     #TODO
     def open_short(self, symbol, leverage, \
-                    engaged_balance, entryPrice):
+                    engaged_balance, entryPrice, pct):
         self.called_function_name="open_short"
 
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
-        ret = self.cep__futures_position_information(symbol=symbol)
+        ret = self.cep__futures_account_trades(symbol)
         if (len(ret) == 1):
             self.futures_change_position_mode(dualSidePosition=TRUE)
         
-        self.futures_change_leverage(symbol, leverage)
+        if (abs(leverage) >= BINANCE_DEFAULT_LEVERAGE):
+            leverage = BINANCE_MAX_LEVERAGE
+            #self.cep__futures_change_leverage(symbol, leverage)
         
         #Need slave available balance
         bin_ret = self.cep__get_futures_account_balance(asset=USDT)
         
-        for dic in bin_ret:
-            if dic[ASSET] == USDT:
-                ret = dic
-
-        balance=ret[WITHDRAW_AVAILABLE]
+        if (isinstance(bin_ret, list)):
+            for dic in bin_ret:
+                if dic[ASSET] == USDT:
+                    ret = dic
+        elif (isinstance(bin_ret, dict)):
+            ret = bin_ret
+        else:
+            raise ValueError("bin_ret variable is bad.\nType is:{}\nValue is:{}\n".format( \
+                type(bin_ret), bin_ret))
+        #balance=ret[WITHDRAW_AVAILABLE]
+        balance = ret[MAX_WITHDRAW_AMOUNT]
         
-        quantity = round(((float(balance)*abs(engaged_balance)/entryPrice) - \
+        quantity = round(((float(balance)*abs(engaged_balance)/float(entryPrice)) - \
                                                     (5*10**(-precision - 1))), precision)
+        if (pct > 1):
+            raise ValueError("Parameter pct has to be less than 1")
+        quantity = quantity*pct
 
         if (quantity < (1*10**(-precision))):
             quantity = 1*10**(-precision)
         
-        self.futures_create_order(symbol=symbol, side=BUY, positionSide=SHORT, \
+        binance_return = self.futures_create_order(symbol=symbol, \
+                                    side=SELL, positionSide=SHORT, \
                                     _type=MARKET, quantity=quantity)
 
-        return 0
+        return binance_return
     #TODO
-    def cep__open_short(self, client, symbol, leverage, \
-                        engaged_balance, entryPrice):
+    def cep__open_short(self, symbol, leverage, \
+                        engaged_balance, entryPrice, pct):
         self.called_function_name="cep__open_short"
-        return self.open_short(client, symbol, leverage, \
-                               engaged_balance, entryPrice)
-    #TODO
+        return self.open_short(symbol, leverage, \
+                               engaged_balance, entryPrice, pct)
+    
     def close_long_futures(self, symbol):
         self.called_function_name="close_long_futures"
         last_trade = []
@@ -338,13 +368,12 @@ class CEP__Binance(CryptoExchangePlatform):
             position_amt = 0.0
 
         if (position_amt != 0.0):
-            self.futures_create_order(symbol=symbol, side=SELL, positionSide=LONG, \
+            binance_return = self.futures_create_order(symbol=symbol, side=SELL, positionSide=LONG, \
                                     _type=MARKET, quantity=position_amt)
+            return binance_return
         else:
-            pass
-        
-        return 0
-    #TODO
+            return 0
+    
     def cep__close_long_futures(self, symbol):
         self.called_function_name="cep__close_long_futures"
         return self.close_long_futures(symbol)
@@ -366,12 +395,12 @@ class CEP__Binance(CryptoExchangePlatform):
         quantity = round(abs(float(ret[POSITION_AMT])), precision)
 
         if (quantity != 0.0):
-            self.futures_create_order(symbol=symbol, side=BUY, positionSide=SHORT, \
+            binance_return = self.futures_create_order(symbol=symbol, \
+                                    side=BUY, positionSide=SHORT, \
                                     _type=MARKET, quantity=quantity)
+            return binance_return
         else:
-            pass
-            
-        return 0
+            return 0
     #TODO
     def cep__close_short(self, symbol):
         self.called_function_name="cep__close_short"
@@ -513,7 +542,6 @@ class CEP__Binance(CryptoExchangePlatform):
                     qty.append(float(elt['qty']))
 
         if (compute_avg_price == True):
-            #print("TODO")
             return (prices, qty)
         else:
             return 0

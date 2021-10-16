@@ -15,7 +15,6 @@ from strategy_file import *
 from password import *
 import pytest
 
-
 #python3 -m pytest --junitxml result.xml tests/tu/spot_tests.py -vxk "not test_compute_side"      
 #SCRIPT_DIR=$PWD/scripts/ CEPS_DIR=$PWD/scripts/ceps/ SYMBOL=BTCUSDT ASSET=USDT python3 -m pytest tests/tu/binance/spot_tests.py -v
 class SequentialTestLoader(unittest.TestLoader):

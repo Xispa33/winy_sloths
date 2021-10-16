@@ -83,96 +83,83 @@ class TestFuturesBybit(unittest.TestCase):
         self.assertEqual(pos, OUT)
         sleep(1)
     
+    def test_get_my_futures_position(self):
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__get_my_futures_positions, \
+                self.symbol), \
+                retry=3, \
+                retry_period=2)
+        self.assertIsInstance(ret, list)
+    
+    def test_change_futures_leverage(self):
+        leverages = [BYBIT_MAX_LEVERAGE, BYBIT_DEFAULT_LEVERAGE]
+        for leverage in leverages:
+            ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                    self.obj_bybit.cep__futures_change_leverage, \
+                    self.symbol, leverage), \
+                    retry=MAX_RETRY, \
+                    retry_period=2)
+            self.assertIsInstance(ret, dict)
+            self.assertEqual(ret['ret_msg'], 'OK')
+            sleep(1)
+        
     @unittest.skipIf(open_close_flag==False, "This test was skipped because the account position side is not out.")
     def test_open_close_long_futures(self):
-        self.assertEqual(20, 20)
-    
+        leverage = 20
+        engaged_balance = 7
+        price = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__get_symbol_price_futures, \
+                self.symbol), \
+                retry=MAX_RETRY, \
+                retry_period=2)
+        
+        time.sleep(1)
+
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__open_long_futures, \
+                self.symbol, leverage, engaged_balance, \
+                float(price[0]['last_price']), 1), \
+                retry=3, \
+                retry_period=2)
+        self.assertIsInstance(ret, dict)
+
+        time.sleep(1)
+
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__close_long_futures, \
+                self.symbol), \
+                retry=3, \
+                retry_period=2)
+        self.assertIsInstance(ret, dict)
+        
     @unittest.skipIf(open_close_flag==False, "This test was skipped because the account position side is not out.")
     def test_open_close_short_futures(self):
-        self.assertEqual(20, 20)
-
-    """
-    def test_open_long_futures(self, symbol):
-        price = ?
-        ret = obj_bybit.CEP__BaseFunction(functools.partial( \
-                            obj_bybit.cep__open_long_futures, \
-                            symbol, 1, 1, price), \
-                            retry=MAX_RETRY*10, \
-                            retry_period=0.5)
-
-        self.assertEqual(ret, 0)
-
-        ret = obj_bybit.CEP__BaseFunction(functools.partial( \
-                            obj_bybit.cep__futures_account_trades, \
-                            symbol))
-        self.assertIsInstance(ret, list)
+        leverage = 6
+        engaged_balance = -3
+        price = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__get_symbol_price_futures, \
+                self.symbol), \
+                retry=MAX_RETRY, \
+                retry_period=2)
         
-        account = 
-        ret = obj_bybit.CEP__BaseFunction(functools.partial( \
-                            obj_bybit.cep__compute_side_futures_account, \
-                            account, ret))
-        self.assertEqual(ret, LONG)
+        time.sleep(1)
 
-    def test_close_long_futures(self, symbol):
-        price = ?
-        ret = obj_bybit.CEP__BaseFunction(functools.partial( \
-                            obj_bybit.cep__close_long_futures, \
-                            symbol, 1, 1, price), \
-                            retry=MAX_RETRY*10, \
-                            retry_period=0.5)
-        self.assertEqual(ret, 0)
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__open_short, \
+                self.symbol, leverage, engaged_balance, \
+                float(price[0]['last_price']), 1), \
+                retry=3, \
+                retry_period=2)
+        self.assertIsInstance(ret, dict)
 
-        ret = obj_bybit.CEP__BaseFunction(functools.partial( \
-                            obj_bybit.cep__futures_account_trades, \
-                            symbol))
-        self.assertIsInstance(ret, list)
-        
-        account = 
-        ret = obj_bybit.CEP__BaseFunction(functools.partial( \
-                            obj_bybit.cep__compute_side_futures_account, \
-                            account, ret))
-        self.assertEqual(ret, OUT)
+        time.sleep(1)
 
-    def test_open_short_futures(self, symbol):
-        price = ?
-        ret = obj_bybit.CEP__BaseFunction(functools.partial( \
-                            obj_bybit.cep__open_short, \
-                            symbol, 1, 1, price), \
-                            retry=MAX_RETRY*10, \
-                            retry_period=0.5)
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__close_short, \
+                self.symbol), \
+                retry=3, \
+                retry_period=2)
+        self.assertIsInstance(ret, dict)
 
-        self.assertEqual(ret, 0)
-        
-        ret = obj_bybit.CEP__BaseFunction(functools.partial( \
-                            obj_bybit.cep__futures_account_trades, \
-                            symbol))
-        self.assertIsInstance(ret, list)
-        
-        account = 
-        ret = obj_bybit.CEP__BaseFunction(functools.partial( \
-                            obj_bybit.cep__compute_side_futures_account, \
-                            account, ret))
-        self.assertEqual(ret, SHORT)
-
-    def test_close_short_futures(self, symbol):
-        price = ?
-        ret = obj_bybit.CEP__BaseFunction(functools.partial( \
-                            obj_bybit.cep__close_short, \
-                            symbol, 1, 1, price), \
-                            retry=MAX_RETRY*10, \
-                            retry_period=0.5)
-        self.assertEqual(ret, 0)
-
-        ret = obj_bybit.CEP__BaseFunction(functools.partial( \
-                            obj_bybit.cep__futures_account_trades, \
-                            symbol))
-        self.assertIsInstance(ret, list)
-        
-        account = 
-        ret = obj_bybit.CEP__BaseFunction(functools.partial( \
-                            obj_bybit.cep__compute_side_futures_account, \
-                            account, ret))
-        self.assertEqual(ret, OUT)
-    """
 if __name__ == '__main__':
     unittest.main(testLoader=SequentialTestLoader())

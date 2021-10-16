@@ -15,7 +15,6 @@ from strategy_file import *
 from password import *
 import pytest
 
-
 #python3 -m pytest --junitxml result.xml tests/tu/spot_tests.py -vxk "not test_compute_side"      
 #SCRIPT_DIR=$PWD/scripts/ CEPS_DIR=$PWD/scripts/ceps/ SYMBOL=BTCUSDT ASSET=USDT python3 -m pytest tests/tu/binance/spot_tests.py -v
 class SequentialTestLoader(unittest.TestLoader):
@@ -24,7 +23,6 @@ class SequentialTestLoader(unittest.TestLoader):
         testcase_methods = list(testCaseClass.__dict__.keys())
         test_names.sort(key=testcase_methods.index)
         return test_names
-
 class TestSpotBybit(unittest.TestCase):
     symbol = os.getenv('SYMBOL')
     asset = os.getenv('ASSET')
@@ -66,7 +64,6 @@ class TestSpotBybit(unittest.TestCase):
         self.assertGreater(round(float(ret['lastPrice']),2), 0)
         sleep(1)
     
-    
     def test_get_order_book(self):
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
                 self.obj_bybit.cep__get_order_book, \
@@ -84,7 +81,7 @@ class TestSpotBybit(unittest.TestCase):
         self.assertIsInstance(ret, list)
         sleep(1)
 
-    def test_spot_account_trades(self):
+    def test_get_spot_account_trades(self):
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
                 self.obj_bybit.cep__spot_account_trades, \
                 self.symbol), \
@@ -92,8 +89,7 @@ class TestSpotBybit(unittest.TestCase):
                 retry_period=2)
         self.assertIsInstance(ret, list)
         sleep(1)
-    
-    
+            
     def test_compute_side(self):
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
                 self.obj_bybit.cep__spot_account_trades, \
@@ -107,7 +103,6 @@ class TestSpotBybit(unittest.TestCase):
         self.open_close_flag = isinstance(ret, list) & self.open_close_flag
         sleep(1)
     
-    """
     @unittest.skipIf(open_close_flag==False, "This test was skipped because the account position side is not out.")
     def test_open_close_order(self):
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
@@ -154,6 +149,6 @@ class TestSpotBybit(unittest.TestCase):
                 retry=MAX_RETRY, \
                 retry_period=2)
         self.assertGreater(round(float(ret[FREE]),2), 50)
-    """
+
 if __name__ == '__main__':
     unittest.main(testLoader=SequentialTestLoader())
