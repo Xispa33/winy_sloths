@@ -30,12 +30,11 @@ class TestSpotBybit(unittest.TestCase):
     
     account = MasterAccount(info_strategy_file)
     obj_bybit = account.api_key.exchange_platform_obj
-    obj_bybit.cep__client(account.api_key.client._api_key, account.api_key.client._api_secret_key, account.account_contract_type)
     open_close_flag = True
 
-    def test_get_avg_price(self):
+    def test_get_symbol_price(self):
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
-                self.obj_bybit.get_avg_price, \
+                self.obj_bybit.cep__get_symbol_price, \
                 self.symbol), \
                 retry=MAX_RETRY, \
                 retry_period=2)
@@ -45,7 +44,7 @@ class TestSpotBybit(unittest.TestCase):
     
     def test_get_asset_balance(self):
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
-                self.obj_bybit.get_asset_balance, \
+                self.obj_bybit.cep__get_asset_balance, \
                 self.asset), \
                 retry=MAX_RETRY, \
                 retry_period=2)
@@ -84,7 +83,7 @@ class TestSpotBybit(unittest.TestCase):
     def test_get_spot_account_trades(self):
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
                 self.obj_bybit.cep__spot_account_trades, \
-                self.symbol), \
+                self.symbol, 1), \
                 retry=MAX_RETRY, \
                 retry_period=2)
         self.assertIsInstance(ret, list)
@@ -93,7 +92,7 @@ class TestSpotBybit(unittest.TestCase):
     def test_compute_side(self):
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
                 self.obj_bybit.cep__spot_account_trades, \
-                self.symbol))
+                self.symbol, 1))
         self.assertIsInstance(ret, list)
         
         self.open_close_flag = isinstance(ret, list)
@@ -102,7 +101,7 @@ class TestSpotBybit(unittest.TestCase):
         self.assertEqual(ret, OUT)
         self.open_close_flag = isinstance(ret, list) & self.open_close_flag
         sleep(1)
-    
+
     @unittest.skipIf(open_close_flag==False, "This test was skipped because the account position side is not out.")
     def test_open_close_order(self):
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
@@ -116,7 +115,7 @@ class TestSpotBybit(unittest.TestCase):
 
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
                 self.obj_bybit.cep__spot_account_trades, \
-                self.symbol))
+                self.symbol, 1))
         self.assertIsInstance(ret, list)
         
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
@@ -135,7 +134,7 @@ class TestSpotBybit(unittest.TestCase):
 
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
                 self.obj_bybit.cep__spot_account_trades, \
-                self.symbol))
+                self.symbol, 1))
         self.assertIsInstance(ret, list)
         
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
@@ -144,7 +143,7 @@ class TestSpotBybit(unittest.TestCase):
         self.assertEqual(ret, OUT)
 
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
-                self.obj_bybit.get_asset_balance, \
+                self.obj_bybit.cep__get_asset_balance, \
                 USDT), \
                 retry=MAX_RETRY, \
                 retry_period=2)

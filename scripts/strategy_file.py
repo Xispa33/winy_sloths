@@ -36,15 +36,17 @@ class ApiKey:
     def __init__(self, info_strategy_file, mode=DEBUG):
         self.exchange_platform_name = info_strategy_file[ \
                                     OFFSET_EXCHANGE_PLATFORM]
-        self.client = Client(info_strategy_file[OFFSET_API_KEY], \
+        
+        self.client = (info_strategy_file[OFFSET_API_KEY], \
                             info_strategy_file[OFFSET_API_SECRET_KEY])
-
+        
         self.exchange_platform_obj = self.find_exchange_platform_class(mode)
 
     def find_exchange_platform_class(self, mode):
         klass = globals()[CEP + self.exchange_platform_name]
-        return klass()
-        
+        obj_cep = klass()
+        obj_cep.mode = mode
+        return obj_cep
         
 class Account():
     """
@@ -88,6 +90,10 @@ class Account():
             self.account_contract_type = account_contract_type
             self.symbol = symbol
         
+        self.api_key.exchange_platform_obj.CEP__CLIENT(self.api_key.client[0], \
+                                    self.api_key.client[1], \
+                                    self.account_contract_type)
+
         self.markPrice = 0
         self.entryPrice = 0
         self.leverage = 0
@@ -106,11 +112,8 @@ class Account():
     
         Description : Function that closes an opened long trade
         """
-        client = self.api_key.exchange_platform_obj.CEP__CLIENT( \
-                                    self.api_key._api_key, self.api_key._api_secret_key, \
-                                    self.account_contract_type)
         return self.api_key.exchange_platform_obj.CEP__CLOSE_LONG( \
-                                    client, self.account_contract_type, self.symbol)
+                                    self.account_contract_type, self.symbol)
 
     def close_short(self):
         """
@@ -122,11 +125,8 @@ class Account():
     
         Description : Function that closes an opened short trade
         """
-        client = self.api_key.exchange_platform_obj.CEP__CLIENT( \
-                                    self.api_key._api_key, self.api_key._api_secret_key, \
-                                    self.account_contract_type)
         return self.api_key.exchange_platform_obj.CEP__CLOSE_SHORT( \
-                                    client, self.symbol)
+                                    self.symbol)
 
     def open_long(self):
         """
@@ -138,10 +138,7 @@ class Account():
     
         Description : Function that opens a long trade
         """
-        client = self.api_key.exchange_platform_obj.CEP__CLIENT(self.api_key._api_key, \
-                                                            self.api_key._api_secret_key, \
-                                                            self.account_contract_type)
-        return self.api_key.exchange_platform_obj.CEP__OPEN_LONG(client, \
+        return self.api_key.exchange_platform_obj.CEP__OPEN_LONG( \
                                                 self.account_contract_type, self.symbol, \
                                                 self.leverage, self.engaged_balance, self.entryPrice)
 
@@ -155,10 +152,7 @@ class Account():
     
         Description : Function that opens a short trade
         """
-        client = self.api_key.exchange_platform_obj.CEP__CLIENT( \
-                                    self.api_key._api_key, self.api_key._api_secret_key, \
-                                    self.account_contract_type)
-        return self.api_key.exchange_platform_obj.CEP__OPEN_SHORT(client, self.symbol, \
+        return self.api_key.exchange_platform_obj.CEP__OPEN_SHORT(self.symbol, \
                                                         self.leverage, \
                                                         self.engaged_balance, \
                                                         self.entryPrice)

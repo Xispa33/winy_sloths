@@ -4,4 +4,6 @@
 from winy_sloth import *
 
 if __name__ == "__main__":
-    main_obj = WinySloth()
+    while (1):
+        main_obj = WinySloth()
+        main_obj.run()

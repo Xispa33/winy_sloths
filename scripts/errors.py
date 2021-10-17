@@ -28,8 +28,8 @@ class Errors():
                                          MEDIUM_C = WARNING = 2
                                          HIGH_C = ERROR = 3
     
-    mode : str
-        Mode of execution. If DEBUG mode is active, no emails should be sent.
+    enable : str
+        enable of execution. If DEBUG enable is active, no emails should be sent.
     Methods
     -------
     Errors__AddMessages()
@@ -42,11 +42,11 @@ class Errors():
     Errors__GetRawExceptionInfo(info)
     Errors__SendEmail(errors_object)
     """
-    def __init__(self, error_messages=None, error_function=None, error_criticity=None, mode=None):
+    def __init__(self, enable, error_messages=None, error_function=None, error_criticity=None):
         self.error_messages   = str() if error_messages == None else error_messages
         self.error_function   = str() if error_function == None else error_function
         self.error_criticity    = NO_C if error_criticity == None else error_criticity
-        self.mode    = DEBUG if mode == None else mode
+        self.enable    = enable
 
     def Errors__AddMessages(self, message):
         """
@@ -145,7 +145,7 @@ class Errors():
         Description : This function sends an email featuring the errors'
                       information
         """
-        if (errors_object.mode != DEBUG):
+        if (errors_object.enable != DEBUG):
             msg = MIMEMultipart(ALTERNATIVE)
             msg[SUBJECT] = "WINY SLOTHS UPDATE: {} NOTIFICATION".format(CORRESPONDANCE_DICT[errors_object.error_criticity]) 
             msg[FROM] = EMITTOR

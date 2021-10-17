@@ -15,10 +15,6 @@ import json
 import requests
 import urllib3
 
-class Client:
-    def __init__(self, api_key, api_secret_key):
-        self._api_key = api_key
-        self._api_secret_key = api_secret_key
 class CryptoExchangePlatform(ABC):
     """
     A class used to represent a cryptocurrency exchange platform. 
@@ -85,14 +81,16 @@ class CryptoExchangePlatform(ABC):
     @abstractmethod
     def check_response(self, response): pass
 
-    @abstractmethod
-    def cep__client(self, api_key, api_secret_key, account_contract_type): pass
+    def cep__client(self, api_key, api_secret_key, account_contract_type):
+        self.called_function_name = "cep__client"
+        self.api_key = api_key
+        self.api_secret_key = api_secret_key
+        self.BASIC_ENDPOINT = self.BASIC_ENDPOINT[account_contract_type]
 
     def CEP__CLIENT(self, api_key, api_secret_key, account_contract_type):
         self.called_function_name="CEP__CLIENT"
-        return self.CEP__BaseFunction(functools.partial(self.cep__client, \
-                            api_key, api_secret_key, account_contract_type), \
-                            retry=MAX_RETRY*4)
+        return self.cep__client(api_key, api_secret_key, \
+                                account_contract_type)
 
     @abstractmethod
     def cep__futures_account_trades(self, symbol): pass
@@ -142,28 +140,28 @@ class CryptoExchangePlatform(ABC):
         return ret
 
     @abstractmethod
-    def cep__close_long_spot(self, symbol, compute_avg_price): pass
+    def cep__close_long_spot(self, symbol, compute_avg_price, pct): pass
 
-    def CEP__CLOSE_LONG_SPOT(self, symbol, compute_avg_price):
+    def CEP__CLOSE_LONG_SPOT(self, symbol, compute_avg_price, pct):
         self.called_function_name="CEP__CLOSE_LONG_SPOT"
         return self.CEP__BaseFunction(functools.partial( \
                             self.cep__close_long_spot, \
-                            symbol, compute_avg_price), \
-                            retry=MAX_RETRY*100, \
+                            symbol, compute_avg_price, pct), \
+                            retry=100, \
                             retry_period=0.1)
 
     @abstractmethod
-    def cep__close_long_futures(self, client, symbol): pass
+    def cep__close_long_futures(self, symbol): pass
 
-    def CEP__CLOSE_LONG_FUTURES(self, client, symbol):
+    def CEP__CLOSE_LONG_FUTURES(self, symbol):
         self.called_function_name="CEP__CLOSE_LONG_FUTURES"
         return self.CEP__BaseFunction(functools.partial( \
                                 self.cep__close_long_futures, \
-                                client, symbol), \
+                                symbol), \
                                 retry=MAX_RETRY*100, \
                                 retry_period=0.1)
 
-    def CEP__CLOSE_LONG(self, client, account_contract_type, symbol, compute_avg_price=False):
+    def CEP__CLOSE_LONG(self, account_contract_type, symbol, compute_avg_price=FALSE, pct=1):
         """
         Name : I__CLOSE_LONG()
         
@@ -181,25 +179,24 @@ class CryptoExchangePlatform(ABC):
         """
         self.called_function_name="CEP__CLOSE_LONG"
         if (account_contract_type == SPOT):
-            ret = self.CEP__CLOSE_LONG_SPOT(symbol, compute_avg_price)
+            ret = self.CEP__CLOSE_LONG_SPOT(symbol, compute_avg_price, pct)
         elif (account_contract_type == FUTURES):
-            ret = self.CEP__CLOSE_LONG_FUTURES(client, symbol)
+            ret = self.CEP__CLOSE_LONG_FUTURES(symbol)
         else:
             ret = 1
             
         return ret
 
     @abstractmethod
-    def cep__open_long_futures(self, client, symbol, leverage, \
+    def cep__open_long_futures(self, symbol, leverage, \
                                engaged_balance, entryPrice, pct): pass
 
-    def CEP__OPEN_LONG_FUTURES(self, client, symbol, leverage, \
+    def CEP__OPEN_LONG_FUTURES(self, symbol, leverage, \
                                engaged_balance, entryPrice, pct):
         self.called_function_name="CEP__OPEN_LONG_FUTURES"
         return self.CEP__BaseFunction(functools.partial( \
-                            self.cep__open_long_futures, client, \
-                            symbol, leverage, engaged_balance, \
-                            entryPrice, pct), retry_period=0.5)
+                            self.cep__open_long_futures, symbol, leverage, \
+                            engaged_balance, entryPrice, pct), retry_period=0.5)
 
     @abstractmethod
     def cep__open_long_spot(self, symbol, compute_avg_price, pct): pass
@@ -208,17 +205,16 @@ class CryptoExchangePlatform(ABC):
         self.called_function_name="CEP__OPEN_LONG_SPOT"
         return self.CEP__BaseFunction(functools.partial( \
                             self.cep__open_long_spot, \
-                            symbol, compute_avg_price), retry_period=0.5)
+                            symbol, compute_avg_price, pct), retry_period=0.5)
 
-    def CEP__OPEN_LONG(self, client, account_contract_type, symbol, \
+    def CEP__OPEN_LONG(self, account_contract_type, symbol, \
                         leverage, engaged_balance, entryPrice, \
-                        compute_avg_price=False, pct = 1):
+                        compute_avg_price=FALSE, pct = 1):
         self.called_function_name="CEP__OPEN_LONG"
         if (account_contract_type == SPOT):
             ret = self.CEP__OPEN_LONG_SPOT(symbol, compute_avg_price, pct)
         elif (account_contract_type == FUTURES):
-            ret = self.CEP__OPEN_LONG_FUTURES( client, \
-                                symbol, \
+            ret = self.CEP__OPEN_LONG_FUTURES( symbol, \
                                 leverage, \
                                 engaged_balance, \
                                 entryPrice, pct)
@@ -250,7 +246,6 @@ class CryptoExchangePlatform(ABC):
                             entryPrice), retry_period=0.5)
     
     @abstractmethod
-    #PLATFORM SPECIFIC
     def cep__get_futures_account_balance(self, client): pass
 
     def CEP__GET_FUTURES_ACCOUNT_BALANCE(self, client):
@@ -260,72 +255,14 @@ class CryptoExchangePlatform(ABC):
                             client), retry=MAX_RETRY*5, retry_period=0.5)
 
     @abstractmethod
-    #PLATFORM SPECIFIC
-    def cep__get_asset_balance(self, client): pass
+    def cep__get_asset_balance(self, asset): pass
 
-    def CEP__GET_ASSET_BALANCE(self, client):
+    def CEP__GET_ASSET_BALANCE(self, asset):
         self.called_function_name="CEP__GET_ASSET_BALANCE"
         return self.CEP__BaseFunction(functools.partial( \
                             self.cep__get_asset_balance, \
-                            client), retry_period=0.5)
+                            asset), retry_period=0.5)
 
-    """
-    @abstractmethod
-    def cep__set_stop_loss_long(self, client, symbol, engaged_balance, \
-                                entryPrice, mode, risk=RISK): pass
-
-    def CEP__SET_STOP_LOSS_LONG(self, client, symbol, engaged_balance, \
-                                entryPrice, mode, risk=RISK):
-        self.called_function_name="CEP__SET_STOP_LOSS_LONG"
-        return self.CEP__BaseFunction(functools.partial( \
-                            self.cep__set_stop_loss_long, \
-                            client, symbol, engaged_balance, \
-                            entryPrice, mode, risk=RISK), \
-                            retry_period=0.5)
-    """
-    """
-    @abstractmethod
-    def cep__set_stop_loss_short(self, client, symbol, engaged_balance, \
-                                entryPrice, mode, risk=RISK): pass
-
-    def CEP__SET_STOP_LOSS_SHORT(self, client, symbol, engaged_balance, \
-                                 entryPrice, mode, risk=RISK):
-        self.called_function_name="CEP__SET_STOP_LOSS_SHORT"
-        return self.CEP__BaseFunction(functools.partial( \
-                            self.cep__set_stop_loss_short, \
-                            client, symbol, engaged_balance, \
-                            entryPrice, mode, risk=RISK), retry_period=0.5)
-    """
-    """
-    @abstractmethod
-    def cep__clear_stop_loss(self, client, symbol): pass
-
-    def CEP__CLEAR_STOP_LOSS(self, client, symbol):
-        self.called_function_name="CEP__CLEAR_STOP_LOSS"
-        return self.CEP__BaseFunction(functools.partial( \
-                            self.cep__clear_stop_loss, \
-                            client, symbol), retry_period=0.5)
-
-
-    def CEP__MANAGE_STOP_LOSS(self, client, symbol, \
-                              engaged_balance, entryPrice, \
-                              side, mode, risk=RISK):
-        self.called_function_name="CEP__MANAGE_STOP_LOSS"
-        if (side == LONG):
-            ret = self.CEP__SET_STOP_LOSS_LONG(client, symbol, \
-                                engaged_balance, entryPrice, \
-                                mode, risk)
-        elif (side == SHORT):
-            ret = self.CEP__SET_STOP_LOSS_SHORT(client, symbol, \
-                                engaged_balance, entryPrice, \
-                                mode, risk)
-        elif (side == OUT):
-            ret = self.CEP__CLEAR_STOP_LOSS(client, symbol)
-        else:
-            return 1
-        
-        return ret
-    """
     @abstractmethod
     def cep__compute_side_spot_account(self, account, cep_response): pass
 
@@ -349,6 +286,29 @@ class CryptoExchangePlatform(ABC):
         else:
             return account.side
     
+    @abstractmethod
+    def cep__get_symbol_price(self, symbol): pass
+
+    def CEP__GET_SYMBOL_PRICE_SPOT(self, symbol):
+        self.called_function_name="CEP__GET_SYMBOL_PRICE_SPOT"
+        return self.cep__get_symbol_price(symbol)
+    
+    @abstractmethod
+    def cep__get_symbol_price_futures(self, symbol): pass
+
+    def CEP__GET_SYMBOL_PRICE_FUTURES(self, symbol):
+        self.called_function_name="CEP__GET_SYMBOL_PRICE_FUTURES"
+        return self.cep__get_symbol_price_futures(symbol)
+
+    def CEP__GET_SYMBOL_PRICE(self, account_contract_type, symbol):
+        self.called_function_name="CEP__GET_SYMBOL_PRICE"
+        if (account_contract_type == SPOT): 
+            return self.CEP__GET_SYMBOL_PRICE_SPOT(symbol)[PRICE]
+        elif (account_contract_type == FUTURES):
+            return self.CEP__GET_SYMBOL_PRICE_FUTURES(symbol)[PRICE]
+        else:
+            return 1
+
     def CEP__COMPUTE_AVG_PRICE(self, prices_list, qty_list):
         self.called_function_name="CEP__COMPUTE_AVG_PRICE"
         tot_qty = 0

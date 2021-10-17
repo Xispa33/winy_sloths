@@ -29,9 +29,16 @@ QTY = "qty"
 
 BYBIT_FUTURES_WALLET_BALANCE = "/v2/private/wallet/balance"
 BYBIT_FUTURES_POSITION = "/private/linear/position/list"
-BYBIT_FUTURES_SYMBOL_LASTEST_INFO = "/v2/public/tickers"
+BYBIT_FUTURES_SYMBOL_LATEST_INFO = "/public/linear/recent-trading-records"
 BYBIT_FUTURES_PLACE_ORDER = "/private/linear/order/create"
 BYBIT_FUTURES_MY_POSITIONS = "/private/linear/position/list"
 BYBIT_FUTURES_SET_LEVERAGE = "/private/linear/position/set-leverage"
 BYBIT_DEFAULT_LEVERAGE = 10
 BYBIT_MAX_LEVERAGE = 18
+REDUCE_ONLY = 'reduce_only'
+ORDER_TYPE = 'order_type'
+TIME_IN_FORCE = 'time_in_force'
+CLOSE_ON_TRIGGER = 'close_on_trigger'
+BUY_LEVERAGE = 'buy_leverage'
+SELL_LEVERAGE = 'sell_leverage'
+LAST_PRICE = 'lastPrice'
