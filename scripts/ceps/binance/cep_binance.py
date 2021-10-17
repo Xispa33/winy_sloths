@@ -38,8 +38,8 @@ class CEP__Binance(CryptoExchangePlatform):
         json_response = json.loads(response.text)
         if (response.status_code != self.REQUEST_ACK_OK):
             print(type(json_response))
-            raise ValueError('Request was not sent successfully. \
-            Error code is {}'.format(json_response[CODE]))
+            raise ValueError('Request was not sent successfully.')
+            #Error code is {}'.format(json_response[CODE]))
         else:
             return json_response
 

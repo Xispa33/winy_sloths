@@ -23,7 +23,6 @@ class TestFuturesBinance(unittest.TestCase):
     
     account = MasterAccount(info_strategy_file)
     obj_binance = account.api_key.exchange_platform_obj
-    obj_binance.cep__client(account.api_key.client._api_key, account.api_key.client._api_secret_key, account.account_contract_type)
     open_close_flag = True
 
     def test_get_futures_time(self):

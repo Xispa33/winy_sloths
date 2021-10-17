@@ -30,7 +30,7 @@ class TestFuturesBybit(unittest.TestCase):
     
     account = MasterAccount(info_strategy_file)
     obj_bybit = account.api_key.exchange_platform_obj
-    obj_bybit.cep__client(account.api_key.client._api_key, account.api_key.client._api_secret_key, account.account_contract_type)
+    #obj_bybit.cep__client(account.api_key.client._api_key, account.api_key.client._api_secret_key, account.account_contract_type)
     open_close_flag = True
 
     def test_get_futures_time(self):
@@ -102,7 +102,7 @@ class TestFuturesBybit(unittest.TestCase):
             self.assertIsInstance(ret, dict)
             self.assertEqual(ret['ret_msg'], 'OK')
             sleep(1)
-        
+
     @unittest.skipIf(open_close_flag==False, "This test was skipped because the account position side is not out.")
     def test_open_close_long_futures(self):
         leverage = 20
@@ -118,7 +118,7 @@ class TestFuturesBybit(unittest.TestCase):
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
                 self.obj_bybit.cep__open_long_futures, \
                 self.symbol, leverage, engaged_balance, \
-                float(price[0]['last_price']), 1), \
+                float(price[0][PRICE]), 1), \
                 retry=3, \
                 retry_period=2)
         self.assertIsInstance(ret, dict)
@@ -141,13 +141,13 @@ class TestFuturesBybit(unittest.TestCase):
                 self.symbol), \
                 retry=MAX_RETRY, \
                 retry_period=2)
-        
+
         time.sleep(1)
 
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
                 self.obj_bybit.cep__open_short, \
                 self.symbol, leverage, engaged_balance, \
-                float(price[0]['last_price']), 1), \
+                float(price[0][PRICE]), 1), \
                 retry=3, \
                 retry_period=2)
         self.assertIsInstance(ret, dict)

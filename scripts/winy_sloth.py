@@ -462,7 +462,6 @@ class WinySloth:
             # COMPUTING MASTER'S SIDE
             strategy_current_side = master_ep_obj.CEP__COMPUTE_ACCOUNT_SIDE( \
                                         strategy.master_api, ep_return)
-            #strategy_current_side = LONG
             
             # COMPARING MASTER'S SIDE WITH THE SIDE DEFINED IN STRATEGY FILE
             if (strategy_current_side != strategy.master_api.side):

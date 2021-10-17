@@ -149,7 +149,7 @@ class CryptoExchangePlatform(ABC):
                             symbol, compute_avg_price, pct), \
                             retry=100, \
                             retry_period=0.1)
-
+    #TODO: ADD PCT AS PARAMETER HERE
     @abstractmethod
     def cep__close_long_futures(self, symbol): pass
 
@@ -222,37 +222,37 @@ class CryptoExchangePlatform(ABC):
             ret = 1
 
         return ret
-    
+    # TODO:ADD PCT AS PARAMETER HERE
     @abstractmethod
-    def cep__close_short(self, client, symbol): pass
+    def cep__close_short(self, symbol): pass
 
-    def CEP__CLOSE_SHORT(self, client, symbol):
+    def CEP__CLOSE_SHORT(self, symbol):
         self.called_function_name="CEP__CLOSE_SHORT"
         return self.CEP__BaseFunction(functools.partial( \
-                            self.cep__close_short, client, \
+                            self.cep__close_short, \
                             symbol), retry=MAX_RETRY*100, \
                             retry_period=0.1)
 
     @abstractmethod
-    def cep__open_short(self, client, symbol, leverage, \
-                        engaged_balance, entryPrice): pass
+    def cep__open_short(self, symbol, leverage, \
+                        engaged_balance, entryPrice, pct): pass
 
-    def CEP__OPEN_SHORT(self, client, symbol, leverage, \
-                        engaged_balance, entryPrice):
+    def CEP__OPEN_SHORT(self, symbol, leverage, \
+                        engaged_balance, entryPrice, pct=1):
         self.called_function_name="CEP__OPEN_SHORT"
         return self.CEP__BaseFunction(functools.partial( \
-                            self.cep__open_short, client, \
+                            self.cep__open_short, \
                             symbol, leverage, engaged_balance, \
-                            entryPrice), retry_period=0.5)
+                            entryPrice, pct), retry_period=0.5)
     
     @abstractmethod
-    def cep__get_futures_account_balance(self, client): pass
+    def cep__get_futures_account_balance(self, asset): pass
 
-    def CEP__GET_FUTURES_ACCOUNT_BALANCE(self, client):
+    def CEP__GET_FUTURES_ACCOUNT_BALANCE(self, asset):
         self.called_function_name="CEP__GET_FUTURES_ACCOUNT_BALANCE"
         return self.CEP__BaseFunction(functools.partial( \
                             self.cep__get_futures_account_balance, \
-                            client), retry=MAX_RETRY*5, retry_period=0.5)
+                            asset), retry=MAX_RETRY*5, retry_period=0.5)
 
     @abstractmethod
     def cep__get_asset_balance(self, asset): pass

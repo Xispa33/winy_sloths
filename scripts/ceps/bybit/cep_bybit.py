@@ -238,7 +238,7 @@ class CEP__Bybit(CryptoExchangePlatform):
         binance_response = self.send_request(GET, \
                                 BYBIT_FUTURES_SYMBOL_LATEST_INFO, \
                                 request_parameters)
-        return binance_response[RESULT]
+        return binance_response[RESULT][0]
     
     def futures_create_order(self, symbol, side, positionSide, _type, quantity):
         self.called_function_name = "futures_create_order"
@@ -306,7 +306,7 @@ class CEP__Bybit(CryptoExchangePlatform):
     def cep__open_long_futures(self, symbol, leverage, \
                                 engaged_balance, entryPrice, pct):
         self.called_function_name="cep__open_long_futures"
-        balance = self.cep__get_futures_account_balance(USDT)['available_balance']
+        balance = self.cep__get_futures_account_balance(USDT)[AVAILABLE_BALANCE]
         if (leverage > BYBIT_DEFAULT_LEVERAGE):
             leverage = BYBIT_MAX_LEVERAGE
         
@@ -409,7 +409,7 @@ class CEP__Bybit(CryptoExchangePlatform):
                 return account.side
             else:
                 bybit_response = cep_response
-                for elt in bybit_response:
+                for idx, elt in enumerate(bybit_response):
                     if (elt[SIZE] > 0):
                         account.markPrice = 0
                         account.entryPrice = round(float(elt[ENTRY_PRICE]), 0)
@@ -421,4 +421,11 @@ class CEP__Bybit(CryptoExchangePlatform):
                             return LONG 
                         elif (elt[SIDE]) == SELL:
                             return SHORT
+                        else:
+                            return account.side
+
+                    elif (idx == len(bybit_response) - 1):
+                        return OUT
+                    else:
+                        pass
                 return account.side
