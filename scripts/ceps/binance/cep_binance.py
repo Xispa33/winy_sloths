@@ -138,13 +138,12 @@ class CEP__Binance(CryptoExchangePlatform):
     
     def cep__compute_side_futures_account(self, account, cep_response):
         self.called_function_name="cep__compute_side_futures_account"
-        if (isinstance(cep_response, int)):
+        if (isinstance(cep_response, int) or (len(cep_response) == 0)):
             return account.side
         else:
             binance_response = cep_response
             
             # Store needed information for FUTURES account
-            
             account.account_mode = ONE_WAY
             account.markPrice = round(float(binance_response[0][MARK_PRICE]), 0)
             account.entryPrice = round(float(binance_response[0][ENTRY_PRICE]), 0)
@@ -159,13 +158,18 @@ class CEP__Binance(CryptoExchangePlatform):
             if (account_balance != 1):
                 account.balance = float(account_balance[BALANCE])
                 account.engaged_balance = float(notional/account.balance)
-                if (notional == float(0)):
-                    return OUT
-                elif (notional < 0):
-                    return SHORT
-                else: 
-                    return LONG
-            else:
+                
+                for idx, elt in enumerate(binance_response):
+                    if (float(elt[ENTRY_PRICE])!=0):
+                        if (float(elt[NOTIONAL]) > 0):
+                            return LONG
+                        elif (float(elt[NOTIONAL]) < 0):
+                            return SHORT
+                        else:
+                            pass
+                    if (idx == len(binance_response) - 1) and (float(elt[ENTRY_PRICE])==0):
+                        return OUT
+                
                 return account.side
     
     def cep__futures_change_position_mode(self, dualSidePosition=FALSE):

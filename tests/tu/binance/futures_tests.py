@@ -145,7 +145,19 @@ class TestFuturesBinance(unittest.TestCase):
         new_qty = float(ret['executedQty'])
         self.assertAlmostEqual(quantity, new_qty, None, "Not equal", delta)
 
-        sleep(1)
+        time.sleep(1)
+
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__futures_account_trades, \
+                self.symbol))
+        self.assertIsInstance(ret, list)
+
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__compute_side_futures_account, \
+                self.account, ret))
+        self.assertEqual(ret, LONG)
+
+        time.sleep(1)
 
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
                 self.obj_binance.cep__close_long_futures, \
@@ -158,6 +170,18 @@ class TestFuturesBinance(unittest.TestCase):
         self.assertEqual(ret['positionSide'], LONG)
         new_qty = float(ret['executedQty'])
         self.assertAlmostEqual(quantity, new_qty, None, "Not equal", delta)
+
+        time.sleep(1)
+
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__futures_account_trades, \
+                self.symbol))
+        self.assertIsInstance(ret, list)
+
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__compute_side_futures_account, \
+                self.account, ret))
+        self.assertEqual(ret, OUT)
     
     @unittest.skipIf(open_close_flag==False, "This test was skipped because the account position side is not out.")
     def test_open_close_short_futures(self):
@@ -179,6 +203,18 @@ class TestFuturesBinance(unittest.TestCase):
                 retry_period=2)
         self.assertIsInstance(ret, dict)
 
+        time.sleep(2)
+
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__futures_account_trades, \
+                self.symbol))
+        self.assertIsInstance(ret, list)
+
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__compute_side_futures_account, \
+                self.account, ret))
+        self.assertEqual(ret, SHORT)
+        
         time.sleep(1)
 
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
@@ -187,6 +223,18 @@ class TestFuturesBinance(unittest.TestCase):
                 retry=3, \
                 retry_period=2)
         self.assertIsInstance(ret, dict)
+
+        time.sleep(2)
+
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__futures_account_trades, \
+                self.symbol))
+        self.assertIsInstance(ret, list)
+
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__compute_side_futures_account, \
+                self.account, ret))
+        self.assertEqual(ret, OUT)
 
 if __name__ == '__main__':
     unittest.main(testLoader=SequentialTestLoader())
