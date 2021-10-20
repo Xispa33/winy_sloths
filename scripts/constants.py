@@ -1,6 +1,11 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+"""Example Google style docstrings.
+
+
+"""
+
 from password import GMAIL_PASSWORD_KEY
 
 
