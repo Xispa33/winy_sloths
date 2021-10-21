@@ -44,8 +44,7 @@ class ApiKey:
 
     def find_exchange_platform_class(self, mode):
         klass = globals()[CEP + self.exchange_platform_name]
-        obj_cep = klass()
-        obj_cep.mode = mode
+        obj_cep = klass(mode=mode)
         return obj_cep
         
 class Account():
@@ -199,10 +198,10 @@ class SlaveAccount(Account):
     -------
     
     """
-    def __init__(self, info_strategy_file, account_contract_type, symbol):
+    def __init__(self, info_strategy_file, account_contract_type, symbol, mode=DEBUG):
         super().__init__(info_strategy_file, rtype=SLAVE, \
                     account_contract_type=account_contract_type, \
-                    symbol=symbol)
+                    symbol=symbol, mode=mode)
 
 class MasterAccount(Account):
     """
@@ -216,8 +215,8 @@ class MasterAccount(Account):
     -------
     
     """
-    def __init__(self, info_strategy_file):
-        super().__init__(info_strategy_file, rtype=MASTER)
+    def __init__(self, info_strategy_file, mode=DEBUG):
+        super().__init__(info_strategy_file, rtype=MASTER, mode=mode)
 
 class StrategyFile:
     """
@@ -241,13 +240,16 @@ class StrategyFile:
     StrategyFile__InitSlaves()
 
     """
-    def __init__(self, strategy_file_path, info_strategy_file_master, info_strategy_file_slave, mode=DEBUG):
+    def __init__(self, strategy_file_path, info_strategy_file_master, \
+                info_strategy_file_slave, mode=DEBUG):
         self.strategy_file_path = strategy_file_path
-        self.master_api = MasterAccount(info_strategy_file_master)
+        self.master_api = MasterAccount(info_strategy_file_master, mode=mode)
         self.slave_apis = self.StrategyFile__InitSlaves(info_strategy_file_slave, \
-                            self.master_api.account_contract_type, self.master_api.symbol)
+                            self.master_api.account_contract_type, \
+                            self.master_api.symbol, mode=mode)
 
-    def StrategyFile__InitSlaves(self, info_strategy_file_slave, account_contract_type, symbol):
+    def StrategyFile__InitSlaves(self, info_strategy_file_slave, \
+                                account_contract_type, symbol, mode=DEBUG):
         """
         Name : StrategyFile__InitSlaves(info_strategy_file_slave)
     
@@ -264,6 +266,6 @@ class StrategyFile:
         for slave in info_strategy_file_slave:
             if (len(slave) > MIN_SLAVE_CHAR):
                 slaves_list.append(SlaveAccount(slave.strip('\n').split(" "), \
-                                    account_contract_type, symbol))
+                                    account_contract_type, symbol, mode=mode))
 
         return slaves_list

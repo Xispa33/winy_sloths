@@ -13,8 +13,8 @@ import time
 from constants_bybit import *
 
 class CEP__Bybit(CryptoExchangePlatform):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, api_key=None, api_secret_key=None, mode=DEBUG):
+        super().__init__(mode=mode)
         self.name = BYBIT
         self.SPOT_TESTNET_ENDPOINT = 'https://api-testnet.bybit.com'
         self.SPOT_REAL_ENDPOINT = 'https://api.bybit.com'

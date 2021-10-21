@@ -21,8 +21,8 @@ class CEP__Binance(CryptoExchangePlatform):
     ----------
 
     """
-    def __init__(self, api_key=None, api_secret_key=None):
-        super().__init__()
+    def __init__(self, api_key=None, api_secret_key=None, mode=DEBUG):
+        super().__init__(mode=mode)
         self.name = BINANCE
         self.SPOT_TESTNET_ENDPOINT = 'https://testnet.binance.vision'
         self.SPOT_REAL_ENDPOINT = 'https://api.binance.com'

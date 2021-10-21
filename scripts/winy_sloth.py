@@ -159,7 +159,8 @@ class WinySloth:
                         content = strategy_file.readlines()
                         master_info = content[0].strip('\n').split(" ")
                         slave_info = content[OFFSET_SLAVE_IN_STRATEGY_FILE:]
-                        strategy_file_object = StrategyFile(strategy_path, master_info, slave_info)
+                        strategy_file_object = StrategyFile(strategy_path, \
+                                                master_info, slave_info, self.mode)
                         self.strategies.append(strategy_file_object)
                         strategy_file.close()
                 return 0
@@ -483,9 +484,9 @@ class WinySloth:
                             str(int(time.time()*1000)), strategy.master_api.symbol, \
                             strategy.master_api.side, strategy.master_api.engaged_balance, \
                             strategy.master_api.markPrice)
-            else:
-                # WAIT TO MOVE ON TO THE NEXT STRATEGY
-                sleep(WAIT_DEFAULT)
+            
+            # WAIT TO MOVE ON TO THE NEXT STRATEGY    
+            sleep(WAIT_DEFAULT)
     
     def Winy_Sloth__RunDebugMode(self):
         start_time = time.time()
