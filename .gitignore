@@ -7,5 +7,5 @@ strategies
 tests/tv/TEST_SPOT/TEST_OUT_BTCUSDT
 tests/tv/TEST_SPOT/TEST_OUT_BTCUSDT
 scripts/errors.txt
-scripts/nohup.out
+nohup.out
 stats/history.csv

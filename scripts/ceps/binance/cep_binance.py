@@ -222,8 +222,8 @@ class CEP__Binance(CryptoExchangePlatform):
         if (len(ret) == 1):
             self.futures_change_position_mode(dualSidePosition=TRUE)
         
-        if (leverage >= BINANCE_DEFAULT_LEVERAGE):
-            leverage = BINANCE_MAX_LEVERAGE = 18
+        if (int(leverage) >= BINANCE_DEFAULT_LEVERAGE):
+            leverage = str(BINANCE_MAX_LEVERAGE)
             #self.cep__futures_change_leverage(symbol, leverage)
         
         #Need slave available balance
@@ -478,7 +478,7 @@ class CEP__Binance(CryptoExchangePlatform):
             if (len(cep_response) == 0):
                 return account.side
             else:
-                asset_dict = self.cep__get_asset_balance(asset=USDT)
+                asset_dict = self.CEP__GET_ASSET_BALANCE(USDT)
                 if (not isinstance(asset_dict, dict)):
                     return account.side
                 else:
