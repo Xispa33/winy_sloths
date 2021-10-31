@@ -473,6 +473,20 @@ class WinySloth:
                 # UPDATING SLAVES (ACCOUNTS AND STRATEGY FILE) 
                 ret_update_slave = self.WinySloth__SlaveManagement(strategy, ret_update_master)
                 
+                ####################################### PATCH ########################################
+                #print(ep_return)
+                if ((strategy.strategy_file_path.split('/')[-1][:-len(TXT)] == 'eth_levier' or strategy.strategy_file_path.split('/')[-1][:-len(TXT)] == 'btc_levier') and strategy_current_side != OUT):
+                    #positionAmt = float(ep_return[0][POSITION_AMT])
+                    #client = master_ep_obj.CEP__CLIENT(strategy.master_api.api_key._api_key, \
+                    #    strategy.master_api.api_key._api_secret_key, strategy.master_api.account_contract_type)
+                    if (strategy_current_side == LONG):
+                        master_ep_obj.CEP__CLOSE_LONG(FUTURES, strategy.master_api.symbol, pct=0.9)
+                        #master_ep_obj.CEP__close_long_levier_X(client, strategy.master_api.symbol, positionAmt)
+                    else:
+                        #master_ep_obj.CEP__close_short_levier_X(client, strategy.master_api.symbol, abs(positionAmt))
+                        master_ep_obj.CEP__CLOSE_SHORT(strategy.master_api.symbol, pct=0.9)
+                ######################################################################################
+
                 # SENDING OF AN EMAIL TO NOTIFY CHANGE IN STRATEGY
                 self.Winy_Sloth__SendEmail(MASTER, \
                         strategy.strategy_file_path.split('/')[-1][:-len(TXT)], \

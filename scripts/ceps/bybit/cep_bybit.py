@@ -299,7 +299,8 @@ class CEP__Bybit(CryptoExchangePlatform):
                     retry=MAX_RETRY, \
                     retry_period=1)
 
-            return bybit_response
+            #return bybit_response
+            return 0
         else: 
             return 1
 
@@ -307,12 +308,12 @@ class CEP__Bybit(CryptoExchangePlatform):
                                 engaged_balance, entryPrice, pct):
         self.called_function_name="cep__open_long_futures"
         balance = self.cep__get_futures_account_balance(USDT)[AVAILABLE_BALANCE]
-        if (leverage > BYBIT_DEFAULT_LEVERAGE):
-            leverage = BYBIT_MAX_LEVERAGE
+        if (int(leverage) > BYBIT_DEFAULT_LEVERAGE):
+            leverage = str(BYBIT_MAX_LEVERAGE)
         
         self.CEP__BaseFunction(functools.partial( \
                 self.cep__futures_change_leverage, \
-                symbol, leverage), \
+                symbol, int(1+engaged_balance)), \
                 retry=MAX_RETRY, \
                 retry_period=1)
         
@@ -337,9 +338,10 @@ class CEP__Bybit(CryptoExchangePlatform):
                 quantity = 1*10**(-precision)
             quantity = quantity*pct
             time.sleep(0.5)
-        return bybit_response
+        #return bybit_response
+        return 0
 
-    def cep__close_short(self, symbol):
+    def cep__close_short(self, symbol, pct=1):
         self.called_function_name="cep__close_short"
         
         bybit_positions = self.cep__get_my_futures_positions(symbol)
@@ -347,7 +349,7 @@ class CEP__Bybit(CryptoExchangePlatform):
         if (isinstance(bybit_positions, list)):
             for elt in bybit_positions:
                 if (elt[SIZE] > 0):
-                    size = elt[SIZE]
+                    size = elt[SIZE]*pct
                     leverage = elt[LEVERAGE]
                     break
 
@@ -360,7 +362,8 @@ class CEP__Bybit(CryptoExchangePlatform):
                     retry=MAX_RETRY, \
                     retry_period=1)
 
-            return bybit_response
+            #return bybit_response
+            return 0
         else: 
             return 1
 
@@ -373,7 +376,7 @@ class CEP__Bybit(CryptoExchangePlatform):
             leverage = BYBIT_MAX_LEVERAGE
         self.CEP__BaseFunction(functools.partial( \
             self.cep__futures_change_leverage, \
-            symbol, leverage), \
+            symbol, int(-1 + engaged_balance)), \
             retry=MAX_RETRY, \
             retry_period=1)
         
@@ -398,7 +401,8 @@ class CEP__Bybit(CryptoExchangePlatform):
                 quantity = 1*10**(-precision)
             quantity = quantity*pct
             time.sleep(0.5)
-        return bybit_response
+        #return bybit_response
+        return 0
 
     def cep__compute_side_futures_account(self, account, cep_response):
         self.called_function_name="cep__compute_side_futures_account"

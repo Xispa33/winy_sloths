@@ -15,7 +15,7 @@
                 "SCRIPT_DIR": "/Users/brice/Desktop/winy_sloths/scripts/",
                 "CEPS_DIR": "/Users/brice/Desktop/winy_sloths/scripts/ceps/"
             },
-            "args": ["--mode", "debug", "--folder", "$PWD/strategies", "--history", "$PWD/stats"]
+            "args": ["--mode", "debug", "--folder", "strategies", "--history", "stats"]
         }
     ]
 }

@@ -222,15 +222,15 @@ class CryptoExchangePlatform(ABC):
             ret = 1
 
         return ret
-    # TODO:ADD PCT AS PARAMETER HERE
-    @abstractmethod
-    def cep__close_short(self, symbol): pass
 
-    def CEP__CLOSE_SHORT(self, symbol):
+    @abstractmethod
+    def cep__close_short(self, symbol, pct=1): pass
+
+    def CEP__CLOSE_SHORT(self, symbol, pct=1):
         self.called_function_name="CEP__CLOSE_SHORT"
         return self.CEP__BaseFunction(functools.partial( \
                             self.cep__close_short, \
-                            symbol), retry=MAX_RETRY*100, \
+                            symbol, pct), retry=MAX_RETRY*100, \
                             retry_period=0.1)
 
     @abstractmethod

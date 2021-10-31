@@ -38,7 +38,7 @@ class CEP__Binance(CryptoExchangePlatform):
         json_response = json.loads(response.text)
         if (response.status_code != self.REQUEST_ACK_OK):
             print(type(json_response))
-            raise ValueError('Request was not sent successfully.')
+            raise ValueError('Request was not sent successfully.{}'.format(json_response))
             #Error code is {}'.format(json_response[CODE]))
         else:
             return json_response
@@ -256,7 +256,8 @@ class CEP__Binance(CryptoExchangePlatform):
                                         side=BUY, positionSide=LONG, \
                                         _type=MARKET, quantity=quantity)
         
-        return binance_response
+        #return binance_response
+        return 0
 
     def cep__open_short(self, symbol, leverage, \
                     engaged_balance, entryPrice, pct):
@@ -330,7 +331,7 @@ class CEP__Binance(CryptoExchangePlatform):
         else:
             return 0
     
-    def cep__close_short(self, symbol):
+    def cep__close_short(self, symbol, pct=1):
         self.called_function_name="cep__close_short"
         last_trade = []
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
@@ -344,7 +345,7 @@ class CEP__Binance(CryptoExchangePlatform):
             if dic[POSITION_SIDE] == SHORT:
                 ret = dic
         
-        quantity = round(abs(float(ret[POSITION_AMT])), precision)
+        quantity = round(abs(float(ret[POSITION_AMT])*pct), precision)
 
         if (quantity != 0.0):
             binance_return = self.futures_create_order(symbol=symbol, \
