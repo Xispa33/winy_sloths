@@ -12,10 +12,10 @@
             "console": "integratedTerminal",
             //"preLaunchTask": "Prepare Debug",
             "env": {
-                "SCRIPT_DIR": "/Users/brice/Desktop/winy_sloths/scripts/",
-                "CEPS_DIR": "/Users/brice/Desktop/winy_sloths/scripts/ceps/"
+                "SCRIPT_DIR": "/Users/brice/Desktop/Codes/Crypto/Winy/test_env/winy_sloths/scripts/",
+                "CEPS_DIR": "/Users/brice/Desktop/Codes/Crypto/Winy/test_env/winy_sloths/scripts/ceps/"
             },
-            "args": ["--mode", "debug", "--folder", "strategies", "--history", "stats"]
+            "args": ["--mode", "run", "--folder", "strategies", "--history", "stats"]
         }
     ]
 }
