@@ -279,7 +279,7 @@ class CEP__Bybit(CryptoExchangePlatform):
                                 request_parameters)
         return bybit_response
 
-    def cep__close_long_futures(self, symbol):
+    def cep__close_long_futures(self, symbol, pct=1):
         self.called_function_name="cep__close_long_futures"
         bybit_positions = self.cep__get_my_futures_positions(symbol)
 
@@ -341,7 +341,7 @@ class CEP__Bybit(CryptoExchangePlatform):
         #return bybit_response
         return 0
 
-    def cep__close_short(self, symbol, pct=1):
+    def cep__close_short(self, symbol, pct):
         self.called_function_name="cep__close_short"
         
         bybit_positions = self.cep__get_my_futures_positions(symbol)

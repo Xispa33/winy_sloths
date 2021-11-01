@@ -151,14 +151,14 @@ class CryptoExchangePlatform(ABC):
                             retry_period=0.1)
     #TODO: ADD PCT AS PARAMETER HERE
     @abstractmethod
-    def cep__close_long_futures(self, symbol): pass
+    def cep__close_long_futures(self, symbol, pct): pass
 
-    def CEP__CLOSE_LONG_FUTURES(self, symbol):
+    def CEP__CLOSE_LONG_FUTURES(self, symbol, pct):
         self.called_function_name="CEP__CLOSE_LONG_FUTURES"
         return self.CEP__BaseFunction(functools.partial( \
                                 self.cep__close_long_futures, \
-                                symbol), \
-                                retry=MAX_RETRY*100, \
+                                symbol, pct), \
+                                retry=MAX_RETRY*10, \
                                 retry_period=0.1)
 
     def CEP__CLOSE_LONG(self, account_contract_type, symbol, compute_avg_price=FALSE, pct=1):
@@ -181,7 +181,7 @@ class CryptoExchangePlatform(ABC):
         if (account_contract_type == SPOT):
             ret = self.CEP__CLOSE_LONG_SPOT(symbol, compute_avg_price, pct)
         elif (account_contract_type == FUTURES):
-            ret = self.CEP__CLOSE_LONG_FUTURES(symbol)
+            ret = self.CEP__CLOSE_LONG_FUTURES(symbol, pct)
         else:
             ret = 1
             
@@ -224,13 +224,13 @@ class CryptoExchangePlatform(ABC):
         return ret
 
     @abstractmethod
-    def cep__close_short(self, symbol, pct=1): pass
+    def cep__close_short(self, symbol, pct): pass
 
     def CEP__CLOSE_SHORT(self, symbol, pct=1):
         self.called_function_name="CEP__CLOSE_SHORT"
         return self.CEP__BaseFunction(functools.partial( \
                             self.cep__close_short, \
-                            symbol, pct), retry=MAX_RETRY*100, \
+                            symbol, pct), retry=MAX_RETRY*10, \
                             retry_period=0.1)
 
     @abstractmethod

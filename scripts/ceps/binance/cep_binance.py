@@ -302,7 +302,7 @@ class CEP__Binance(CryptoExchangePlatform):
 
         return binance_return
     
-    def cep__close_long_futures(self, symbol):
+    def cep__close_long_futures(self, symbol, pct=1):
         self.called_function_name="cep__close_long_futures"
         last_trade = []
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
@@ -320,7 +320,7 @@ class CEP__Binance(CryptoExchangePlatform):
                 found = True
 
         if (found):
-            position_amt = round(float(ret[POSITION_AMT]), precision)
+            position_amt = round(float(ret[POSITION_AMT])*pct, precision)
         else:
             position_amt = 0.0
 
@@ -332,7 +332,7 @@ class CEP__Binance(CryptoExchangePlatform):
         else:
             return 0
     
-    def cep__close_short(self, symbol, pct=1):
+    def cep__close_short(self, symbol, pct):
         self.called_function_name="cep__close_short"
         last_trade = []
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
@@ -352,7 +352,8 @@ class CEP__Binance(CryptoExchangePlatform):
             binance_return = self.futures_create_order(symbol=symbol, \
                                     side=BUY, positionSide=SHORT, \
                                     _type=MARKET, quantity=quantity)
-            return binance_return
+            #return binance_return
+            return 0
         else:
             return 0
 
@@ -501,3 +502,7 @@ class CEP__Binance(CryptoExchangePlatform):
         
         binance_response = requests.get(self.BASIC_ENDPOINT + SPOT_GET_EXCHANGE_INFO[0])
         return binance_response.json()
+
+master_ep_obj = CEP__Binance()
+master_ep_obj.CEP__CLIENT('8d222126f41dbb85e6bb1c404416002afa7509b44e93f2c1c1fa6b2461424993', '2d21df1c9e10b0ec7be9c722287da7d5d581a96f61c9beedf964e0c1964329b6', FUTURES)
+master_ep_obj.CEP__CLOSE_SHORT('ETHUSDT', pct=0.9)
