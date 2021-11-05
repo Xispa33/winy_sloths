@@ -205,13 +205,17 @@ class CEP__Binance(CryptoExchangePlatform):
         binance_response = self.send_request(GET, FUTURES_TICKER_PRICE, request_parameters)
         return binance_response
 
-    def futures_create_order(self, symbol, side, positionSide, _type, quantity):
+    def futures_create_order(self, symbol, side, _type, quantity, positionSide=0):
         self.called_function_name = "futures_create_order"
         request_parameters = {SYMBOL:symbol, \
-                            SIDE:side, POSITION_SIDE:positionSide, \
+                            SIDE:side, \
                             TYPE:_type, QUANTITY:str(quantity), \
                             'newOrderRespType':'RESULT', \
                             TIMESTAMP: str(int(time.time()*1000))}
+        
+        if (positionSide != 0):
+            request_parameters[POSITION_SIDE] = positionSide
+        
         binance_response = self.send_request(POST, FUTURES_CREATE_ORDER, request_parameters)
         return binance_response
     
@@ -255,8 +259,8 @@ class CEP__Binance(CryptoExchangePlatform):
             quantity = 1*10**(-precision)
         
         binance_response = self.futures_create_order(symbol=symbol, \
-                                        side=BUY, positionSide=LONG, \
-                                        _type=MARKET, quantity=quantity)
+                                        side=BUY, _type=MARKET, \
+                                        quantity=quantity, positionSide=LONG)
         
         #return binance_response
         return 0
@@ -270,7 +274,7 @@ class CEP__Binance(CryptoExchangePlatform):
         if (len(ret) == 1):
             self.futures_change_position_mode(dualSidePosition=TRUE)
         
-        if (abs(leverage) >= BINANCE_DEFAULT_LEVERAGE):
+        if (int(leverage) >= BINANCE_DEFAULT_LEVERAGE):
             leverage = BINANCE_MAX_LEVERAGE
             #self.cep__futures_change_leverage(symbol, leverage)
         
@@ -299,8 +303,8 @@ class CEP__Binance(CryptoExchangePlatform):
             quantity = 1*10**(-precision)
         
         binance_return = self.futures_create_order(symbol=symbol, \
-                                    side=SELL, positionSide=SHORT, \
-                                    _type=MARKET, quantity=quantity)
+                                    side=SELL, _type=MARKET, \
+                                    quantity=quantity, positionSide=SHORT)
 
         #return binance_return
         return 0
@@ -328,8 +332,9 @@ class CEP__Binance(CryptoExchangePlatform):
             position_amt = 0.0
 
         if (position_amt != 0.0):
-            binance_return = self.futures_create_order(symbol=symbol, side=SELL, positionSide=LONG, \
-                                    _type=MARKET, quantity=position_amt)
+            binance_return = self.futures_create_order(symbol=symbol, side=SELL, \
+                                    _type=MARKET, quantity=position_amt, \
+                                    positionSide=LONG)
             #return binance_return
             return 0
         else:
@@ -344,21 +349,29 @@ class CEP__Binance(CryptoExchangePlatform):
             last_trade = self.cep__futures_account_trades(symbol)
         else:
             pass
-            
-        for dic in last_trade:
-            if dic[POSITION_SIDE] == SHORT:
-                ret = dic
         
-        quantity = round(abs(float(ret[POSITION_AMT])*pct), precision)
+        if (len(last_trade) > 0):
+            #for dic in last_trade:
+            #    if dic[POSITION_SIDE] == SHORT:
+            #        ret = dic
+        
+            quantity = round(abs(float(last_trade[0][POSITION_AMT])*pct), precision)
 
-        if (quantity != 0.0):
-            binance_return = self.futures_create_order(symbol=symbol, \
-                                    side=BUY, positionSide=SHORT, \
-                                    _type=MARKET, quantity=quantity)
-            #return binance_return
-            return 0
-        else:
-            return 0
+            if (quantity != 0.0):
+                position_mode = self.cep__futures_position_mode()
+                if position_mode['dualSidePosition'] == False:
+                    binance_return = self.futures_create_order(symbol=symbol, \
+                                            side=BUY, _type=MARKET, quantity=quantity)
+                else:
+                    binance_return = self.futures_create_order(symbol=symbol, \
+                                            positionSide=SHORT, side=BUY, \
+                                            _type=MARKET, quantity=quantity)
+                                        
+                #return binance_return
+                return 0
+            else:
+                return 0
+        return 1
 
     ################################# END FUTURES #########################################
 

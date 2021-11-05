@@ -372,11 +372,11 @@ class CEP__Bybit(CryptoExchangePlatform):
         self.called_function_name="cep__open_short"
 
         balance = self.cep__get_futures_account_balance(USDT)['available_balance']
-        if (leverage > BYBIT_DEFAULT_LEVERAGE):
+        if (float(leverage) > BYBIT_DEFAULT_LEVERAGE):
             leverage = BYBIT_MAX_LEVERAGE
         self.CEP__BaseFunction(functools.partial( \
             self.cep__futures_change_leverage, \
-            symbol, int(-1 + engaged_balance)), \
+            symbol, int(1 + abs(engaged_balance))), \
             retry=MAX_RETRY, \
             retry_period=1)
         
