@@ -157,8 +157,10 @@ class CEP__Binance(CryptoExchangePlatform):
                             self.cep__get_futures_account_balance, USDT),retry=5, retry_period=0.5)
             if (account_balance != 1):
                 account.balance = float(account_balance[BALANCE])
-                account.engaged_balance = float(notional/account.balance)
-                
+                try:
+                    account.engaged_balance = float(notional/account.balance)
+                except:
+                    return account.side
                 for idx, elt in enumerate(binance_response):
                     if (float(elt[ENTRY_PRICE])!=0):
                         if (float(elt[NOTIONAL]) > 0):
