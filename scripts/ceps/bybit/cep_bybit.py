@@ -227,7 +227,7 @@ class CEP__Bybit(CryptoExchangePlatform):
         
         request_parameters = {SYMBOL:symbol, \
                             TIMESTAMP: str(int(time.time()*1000))}
-        bybit_response = self.send_request(GET, BYBIT_FUTURES_POSITION, \
+        bybit_response = self.send_request(GET, BYBIT_FUTURES_MY_POSITIONS, \
                                             request_parameters)
         return bybit_response[RESULT]
 
@@ -292,13 +292,11 @@ class CEP__Bybit(CryptoExchangePlatform):
 
             bybit_response = self.futures_create_order(symbol, SELL, LONG, MARKET, str(size))[RESULT]
         
-            if (leverage > BYBIT_DEFAULT_LEVERAGE):
-                self.CEP__BaseFunction(functools.partial( \
-                    self.cep__futures_change_leverage, \
-                    symbol, BYBIT_DEFAULT_LEVERAGE), \
-                    retry=MAX_RETRY, \
-                    retry_period=1)
-
+            self.CEP__BaseFunction(functools.partial( \
+                self.cep__configure_leverage, \
+                symbol, BYBIT_DEFAULT_LEVERAGE, BUY), \
+                retry=MAX_RETRY, \
+                retry_period=1)
             #return bybit_response
             return 0
         else: 
@@ -310,13 +308,13 @@ class CEP__Bybit(CryptoExchangePlatform):
         balance = self.cep__get_futures_account_balance(USDT)[AVAILABLE_BALANCE]
         if (int(leverage) > BYBIT_DEFAULT_LEVERAGE):
             leverage = str(BYBIT_MAX_LEVERAGE)
-        
+
         self.CEP__BaseFunction(functools.partial( \
-                self.cep__futures_change_leverage, \
-                symbol, int(1+engaged_balance)), \
+                self.cep__configure_leverage, \
+                symbol, int(1+engaged_balance), BUY), \
                 retry=MAX_RETRY, \
                 retry_period=1)
-        
+
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
         quantity=round(((float(balance)*engaged_balance/entryPrice) - \
                                                 (5*10**(-precision - 1))), precision)
@@ -328,7 +326,8 @@ class CEP__Bybit(CryptoExchangePlatform):
         quantity = quantity*pct
 
         while (balance > 30):
-            bybit_response = self.futures_create_order(symbol, BUY, LONG, MARKET, str(quantity))[RESULT]
+            #bybit_response = self.futures_create_order(symbol, BUY, LONG, MARKET, str(quantity))[RESULT]
+            bybit_response = self.futures_create_order(symbol, BUY, LONG, MARKET, str(quantity))
             
             balance = self.cep__get_futures_account_balance(USDT)['available_balance']
             precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
@@ -354,13 +353,12 @@ class CEP__Bybit(CryptoExchangePlatform):
                     break
 
             bybit_response = self.futures_create_order(symbol, BUY, SHORT, MARKET, str(size))[RESULT]
-        
-            if (leverage > BYBIT_DEFAULT_LEVERAGE):
-                self.CEP__BaseFunction(functools.partial( \
-                    self.cep__futures_change_leverage, \
-                    symbol, BYBIT_DEFAULT_LEVERAGE), \
-                    retry=MAX_RETRY, \
-                    retry_period=1)
+
+            self.CEP__BaseFunction(functools.partial( \
+                self.cep__configure_leverage, \
+                symbol, BYBIT_DEFAULT_LEVERAGE, SELL), \
+                retry=MAX_RETRY, \
+                retry_period=1)
 
             #return bybit_response
             return 0
@@ -374,11 +372,12 @@ class CEP__Bybit(CryptoExchangePlatform):
         balance = self.cep__get_futures_account_balance(USDT)['available_balance']
         if (float(leverage) > BYBIT_DEFAULT_LEVERAGE):
             leverage = BYBIT_MAX_LEVERAGE
+
         self.CEP__BaseFunction(functools.partial( \
-            self.cep__futures_change_leverage, \
-            symbol, int(1 + abs(engaged_balance))), \
-            retry=MAX_RETRY, \
-            retry_period=1)
+                self.cep__configure_leverage, \
+                symbol, int(1 + abs(engaged_balance)), SELL), \
+                retry=MAX_RETRY, \
+                retry_period=1)
         
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
         quantity=round(((float(balance)*abs(engaged_balance)/entryPrice) - \
@@ -391,7 +390,8 @@ class CEP__Bybit(CryptoExchangePlatform):
         quantity = quantity*pct
 
         while (balance > 30):
-            bybit_response = self.futures_create_order(symbol, SELL, SHORT, MARKET, str(quantity))[RESULT]
+            #bybit_response = self.futures_create_order(symbol, SELL, SHORT, MARKET, str(quantity))[RESULT]
+            bybit_response = self.futures_create_order(symbol, SELL, SHORT, MARKET, str(quantity))
             
             balance = self.cep__get_futures_account_balance(USDT)['available_balance']
             precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
@@ -433,3 +433,19 @@ class CEP__Bybit(CryptoExchangePlatform):
                     else:
                         pass
                 return account.side
+    
+    def cep__configure_leverage(self, symbol, leverage, side):
+        self.called_function_name="cep__configure_leverage"
+        account_info = self.cep__get_my_futures_positions(ETHUSDT)
+        for elt in account_info:
+            if elt[SIDE] == side:
+                curr_leverage =  int(elt[LEVERAGE])
+                break
+        
+        if (curr_leverage != 1 + int(leverage)):
+            self.CEP__BaseFunction(functools.partial( \
+                    self.cep__futures_change_leverage, \
+                    symbol, 1 + int(leverage)), \
+                    retry=MAX_RETRY, \
+                    retry_period=1)
+        return 0

@@ -28,7 +28,6 @@ LIMIT = "limit"
 QTY = "qty"
 
 BYBIT_FUTURES_WALLET_BALANCE = "/v2/private/wallet/balance"
-BYBIT_FUTURES_POSITION = "/private/linear/position/list"
 BYBIT_FUTURES_SYMBOL_LATEST_INFO = "/public/linear/recent-trading-records"
 BYBIT_FUTURES_PLACE_ORDER = "/private/linear/order/create"
 BYBIT_FUTURES_MY_POSITIONS = "/private/linear/position/list"
