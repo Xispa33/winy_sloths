@@ -147,7 +147,7 @@ class CryptoExchangePlatform(ABC):
         return self.CEP__BaseFunction(functools.partial( \
                             self.cep__close_long_spot, \
                             symbol, compute_avg_price, pct), \
-                            retry=100, \
+                            retry=MAX_RETRY, \
                             retry_period=0.1)
     #TODO: ADD PCT AS PARAMETER HERE
     @abstractmethod
@@ -158,7 +158,7 @@ class CryptoExchangePlatform(ABC):
         return self.CEP__BaseFunction(functools.partial( \
                                 self.cep__close_long_futures, \
                                 symbol, pct), \
-                                retry=MAX_RETRY*10, \
+                                retry=MAX_RETRY, \
                                 retry_period=0.1)
 
     def CEP__CLOSE_LONG(self, account_contract_type, symbol, compute_avg_price=FALSE, pct=1):
@@ -230,7 +230,7 @@ class CryptoExchangePlatform(ABC):
         self.called_function_name="CEP__CLOSE_SHORT"
         return self.CEP__BaseFunction(functools.partial( \
                             self.cep__close_short, \
-                            symbol, pct), retry=MAX_RETRY*10, \
+                            symbol, pct), retry=MAX_RETRY, \
                             retry_period=0.1)
 
     @abstractmethod
@@ -252,7 +252,7 @@ class CryptoExchangePlatform(ABC):
         self.called_function_name="CEP__GET_FUTURES_ACCOUNT_BALANCE"
         return self.CEP__BaseFunction(functools.partial( \
                             self.cep__get_futures_account_balance, \
-                            asset), retry=MAX_RETRY*5, retry_period=0.5)
+                            asset), retry=MAX_RETRY, retry_period=0.5)
 
     @abstractmethod
     def cep__get_asset_balance(self, asset): pass
