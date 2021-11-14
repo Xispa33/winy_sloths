@@ -269,8 +269,11 @@ class CEP__Binance(CryptoExchangePlatform):
 
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
         ret = self.cep__futures_account_trades(symbol)
-        if (len(ret) == 1):
-            self.cep__futures_change_position_mode(dualSidePosition=TRUE)
+        #if (len(ret) == 1):
+        try:
+            self.cep__futures_change_position_mode(dualSidePosition=FALSE)
+        except:
+            pass
         
         if (int(leverage) >= BINANCE_DEFAULT_LEVERAGE):
             leverage = BINANCE_MAX_LEVERAGE
