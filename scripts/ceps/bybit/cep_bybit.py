@@ -346,7 +346,7 @@ class CEP__Bybit(CryptoExchangePlatform):
         bybit_positions = self.cep__get_my_futures_positions(symbol)
         if (isinstance(bybit_positions, list)):
             for elt in bybit_positions:
-                if (elt[SIZE] < 0):
+                if (elt[SIZE] > 0):
                     size = elt[SIZE]*pct
                     leverage = elt[LEVERAGE]
                     break
