@@ -16,6 +16,10 @@ convert2lower() {
     string=$1
     echo "${string}" | tr '[:upper:]' '[:lower:]'
 }
+convert2upper() {
+    string=$1
+    echo "${string}" | tr '[:lower:]' '[:upper:]'
+}
 
 if [ $1 == "--help" ] || [ $1 == "-h" ] || [ $# -lt 5 ]; then 
 	display_usage
@@ -66,31 +70,72 @@ fi
 
         ######################### TU ##########################
 if [ ${TEST_TYPE} == "TU" ]; then        
-        for platform in "${platform_list[@]}"
+    for platform in "${platform_list[@]}"
+    do
+        for contract_type in "${contract_type_list[@]}"
         do
-            for contract_type in "${contract_type_list[@]}"
+            build_dir="build/${test_type}/${contract_type}/"
+            mkdir -p ${build_dir}
+            for cmd_symbol in "${cmd_symbol_list[@]}"
             do
-                build_dir="build/${test_type}/${contract_type}/"
-                mkdir -p ${build_dir}
-                for cmd_symbol in "${cmd_symbol_list[@]}"
-                do
-                    file_path="./tests/${test_type}/${platform}/${contract_type}_tests.py"
-                    output_file="${build_dir}/${test_type}_${contract_type}_${platform}_${cmd_symbol}.xml"
-                    SCRIPT_DIR=${PWD}/scripts/ CEPS_DIR=${PWD}/scripts/ceps/ \
-                    SYMBOL=${cmd_symbol} ASSET=${ASSET} \
-                    python3 -m pytest --junitxml ${output_file} ${file_path} -v
-                done
-
-                #Gather all .xml in one
-                output_file="${build_dir}/${test_type}_${contract_type}.xml"
-                xmlmerge ${build_dir}/*.xml > ${output_file}
-
-                cp ${output_file} ./docs/pages
+                file_path="./tests/${test_type}/${platform}/${contract_type}_tests.py"
+                output_file="${build_dir}/${test_type}_${contract_type}_${platform}_${cmd_symbol}.xml"
+                SCRIPT_DIR=${PWD}/scripts/ CEPS_DIR=${PWD}/scripts/ceps/ \
+                SYMBOL=${cmd_symbol} ASSET=${ASSET} \
+                python3 -m pytest --junitxml ${output_file} ${file_path} -v
             done
+
+            #Gather all .xml in one
+            output_file="${build_dir}/${test_type}_${contract_type}.xml"
+            xmlmerge ${build_dir}/*.xml > ${output_file}
+
+            cp ${output_file} ./docs/pages
         done
+    done
 
         ######################### TV ##########################
-elif [${TEST_TYPE} == "TV"]; then
+elif [ ${TEST_TYPE} == "TV" ]; then
+    if [ $PLATFORM == "ALL" ]; then
+        declare -a platform_list=("binance")
+    fi
+    #Créer arbo en début de test
+    for platform in "${platform_list[@]}"
+    do
+        for contract_type in "${contract_type_list[@]}"
+        do
+            mkdir -p ${PWD}/tests/tv/TESTS/${platform}/${contract_type}
+            master=${platform}
+            if [ ${platform}=="binance" ]; then
+                master="Binance"
+                slave="Bybit"
+                API_KEY_MASTER=`echo ${API_KEY_MASTER_SPOT_1}`
+                API_SECRET_KEY_MASTER=$(echo ${API_KEY_MASTER_SECRET_SPOT_1})
+                API_KEY_SLAVE=$(echo ${API_KEY_MASTER_SPOT_2})
+                API_SECRET_KEY_SLAVE=$(echo ${API_KEY_MASTER_SECRET_SPOT_2})
+            else
+                master="Bybit"
+                slave="Binance"
+                API_KEY_MASTER=$(echo ${API_KEY_MASTER_SPOT_2})
+                API_SECRET_KEY_MASTER=$(echo ${API_KEY_MASTER_SECRET_SPOT_2})
+                API_KEY_SLAVE=${API_KEY_MASTER_SPOT_1}
+                API_SECRET_KEY_SLAVE=$(echo ${API_KEY_MASTER_SECRET_SPOT_1})
+            fi
+            #echo "API_KEY_MASTER = ${API_KEY_MASTER}"
+            contract=$(convert2upper ${contract_type})
+            echo -e "${master} ${API_KEY_MASTER} ${API_SECRET_KEY_MASTER} OUT ${contract} BTCUSDT\n0\n${slave} ${API_KEY_SLAVE} ${API_SECRET_KEY_SLAVE} OUT" > ${PWD}/tests/tv/TESTS/${platform}/${contract_type}/strat_test.txt
+            cat ${PWD}/tests/tv/TESTS/${platform}/${contract_type}/strat_test.txt
+        done
+    done
+    
+
+    #Supprimer arbo
+    #for platform in "${platform_list[@]}"
+    #do
+    #    for contract_type in "${contract_type_list[@]}"
+    #    do
+    #        rm -rf ${PWD}/tests/tv/TESTS/*
+    #    done
+    #done
     echo "TV to play"
 fi
 

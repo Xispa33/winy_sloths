@@ -150,4 +150,5 @@ class TestSpotBybit(unittest.TestCase):
         self.assertGreater(round(float(ret[FREE]),2), 50)
 
 if __name__ == '__main__':
+    # cep__get_avg_price function not tested
     unittest.main(testLoader=SequentialTestLoader())

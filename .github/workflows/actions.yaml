@@ -106,11 +106,14 @@ jobs:
   
   TV_BINANCE_SPOT:
       name: Binance spot validation tests
-      needs: [ TU_BINANCE_SPOT, TU_BINANCE_SPOT ]
+      #needs: [ TU_BINANCE_SPOT, TU_BINANCE_SPOT ]
       if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BINANCE' && github.event.inputs.contract == 'SPOT' }} 
       runs-on: self-hosted
       steps:
-        - run: echo "This should correspond to validation tests"; exit 0;
+        - run: |
+            echo "Running TV Binance with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
+            ./tests/run_test.bash TV SPOT ${{ github.event.inputs.symbol }} USDT BYBIT
+            exit 0
   
   TV_BINANCE_FUTURES:
       name: Binance futures validation tests
