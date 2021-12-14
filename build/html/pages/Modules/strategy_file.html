@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>strategy_file module &mdash; Winy Sloths  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/libs/html/datatables.min.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/common.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/layouts.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/modern.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/styles.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-test-results/common.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx-needs/libs/html/datatables.min.js"></script>
+        <script src="../../_static/sphinx-needs/libs/html/datatables_loader.js"></script>
+        <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Winy Sloths
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table des matières</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../General.html">1. General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CI.html">2. CI/CD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Tests.html">3. Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modules.html">4. Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Licence.html">5. Licence</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Winy Sloths</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>strategy_file module</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/Xispa33/winy_sloths/blob/feature_binance/docs/pages/Modules/strategy_file.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="strategy-file-module">
+<h1>strategy_file module<a class="headerlink" href="#strategy-file-module" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">strategy_file.</span></span><span class="sig-name descname"><span class="pre">Account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_strategy_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">account_contract_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'debug'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/strategy_file.html#Account"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Description :
+A class used to represent an account on a crypto exchange platform. Either a slave or a master, but this is an abstract class.</p>
+<p>Attributes:
+api_key: Account API key basic information</p>
+<p>account_rtype: Type of the account. Either master or slave</p>
+<p>side: Account side. Can be either LONG/SHORT/OUT</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">close_long</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/strategy_file.html#Account.close_long"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : close_long(master_api)</p>
+<dl class="simple">
+<dt>Parameters<span class="classifier"></span></dt><dd><dl class="simple">
+<dt>master_api<span class="classifier">ApiKeyMaster</span></dt><dd><p>Api key of the slave’s master</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Description : Function that closes an opened long trade</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">close_short</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/strategy_file.html#Account.close_short"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : close_short(master_api)</p>
+<dl class="simple">
+<dt>Parameters<span class="classifier"></span></dt><dd><dl class="simple">
+<dt>master_api<span class="classifier">ApiKeyMaster</span></dt><dd><p>Api key of the slave’s master</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Description : Function that closes an opened short trade</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">open_long</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/strategy_file.html#Account.open_long"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : open_long(master_api)</p>
+<dl class="simple">
+<dt>Parameters<span class="classifier"></span></dt><dd><dl class="simple">
+<dt>master_api<span class="classifier">ApiKeyMaster</span></dt><dd><p>Api key of the slave’s master</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Description : Function that opens a long trade</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">open_long_from_short</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/strategy_file.html#Account.open_long_from_short"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : open_long_from_short(master_api)</p>
+<dl class="simple">
+<dt>Parameters<span class="classifier"></span></dt><dd><dl class="simple">
+<dt>master_api<span class="classifier">ApiKeyMaster</span></dt><dd><p>Api key of the slave’s master</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Description : Function that opens a long trade from a short trade</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">open_short</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/strategy_file.html#Account.open_short"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : open_short(master_api)</p>
+<dl class="simple">
+<dt>Parameters<span class="classifier"></span></dt><dd><dl class="simple">
+<dt>master_api<span class="classifier">ApiKeyMaster</span></dt><dd><p>Api key of the slave’s master</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Description : Function that opens a short trade</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">open_short_from_long</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/strategy_file.html#Account.open_short_from_long"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : open_short_from_long(master_api)</p>
+<dl class="simple">
+<dt>Parameters<span class="classifier"></span></dt><dd><dl class="simple">
+<dt>master_api<span class="classifier">ApiKeyMaster</span></dt><dd><p>Api key of the slave’s master</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Description : Function that opens a short trade from a long trade</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">strategy_file.</span></span><span class="sig-name descname"><span class="pre">ApiKey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_strategy_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'debug'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/strategy_file.html#ApiKey"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Description : 
+A class used to gather all important information about an API key</p>
+<p>Attributes:
+exchange_platform_name: Name of the exchange platform linked to the API key</p>
+<p>_api_key: Api key string word</p>
+<p>_api_secret_key: Api key secret code string word</p>
+<p>exchange_platform_obj: Crypto exchange platform object</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">find_exchange_platform_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/strategy_file.html#ApiKey.find_exchange_platform_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">strategy_file.</span></span><span class="sig-name descname"><span class="pre">MasterAccount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_strategy_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'debug'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/strategy_file.html#MasterAccount"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">strategy_file.Account</span></code></p>
+<p>Description :
+A class used to represent a master’s account. Inherits from Account class</p>
+<p>Attributes:
+Same as Account class</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">strategy_file.</span></span><span class="sig-name descname"><span class="pre">SlaveAccount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_strategy_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">account_contract_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'debug'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/strategy_file.html#SlaveAccount"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">strategy_file.Account</span></code></p>
+<p>Description :
+A class used to represent a slave’s account. Inherits from Account class</p>
+<p>Attributes:
+Same as Account class</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">strategy_file.</span></span><span class="sig-name descname"><span class="pre">StrategyFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy_file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_strategy_file_master</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_strategy_file_slave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'debug'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/strategy_file.html#StrategyFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Description : 
+A class gathering all information about a strategy file</p>
+<p>Attributes:
+strategy_file_path : Path of the strategy file</p>
+<p>master_api : MasterAccount object representing the master of a strategy</p>
+<p>slave_apis : List containing all SlaveAccount of a strategy. SlaveAccount represents a slave of a strategy.</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">StrategyFile__InitSlaves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_strategy_file_slave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">account_contract_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'debug'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/strategy_file.html#StrategyFile.StrategyFile__InitSlaves"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : StrategyFile__InitSlaves(info_strategy_file_slave)</p>
+<dl class="simple">
+<dt>Parameters<span class="classifier"></span></dt><dd><dl class="simple">
+<dt>info_strategy_file_slave<span class="classifier">str</span></dt><dd><p>Information about all slaves</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Description : Function that retrieves all slaves of a strategy and 
+gather then into a list</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Xispa33.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>crypto_exchange_platform module &mdash; Winy Sloths  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/libs/html/datatables.min.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/common.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/layouts.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/modern.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/styles.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-test-results/common.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx-needs/libs/html/datatables.min.js"></script>
+        <script src="../../_static/sphinx-needs/libs/html/datatables_loader.js"></script>
+        <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Winy Sloths
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table des matières</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../General.html">1. General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CI.html">2. CI/CD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Tests.html">3. Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modules.html">4. Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Licence.html">5. Licence</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Winy Sloths</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>crypto_exchange_platform module</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/Xispa33/winy_sloths/blob/feature_binance/docs/pages/Modules/crypto_exchange_platform.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="crypto-exchange-platform-module">
+<h1>crypto_exchange_platform module<a class="headerlink" href="#crypto-exchange-platform-module" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">crypto_exchange_platform.</span></span><span class="sig-name descname"><span class="pre">CryptoExchangePlatform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'debug'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>A class used to represent a cryptocurrency exchange platform. 
+This class is abstract.</p>
+<dl class="simple">
+<dt>name<span class="classifier">str</span></dt><dd><p>Name of the cryptocurrency exchange platform</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__BaseFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_service</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry_period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__BaseFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__CLIENT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">account_contract_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__CLIENT"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__CLOSE_LONG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_contract_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_avg_price</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'false'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__CLOSE_LONG"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : I__CLOSE_LONG()</p>
+<dl class="simple">
+<dt>Parameters<span class="classifier"></span></dt><dd><dl class="simple">
+<dt>client<span class="classifier">binance.client</span></dt><dd><p>Client used to connect to Binance server</p>
+</dd>
+<dt>master_api<span class="classifier">ApiKeyMaster</span></dt><dd><p>Binance account handled by EC</p>
+</dd>
+</dl>
+</dd>
+<dt>Description<span class="classifier">Function closing an open trade depending on </span></dt><dd><p>the accounts type (SPOT/FUTURES).
+Client contains the API key credentials allowing
+to connect to Binance server.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__CLOSE_LONG_FUTURES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__CLOSE_LONG_FUTURES"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__CLOSE_LONG_SPOT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_avg_price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__CLOSE_LONG_SPOT"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__CLOSE_SHORT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__CLOSE_SHORT"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__COMPUTE_ACCOUNT_SIDE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cep_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__COMPUTE_ACCOUNT_SIDE"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__COMPUTE_AVG_PRICE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prices_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qty_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__COMPUTE_AVG_PRICE"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__COMPUTE_SIDE_FUTURES_ACCOUNT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cep_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__COMPUTE_SIDE_FUTURES_ACCOUNT"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__COMPUTE_SIDE_SPOT_ACCOUNT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cep_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__COMPUTE_SIDE_SPOT_ACCOUNT"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__FUTURES_ACCOUNT_TRADES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__FUTURES_ACCOUNT_TRADES"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__GET_ACCOUNT_HISTORY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__GET_ACCOUNT_HISTORY"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : I__GET_ACCOUNT_HISTORY()</p>
+<dl class="simple">
+<dt>Parameters<span class="classifier"></span></dt><dd><dl class="simple">
+<dt>client<span class="classifier">binance.client</span></dt><dd><p>Client used to connect to Binance server</p>
+</dd>
+<dt>account_type<span class="classifier">str</span></dt><dd><p>Type of account, either ‘SPOT’ or ‘FUTURES’</p>
+</dd>
+<dt>symbol<span class="classifier">str</span></dt><dd><p>Currency traded</p>
+</dd>
+</dl>
+</dd>
+<dt>Description<span class="classifier">Gets a symbol’s trade history, depending on the </span></dt><dd><p>account_type. 
+Client contains the API key credentials allowing 
+to connect to Binance server</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__GET_ASSET_BALANCE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__GET_ASSET_BALANCE"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__GET_FUTURES_ACCOUNT_BALANCE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__GET_FUTURES_ACCOUNT_BALANCE"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__GET_SYMBOL_PRICE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_contract_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__GET_SYMBOL_PRICE"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__GET_SYMBOL_PRICE_FUTURES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__GET_SYMBOL_PRICE_FUTURES"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__GET_SYMBOL_PRICE_SPOT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__GET_SYMBOL_PRICE_SPOT"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__Init_Dicts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__Init_Dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__OPEN_LONG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_contract_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leverage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engaged_balance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entryPrice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_avg_price</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'false'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__OPEN_LONG"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__OPEN_LONG_FUTURES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leverage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engaged_balance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entryPrice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__OPEN_LONG_FUTURES"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__OPEN_LONG_SPOT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_avg_price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__OPEN_LONG_SPOT"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__OPEN_SHORT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leverage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engaged_balance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entryPrice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__OPEN_SHORT"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">CEP__SPOT_ACCOUNT_TRADES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.CEP__SPOT_ACCOUNT_TRADES"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">cep__client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">account_contract_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__client"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cep__close_long_futures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__close_long_futures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cep__close_long_spot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_avg_price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__close_long_spot"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cep__close_short</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__close_short"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cep__compute_side_futures_account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cep_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__compute_side_futures_account"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cep__compute_side_spot_account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cep_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__compute_side_spot_account"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cep__futures_account_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__futures_account_trades"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cep__get_asset_balance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__get_asset_balance"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cep__get_futures_account_balance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__get_futures_account_balance"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cep__get_symbol_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__get_symbol_price"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cep__get_symbol_price_futures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__get_symbol_price_futures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cep__open_long_futures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leverage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engaged_balance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entryPrice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__open_long_futures"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cep__open_long_spot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_avg_price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__open_long_spot"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cep__open_short</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leverage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engaged_balance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entryPrice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pct</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__open_short"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cep__spot_account_trades</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.cep__spot_account_trades"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.check_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_request_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request_parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.create_request_body"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_called_function_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.get_called_function_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">send_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.send_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">send_request_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sign</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/crypto_exchange_platform.html#CryptoExchangePlatform.send_request_body"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Xispa33.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

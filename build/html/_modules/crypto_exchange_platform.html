@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>crypto_exchange_platform &mdash; Winy Sloths  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/libs/html/datatables.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/common.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/layouts.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/modern.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/styles.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-test-results/common.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/tabs.js"></script>
+        <script src="../_static/sphinx-needs/libs/html/datatables.min.js"></script>
+        <script src="../_static/sphinx-needs/libs/html/datatables_loader.js"></script>
+        <script src="../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Winy Sloths
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table des matières</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pages/General.html">1. General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/CI.html">2. CI/CD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/Tests.html">3. Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/Modules/Modules.html">4. Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/Licence.html">5. Licence</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Winy Sloths</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      <li>crypto_exchange_platform</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for crypto_exchange_platform</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">constants</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">hmac</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">urllib3</span>
+
+<div class="viewcode-block" id="CryptoExchangePlatform"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform">[docs]</a><span class="k">class</span> <span class="nc">CryptoExchangePlatform</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class used to represent a cryptocurrency exchange platform. </span>
+<span class="sd">    This class is abstract.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the cryptocurrency exchange platform</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">DEBUG</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ALL_SYMBOLS_DICT</span> <span class="o">=</span> <span class="p">{</span><span class="n">BTCUSDT</span><span class="p">:(</span><span class="n">BTC</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">ETHUSDT</span><span class="p">:(</span><span class="n">ETH</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">BNBUSDT</span><span class="p">:(</span><span class="n">BNB</span><span class="p">,</span><span class="mi">2</span><span class="p">)}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SPOT_TESTNET_ENDPOINT</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SPOT_REAL_ENDPOINT</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FUTURES_TESTNET_ENDPOINT</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FUTURES_REAL_ENDPOINT</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TESTNET_ENDPOINTS</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">REAL_ENDPOINTS</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ENDPOINTS</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">BASIC_ENDPOINT</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">REQUEST_ACK_OK</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__Init_Dicts"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__Init_Dicts">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__Init_Dicts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TESTNET_ENDPOINTS</span> <span class="o">=</span> <span class="p">{</span><span class="n">SPOT</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">SPOT_TESTNET_ENDPOINT</span><span class="p">,</span> <span class="n">FUTURES</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">FUTURES_TESTNET_ENDPOINT</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">REAL_ENDPOINTS</span> <span class="o">=</span> <span class="p">{</span><span class="n">SPOT</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">SPOT_REAL_ENDPOINT</span><span class="p">,</span> <span class="n">FUTURES</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">FUTURES_REAL_ENDPOINT</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ENDPOINTS</span> <span class="o">=</span> <span class="p">{</span><span class="n">DEBUG</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">TESTNET_ENDPOINTS</span><span class="p">,</span> <span class="n">RUN</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">REAL_ENDPOINTS</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">BASIC_ENDPOINT</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ENDPOINTS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.get_called_function_name"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.get_called_function_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_called_function_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__BaseFunction"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__BaseFunction">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__BaseFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_service</span><span class="p">,</span> <span class="n">retry</span><span class="o">=</span><span class="n">MAX_RETRY</span><span class="p">,</span> <span class="n">retry_period</span><span class="o">=</span><span class="n">WAIT_DEFAULT</span><span class="p">):</span>
+        <span class="n">err_cpt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">api_ret</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">while</span> <span class="p">(</span><span class="n">err_cpt</span> <span class="o">&lt;</span> <span class="n">retry</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ret</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">api_ret</span> <span class="o">=</span> <span class="n">api_service</span><span class="p">()</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">err_cpt</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_called_function_name</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">DATE : </span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="si">{}</span><span class="s2"> </span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> \
+                <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()),</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">(),</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()))</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">retry_period</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">api_ret</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.create_request_body"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.create_request_body">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">create_request_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_parameters</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.send_request_body"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.send_request_body">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">send_request_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">sign</span><span class="p">,</span> <span class="n">request_type</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.send_request"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.send_request">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">send_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_type</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">request_parameters</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.check_response"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.check_response">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">check_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__client"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__client">[docs]</a>    <span class="k">def</span> <span class="nf">cep__client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_key</span><span class="p">,</span> <span class="n">api_secret_key</span><span class="p">,</span> <span class="n">account_contract_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span> <span class="o">=</span> <span class="s2">&quot;cep__client&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">api_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_secret_key</span> <span class="o">=</span> <span class="n">api_secret_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">BASIC_ENDPOINT</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">BASIC_ENDPOINT</span><span class="p">[</span><span class="n">account_contract_type</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__CLIENT"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__CLIENT">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__CLIENT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_key</span><span class="p">,</span> <span class="n">api_secret_key</span><span class="p">,</span> <span class="n">account_contract_type</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__CLIENT&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cep__client</span><span class="p">(</span><span class="n">api_key</span><span class="p">,</span> <span class="n">api_secret_key</span><span class="p">,</span> \
+                                <span class="n">account_contract_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__futures_account_trades"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__futures_account_trades">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cep__futures_account_trades</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__FUTURES_ACCOUNT_TRADES"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__FUTURES_ACCOUNT_TRADES">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__FUTURES_ACCOUNT_TRADES</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__FUTURES_ACCOUNT_TRADES&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__BaseFunction</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span> \
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cep__futures_account_trades</span><span class="p">,</span> \
+                            <span class="n">symbol</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__spot_account_trades"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__spot_account_trades">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cep__spot_account_trades</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__SPOT_ACCOUNT_TRADES"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__SPOT_ACCOUNT_TRADES">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__SPOT_ACCOUNT_TRADES</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__SPOT_ACCOUNT_TRADES&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__BaseFunction</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span> \
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cep__spot_account_trades</span><span class="p">,</span> \
+                            <span class="n">symbol</span><span class="p">,</span> <span class="n">limit</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__GET_ACCOUNT_HISTORY"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_ACCOUNT_HISTORY">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__GET_ACCOUNT_HISTORY</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_type</span><span class="p">,</span> <span class="n">symbol</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Name : I__GET_ACCOUNT_HISTORY()</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters : </span>
+<span class="sd">                    client : binance.client</span>
+<span class="sd">                        Client used to connect to Binance server</span>
+
+<span class="sd">                    account_type : str</span>
+<span class="sd">                        Type of account, either &#39;SPOT&#39; or &#39;FUTURES&#39;</span>
+
+<span class="sd">                    symbol : str</span>
+<span class="sd">                        Currency traded</span>
+<span class="sd">        </span>
+<span class="sd">        Description : Gets a symbol&#39;s trade history, depending on the </span>
+<span class="sd">                    account_type. </span>
+<span class="sd">                    Client contains the API key credentials allowing </span>
+<span class="sd">                    to connect to Binance server</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__GET_ACCOUNT_HISTORY&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">account_type</span> <span class="o">==</span> <span class="n">SPOT</span><span class="p">):</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__SPOT_ACCOUNT_TRADES</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">account_type</span> <span class="o">==</span> <span class="n">FUTURES</span><span class="p">):</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__FUTURES_ACCOUNT_TRADES</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">1</span>
+        
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__close_long_spot"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__close_long_spot">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cep__close_long_spot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">compute_avg_price</span><span class="p">,</span> <span class="n">pct</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__CLOSE_LONG_SPOT"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__CLOSE_LONG_SPOT">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__CLOSE_LONG_SPOT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">compute_avg_price</span><span class="p">,</span> <span class="n">pct</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__CLOSE_LONG_SPOT&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__BaseFunction</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span> \
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cep__close_long_spot</span><span class="p">,</span> \
+                            <span class="n">symbol</span><span class="p">,</span> <span class="n">compute_avg_price</span><span class="p">,</span> <span class="n">pct</span><span class="p">),</span> \
+                            <span class="n">retry</span><span class="o">=</span><span class="n">MAX_RETRY</span><span class="p">,</span> \
+                            <span class="n">retry_period</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span></div>
+    <span class="c1">#TODO: ADD PCT AS PARAMETER HERE</span>
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__close_long_futures"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__close_long_futures">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cep__close_long_futures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">pct</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__CLOSE_LONG_FUTURES"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__CLOSE_LONG_FUTURES">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__CLOSE_LONG_FUTURES</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">pct</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__CLOSE_LONG_FUTURES&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__BaseFunction</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span> \
+                                <span class="bp">self</span><span class="o">.</span><span class="n">cep__close_long_futures</span><span class="p">,</span> \
+                                <span class="n">symbol</span><span class="p">,</span> <span class="n">pct</span><span class="p">),</span> \
+                                <span class="n">retry</span><span class="o">=</span><span class="n">MAX_RETRY</span><span class="p">,</span> \
+                                <span class="n">retry_period</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__CLOSE_LONG"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__CLOSE_LONG">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__CLOSE_LONG</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_contract_type</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">compute_avg_price</span><span class="o">=</span><span class="n">FALSE</span><span class="p">,</span> <span class="n">pct</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Name : I__CLOSE_LONG()</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters : </span>
+<span class="sd">                    client : binance.client</span>
+<span class="sd">                        Client used to connect to Binance server</span>
+
+<span class="sd">                    master_api : ApiKeyMaster</span>
+<span class="sd">                        Binance account handled by EC</span>
+<span class="sd">        </span>
+<span class="sd">        Description : Function closing an open trade depending on </span>
+<span class="sd">                    the accounts type (SPOT/FUTURES).</span>
+<span class="sd">                    Client contains the API key credentials allowing</span>
+<span class="sd">                    to connect to Binance server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__CLOSE_LONG&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">account_contract_type</span> <span class="o">==</span> <span class="n">SPOT</span><span class="p">):</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__CLOSE_LONG_SPOT</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="n">compute_avg_price</span><span class="p">,</span> <span class="n">pct</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">account_contract_type</span> <span class="o">==</span> <span class="n">FUTURES</span><span class="p">):</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__CLOSE_LONG_FUTURES</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="n">pct</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">1</span>
+            
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__open_long_futures"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__open_long_futures">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cep__open_long_futures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">leverage</span><span class="p">,</span> \</div>
+                               <span class="n">engaged_balance</span><span class="p">,</span> <span class="n">entryPrice</span><span class="p">,</span> <span class="n">pct</span><span class="p">):</span> <span class="k">pass</span>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__OPEN_LONG_FUTURES"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__OPEN_LONG_FUTURES">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__OPEN_LONG_FUTURES</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">leverage</span><span class="p">,</span> \
+                               <span class="n">engaged_balance</span><span class="p">,</span> <span class="n">entryPrice</span><span class="p">,</span> <span class="n">pct</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__OPEN_LONG_FUTURES&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__BaseFunction</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span> \
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cep__open_long_futures</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">leverage</span><span class="p">,</span> \
+                            <span class="n">engaged_balance</span><span class="p">,</span> <span class="n">entryPrice</span><span class="p">,</span> <span class="n">pct</span><span class="p">),</span> <span class="n">retry_period</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__open_long_spot"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__open_long_spot">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cep__open_long_spot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">compute_avg_price</span><span class="p">,</span> <span class="n">pct</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__OPEN_LONG_SPOT"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__OPEN_LONG_SPOT">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__OPEN_LONG_SPOT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">compute_avg_price</span><span class="p">,</span> <span class="n">pct</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__OPEN_LONG_SPOT&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__BaseFunction</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span> \
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cep__open_long_spot</span><span class="p">,</span> \
+                            <span class="n">symbol</span><span class="p">,</span> <span class="n">compute_avg_price</span><span class="p">,</span> <span class="n">pct</span><span class="p">),</span> <span class="n">retry_period</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__OPEN_LONG"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__OPEN_LONG">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__OPEN_LONG</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_contract_type</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> \
+                        <span class="n">leverage</span><span class="p">,</span> <span class="n">engaged_balance</span><span class="p">,</span> <span class="n">entryPrice</span><span class="p">,</span> \
+                        <span class="n">compute_avg_price</span><span class="o">=</span><span class="n">FALSE</span><span class="p">,</span> <span class="n">pct</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__OPEN_LONG&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">account_contract_type</span> <span class="o">==</span> <span class="n">SPOT</span><span class="p">):</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__OPEN_LONG_SPOT</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="n">compute_avg_price</span><span class="p">,</span> <span class="n">pct</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">account_contract_type</span> <span class="o">==</span> <span class="n">FUTURES</span><span class="p">):</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__OPEN_LONG_FUTURES</span><span class="p">(</span> <span class="n">symbol</span><span class="p">,</span> \
+                                <span class="n">leverage</span><span class="p">,</span> \
+                                <span class="n">engaged_balance</span><span class="p">,</span> \
+                                <span class="n">entryPrice</span><span class="p">,</span> <span class="n">pct</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__close_short"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__close_short">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cep__close_short</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">pct</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__CLOSE_SHORT"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__CLOSE_SHORT">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__CLOSE_SHORT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">pct</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__CLOSE_SHORT&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__BaseFunction</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span> \
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cep__close_short</span><span class="p">,</span> \
+                            <span class="n">symbol</span><span class="p">,</span> <span class="n">pct</span><span class="p">),</span> <span class="n">retry</span><span class="o">=</span><span class="n">MAX_RETRY</span><span class="p">,</span> \
+                            <span class="n">retry_period</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__open_short"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__open_short">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cep__open_short</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">leverage</span><span class="p">,</span> \</div>
+                        <span class="n">engaged_balance</span><span class="p">,</span> <span class="n">entryPrice</span><span class="p">,</span> <span class="n">pct</span><span class="p">):</span> <span class="k">pass</span>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__OPEN_SHORT"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__OPEN_SHORT">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__OPEN_SHORT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">leverage</span><span class="p">,</span> \
+                        <span class="n">engaged_balance</span><span class="p">,</span> <span class="n">entryPrice</span><span class="p">,</span> <span class="n">pct</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__OPEN_SHORT&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__BaseFunction</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span> \
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cep__open_short</span><span class="p">,</span> \
+                            <span class="n">symbol</span><span class="p">,</span> <span class="n">leverage</span><span class="p">,</span> <span class="n">engaged_balance</span><span class="p">,</span> \
+                            <span class="n">entryPrice</span><span class="p">,</span> <span class="n">pct</span><span class="p">),</span> <span class="n">retry_period</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__get_futures_account_balance"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__get_futures_account_balance">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cep__get_futures_account_balance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__GET_FUTURES_ACCOUNT_BALANCE"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_FUTURES_ACCOUNT_BALANCE">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__GET_FUTURES_ACCOUNT_BALANCE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__GET_FUTURES_ACCOUNT_BALANCE&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__BaseFunction</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span> \
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cep__get_futures_account_balance</span><span class="p">,</span> \
+                            <span class="n">asset</span><span class="p">),</span> <span class="n">retry</span><span class="o">=</span><span class="n">MAX_RETRY</span><span class="p">,</span> <span class="n">retry_period</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__get_asset_balance"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__get_asset_balance">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cep__get_asset_balance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__GET_ASSET_BALANCE"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_ASSET_BALANCE">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__GET_ASSET_BALANCE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asset</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__GET_ASSET_BALANCE&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__BaseFunction</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span> \
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cep__get_asset_balance</span><span class="p">,</span> \
+                            <span class="n">asset</span><span class="p">),</span> <span class="n">retry_period</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__compute_side_spot_account"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__compute_side_spot_account">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cep__compute_side_spot_account</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">cep_response</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__COMPUTE_SIDE_SPOT_ACCOUNT"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__COMPUTE_SIDE_SPOT_ACCOUNT">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__COMPUTE_SIDE_SPOT_ACCOUNT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">cep_response</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__COMPUTE_SIDE_SPOT_ACCOUNT&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cep__compute_side_spot_account</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">cep_response</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__compute_side_futures_account"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__compute_side_futures_account">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cep__compute_side_futures_account</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">cep_response</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__COMPUTE_SIDE_FUTURES_ACCOUNT"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__COMPUTE_SIDE_FUTURES_ACCOUNT">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__COMPUTE_SIDE_FUTURES_ACCOUNT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">cep_response</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__COMPUTE_SIDE_FUTURES_ACCOUNT&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cep__compute_side_futures_account</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">cep_response</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__COMPUTE_ACCOUNT_SIDE"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__COMPUTE_ACCOUNT_SIDE">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__COMPUTE_ACCOUNT_SIDE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account</span><span class="p">,</span> <span class="n">cep_response</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__COMPUTE_ACCOUNT_SIDE&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">account</span><span class="o">.</span><span class="n">account_contract_type</span> <span class="o">==</span> <span class="n">SPOT</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__COMPUTE_SIDE_SPOT_ACCOUNT</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">cep_response</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">account</span><span class="o">.</span><span class="n">account_contract_type</span> <span class="o">==</span> <span class="n">FUTURES</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__COMPUTE_SIDE_FUTURES_ACCOUNT</span><span class="p">(</span><span class="n">account</span><span class="p">,</span> <span class="n">cep_response</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">account</span><span class="o">.</span><span class="n">side</span></div>
+    
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__get_symbol_price"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__get_symbol_price">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cep__get_symbol_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__GET_SYMBOL_PRICE_SPOT"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_SYMBOL_PRICE_SPOT">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__GET_SYMBOL_PRICE_SPOT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__GET_SYMBOL_PRICE_SPOT&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cep__get_symbol_price</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="CryptoExchangePlatform.cep__get_symbol_price_futures"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.cep__get_symbol_price_futures">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cep__get_symbol_price_futures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__GET_SYMBOL_PRICE_FUTURES"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_SYMBOL_PRICE_FUTURES">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__GET_SYMBOL_PRICE_FUTURES</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__GET_SYMBOL_PRICE_FUTURES&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cep__get_symbol_price_futures</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__GET_SYMBOL_PRICE"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_SYMBOL_PRICE">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__GET_SYMBOL_PRICE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_contract_type</span><span class="p">,</span> <span class="n">symbol</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__GET_SYMBOL_PRICE&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">account_contract_type</span> <span class="o">==</span> <span class="n">SPOT</span><span class="p">):</span> 
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__GET_SYMBOL_PRICE_SPOT</span><span class="p">(</span><span class="n">symbol</span><span class="p">)[</span><span class="n">PRICE</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">account_contract_type</span> <span class="o">==</span> <span class="n">FUTURES</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CEP__GET_SYMBOL_PRICE_FUTURES</span><span class="p">(</span><span class="n">symbol</span><span class="p">)[</span><span class="n">PRICE</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="CryptoExchangePlatform.CEP__COMPUTE_AVG_PRICE"><a class="viewcode-back" href="../pages/Modules/crypto_exchange_platform.html#crypto_exchange_platform.CryptoExchangePlatform.CEP__COMPUTE_AVG_PRICE">[docs]</a>    <span class="k">def</span> <span class="nf">CEP__COMPUTE_AVG_PRICE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prices_list</span><span class="p">,</span> <span class="n">qty_list</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">called_function_name</span><span class="o">=</span><span class="s2">&quot;CEP__COMPUTE_AVG_PRICE&quot;</span>
+        <span class="n">tot_qty</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">nb_elt_price</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">prices_list</span><span class="p">)</span>
+        <span class="n">nb_elt_qty_list</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">qty_list</span><span class="p">)</span>
+        <span class="n">tot_qty</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">elt</span><span class="p">)</span> <span class="k">for</span> <span class="n">elt</span> <span class="ow">in</span> <span class="n">qty_list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">nb_elt_price</span> <span class="o">==</span> <span class="n">nb_elt_qty_list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">prices_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">qty_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> \
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nb_elt_price</span><span class="p">))</span><span class="o">/</span><span class="n">tot_qty</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Xispa33.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
