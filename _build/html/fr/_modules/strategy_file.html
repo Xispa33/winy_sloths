@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>strategy_file &mdash; Documentation Winy Sloths </title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/libs/html/datatables.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/common.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/layouts.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/modern.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/styles.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-test-results/common.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/tabs.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script src="../_static/sphinx-needs/libs/html/datatables.min.js"></script>
+        <script src="../_static/sphinx-needs/libs/html/datatables_loader.js"></script>
+        <script src="../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Winy Sloths
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table des matières</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pages/General.html">1. General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/CI.html">2. CI/CD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/Tests.html">3. Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/Modules/Modules.html">4. Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pages/Licence.html">5. Licence</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Winy Sloths</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Code du module</a> &raquo;</li>
+      <li>strategy_file</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Code source de strategy_file</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">constants</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">errors</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;CEPS_DIR&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;binance&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;CEPS_DIR&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;bybit&quot;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">cep_binance</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">cep_bybit</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="ApiKey"><a class="viewcode-back" href="../pages/Modules/strategy_file.html#strategy_file.ApiKey">[docs]</a><span class="k">class</span> <span class="nc">ApiKey</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Description : </span>
+<span class="sd">    A class used to gather all important information about an API key</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">    exchange_platform_name: Name of the exchange platform linked to the API key</span>
+<span class="sd">    </span>
+<span class="sd">    _api_key: Api key string word</span>
+<span class="sd">    </span>
+<span class="sd">    _api_secret_key: Api key secret code string word</span>
+<span class="sd">    </span>
+<span class="sd">    exchange_platform_obj: Crypto exchange platform object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info_strategy_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">DEBUG</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exchange_platform_name</span> <span class="o">=</span> <span class="n">info_strategy_file</span><span class="p">[</span> \
+                                    <span class="n">OFFSET_EXCHANGE_PLATFORM</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="p">(</span><span class="n">info_strategy_file</span><span class="p">[</span><span class="n">OFFSET_API_KEY</span><span class="p">],</span> \
+                            <span class="n">info_strategy_file</span><span class="p">[</span><span class="n">OFFSET_API_SECRET_KEY</span><span class="p">])</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">exchange_platform_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_exchange_platform_class</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ApiKey.find_exchange_platform_class"><a class="viewcode-back" href="../pages/Modules/strategy_file.html#strategy_file.ApiKey.find_exchange_platform_class">[docs]</a>    <span class="k">def</span> <span class="nf">find_exchange_platform_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+        <span class="n">klass</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="n">CEP</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">exchange_platform_name</span><span class="p">]</span>
+        <span class="n">obj_cep</span> <span class="o">=</span> <span class="n">klass</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">obj_cep</span></div></div>
+        
+<div class="viewcode-block" id="Account"><a class="viewcode-back" href="../pages/Modules/strategy_file.html#strategy_file.Account">[docs]</a><span class="k">class</span> <span class="nc">Account</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Description :</span>
+<span class="sd">    A class used to represent an account on a crypto exchange platform. Either a slave or a master, but this is an abstract class.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">    api_key: Account API key basic information</span>
+<span class="sd">    </span>
+<span class="sd">    account_rtype: Type of the account. Either master or slave</span>
+<span class="sd">    </span>
+<span class="sd">    side: Account side. Can be either LONG/SHORT/OUT</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info_strategy_file</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> \
+                <span class="n">account_contract_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">symbol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">DEBUG</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">ApiKey</span><span class="p">(</span><span class="n">info_strategy_file</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">account_rtype</span> <span class="o">=</span> <span class="n">rtype</span> <span class="k">if</span> <span class="n">rtype</span> <span class="o">!=</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">side</span> <span class="o">=</span> <span class="n">info_strategy_file</span><span class="p">[</span><span class="n">OFFSET_SIDE</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">account_rtype</span> <span class="o">==</span> <span class="n">MASTER</span><span class="p">):</span>
+            <span class="c1">#CASE WHERE MASTER IS INITIALIZING</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">account_contract_type</span> <span class="o">=</span> <span class="n">info_strategy_file</span><span class="p">[</span><span class="n">OFFSET_ACCOUNT_TYPE</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span> <span class="o">=</span> <span class="n">info_strategy_file</span><span class="p">[</span><span class="n">OFFSET_SYMBOL</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#CASE WHERE SLAVE IS INITIALIZING</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">account_contract_type</span> <span class="o">=</span> <span class="n">account_contract_type</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span> <span class="o">=</span> <span class="n">symbol</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="o">.</span><span class="n">exchange_platform_obj</span><span class="o">.</span><span class="n">CEP__CLIENT</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="o">.</span><span class="n">client</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> \
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="o">.</span><span class="n">client</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> \
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">account_contract_type</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">markPrice</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entryPrice</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leverage</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positionAmt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">engaged_balance</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">balance</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">account_mode</span> <span class="o">=</span> <span class="n">ONE_WAY</span>
+    
+<div class="viewcode-block" id="Account.close_long"><a class="viewcode-back" href="../pages/Modules/strategy_file.html#strategy_file.Account.close_long">[docs]</a>    <span class="k">def</span> <span class="nf">close_long</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Name : close_long(master_api)</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters : </span>
+<span class="sd">                      master_api : ApiKeyMaster</span>
+<span class="sd">                        Api key of the slave&#39;s master</span>
+<span class="sd">    </span>
+<span class="sd">        Description : Function that closes an opened long trade</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="o">.</span><span class="n">exchange_platform_obj</span><span class="o">.</span><span class="n">CEP__CLOSE_LONG</span><span class="p">(</span> \
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">account_contract_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Account.close_short"><a class="viewcode-back" href="../pages/Modules/strategy_file.html#strategy_file.Account.close_short">[docs]</a>    <span class="k">def</span> <span class="nf">close_short</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Name : close_short(master_api)</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters : </span>
+<span class="sd">                      master_api : ApiKeyMaster</span>
+<span class="sd">                        Api key of the slave&#39;s master</span>
+<span class="sd">    </span>
+<span class="sd">        Description : Function that closes an opened short trade</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="o">.</span><span class="n">exchange_platform_obj</span><span class="o">.</span><span class="n">CEP__CLOSE_SHORT</span><span class="p">(</span> \
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Account.open_long"><a class="viewcode-back" href="../pages/Modules/strategy_file.html#strategy_file.Account.open_long">[docs]</a>    <span class="k">def</span> <span class="nf">open_long</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Name : open_long(master_api)</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters : </span>
+<span class="sd">                      master_api : ApiKeyMaster</span>
+<span class="sd">                        Api key of the slave&#39;s master</span>
+<span class="sd">    </span>
+<span class="sd">        Description : Function that opens a long trade</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="o">.</span><span class="n">exchange_platform_obj</span><span class="o">.</span><span class="n">CEP__OPEN_LONG</span><span class="p">(</span> \
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">account_contract_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span> \
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">leverage</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">engaged_balance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">entryPrice</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Account.open_short"><a class="viewcode-back" href="../pages/Modules/strategy_file.html#strategy_file.Account.open_short">[docs]</a>    <span class="k">def</span> <span class="nf">open_short</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Name : open_short(master_api)</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters : </span>
+<span class="sd">                      master_api : ApiKeyMaster</span>
+<span class="sd">                        Api key of the slave&#39;s master</span>
+<span class="sd">    </span>
+<span class="sd">        Description : Function that opens a short trade</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="o">.</span><span class="n">exchange_platform_obj</span><span class="o">.</span><span class="n">CEP__OPEN_SHORT</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span> \
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">leverage</span><span class="p">,</span> \
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">engaged_balance</span><span class="p">,</span> \
+                                                        <span class="bp">self</span><span class="o">.</span><span class="n">entryPrice</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Account.open_long_from_short"><a class="viewcode-back" href="../pages/Modules/strategy_file.html#strategy_file.Account.open_long_from_short">[docs]</a>    <span class="k">def</span> <span class="nf">open_long_from_short</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Name : open_long_from_short(master_api)</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters : </span>
+<span class="sd">                      master_api : ApiKeyMaster</span>
+<span class="sd">                        Api key of the slave&#39;s master</span>
+<span class="sd">    </span>
+<span class="sd">        Description : Function that opens a long trade from a short trade</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_short</span><span class="p">()):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_long</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="Account.open_short_from_long"><a class="viewcode-back" href="../pages/Modules/strategy_file.html#strategy_file.Account.open_short_from_long">[docs]</a>    <span class="k">def</span> <span class="nf">open_short_from_long</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Name : open_short_from_long(master_api)</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters : </span>
+<span class="sd">                      master_api : ApiKeyMaster</span>
+<span class="sd">                        Api key of the slave&#39;s master</span>
+<span class="sd">    </span>
+<span class="sd">        Description : Function that opens a short trade from a long trade</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_long</span><span class="p">()):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_short</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span></div></div>
+
+<div class="viewcode-block" id="SlaveAccount"><a class="viewcode-back" href="../pages/Modules/strategy_file.html#strategy_file.SlaveAccount">[docs]</a><span class="k">class</span> <span class="nc">SlaveAccount</span><span class="p">(</span><span class="n">Account</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Description :</span>
+<span class="sd">    A class used to represent a slave&#39;s account. Inherits from Account class</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">    Same as Account class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info_strategy_file</span><span class="p">,</span> <span class="n">account_contract_type</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">DEBUG</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">info_strategy_file</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="n">SLAVE</span><span class="p">,</span> \
+                    <span class="n">account_contract_type</span><span class="o">=</span><span class="n">account_contract_type</span><span class="p">,</span> \
+                    <span class="n">symbol</span><span class="o">=</span><span class="n">symbol</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MasterAccount"><a class="viewcode-back" href="../pages/Modules/strategy_file.html#strategy_file.MasterAccount">[docs]</a><span class="k">class</span> <span class="nc">MasterAccount</span><span class="p">(</span><span class="n">Account</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Description :</span>
+<span class="sd">    A class used to represent a master&#39;s account. Inherits from Account class</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">    Same as Account class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info_strategy_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">DEBUG</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">info_strategy_file</span><span class="p">,</span> <span class="n">rtype</span><span class="o">=</span><span class="n">MASTER</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StrategyFile"><a class="viewcode-back" href="../pages/Modules/strategy_file.html#strategy_file.StrategyFile">[docs]</a><span class="k">class</span> <span class="nc">StrategyFile</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Description : </span>
+<span class="sd">    A class gathering all information about a strategy file</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">    strategy_file_path : Path of the strategy file</span>
+<span class="sd">    </span>
+<span class="sd">    master_api : MasterAccount object representing the master of a strategy</span>
+<span class="sd">    </span>
+<span class="sd">    slave_apis : List containing all SlaveAccount of a strategy. SlaveAccount represents a slave of a strategy. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy_file_path</span><span class="p">,</span> <span class="n">info_strategy_file_master</span><span class="p">,</span> \
+                <span class="n">info_strategy_file_slave</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">DEBUG</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strategy_file_path</span> <span class="o">=</span> <span class="n">strategy_file_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">master_api</span> <span class="o">=</span> <span class="n">MasterAccount</span><span class="p">(</span><span class="n">info_strategy_file_master</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slave_apis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">StrategyFile__InitSlaves</span><span class="p">(</span><span class="n">info_strategy_file_slave</span><span class="p">,</span> \
+                            <span class="bp">self</span><span class="o">.</span><span class="n">master_api</span><span class="o">.</span><span class="n">account_contract_type</span><span class="p">,</span> \
+                            <span class="bp">self</span><span class="o">.</span><span class="n">master_api</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+
+<div class="viewcode-block" id="StrategyFile.StrategyFile__InitSlaves"><a class="viewcode-back" href="../pages/Modules/strategy_file.html#strategy_file.StrategyFile.StrategyFile__InitSlaves">[docs]</a>    <span class="k">def</span> <span class="nf">StrategyFile__InitSlaves</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info_strategy_file_slave</span><span class="p">,</span> \
+                                <span class="n">account_contract_type</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">DEBUG</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Name : StrategyFile__InitSlaves(info_strategy_file_slave)</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters : </span>
+<span class="sd">                      info_strategy_file_slave : str</span>
+<span class="sd">                        Information about all slaves</span>
+
+<span class="sd">        Description : Function that retrieves all slaves of a strategy and </span>
+<span class="sd">        gather then into a list</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">slaves_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">slave</span> <span class="ow">in</span> <span class="n">info_strategy_file_slave</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">slave</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">MIN_SLAVE_CHAR</span><span class="p">):</span>
+                <span class="n">slaves_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SlaveAccount</span><span class="p">(</span><span class="n">slave</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">),</span> \
+                                    <span class="n">account_contract_type</span><span class="p">,</span> <span class="n">symbol</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">slaves_list</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Xispa33.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
