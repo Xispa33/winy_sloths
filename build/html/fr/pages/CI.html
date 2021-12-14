@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2. CI/CD &mdash; Documentation Winy Sloths </title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/libs/html/datatables.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/common.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/layouts.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/modern.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-needs/styles.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sphinx-test-results/common.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script src="../_static/sphinx-needs/libs/html/datatables.min.js"></script>
+        <script src="../_static/sphinx-needs/libs/html/datatables_loader.js"></script>
+        <script src="../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="next" title="3. Tests" href="Tests.html" />
+    <link rel="prev" title="1. General" href="General.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Winy Sloths
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table des matières</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="General.html">1. General</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. CI/CD</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#qu-est-ce-que-l-approche-ci-cd">2.1. Qu’est-ce que l’approche CI/CD ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quels-sont-les-avantages-de-cette-approche">2.2. Quels sont les avantages de cette approche ?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#workflow-de-la-chaine-ci-cd">2.3. Workflow de la chaine CI/CD</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Tests.html">3. Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modules/Modules.html">4. Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Licence.html">5. Licence</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Winy Sloths</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><span class="section-number">2. </span>CI/CD</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/Xispa33/winy_sloths/blob/feature_binance/docs/pages/CI.rst" class="fa fa-github"> Éditer sur GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="ci-cd">
+<h1><span class="section-number">2. </span>CI/CD<a class="headerlink" href="#ci-cd" title="Lien permanent vers ce titre"></a></h1>
+<div class="line-block">
+<div class="line">Une approche CI/CD (Continuous Integration/Continuous Delivery) a été mise en place dans le cadre du développement de WS. Cette partie vise à présenter cette approche, expliciter son intérêt et présenter les jobs mis en place.</div>
+</div>
+<div class="section" id="qu-est-ce-que-l-approche-ci-cd">
+<h2><span class="section-number">2.1. </span>Qu’est-ce que l’approche CI/CD ?<a class="headerlink" href="#qu-est-ce-que-l-approche-ci-cd" title="Lien permanent vers ce titre"></a></h2>
+<p>L’approche CI/CD (Continuous Integration/Continuous Delivery) est un processus permettant d’accélérer le déploiement et la mise en production des applications en automatisant le développement des applications. Ceci est rendu possible grâce à la mise en place d’outils/programmes permettant de tester l’application et de vérifier que le programme fonctionne correctement.</p>
+<div class="line-block">
+<div class="line">L’intégration continue (CI) est une pratique de génie logiciel permettant d’intégrer le travail effectué continuellement.</div>
+<div class="line">La livraison continue (CD) n’est dans notre cas pas exploitée pour le moment. Cette pratique permet néanmoins de gérer le déploiement des logiciels pour la mise en production.</div>
+</div>
+</div>
+<div class="section" id="quels-sont-les-avantages-de-cette-approche">
+<h2><span class="section-number">2.2. </span>Quels sont les avantages de cette approche ?<a class="headerlink" href="#quels-sont-les-avantages-de-cette-approche" title="Lien permanent vers ce titre"></a></h2>
+<p>Dans notre cas, le processus de CI/CD est entièrement géré par un ordinateur.
+| Après chaque modification de code, l’ensemble de l’application peut être testée de manière automatique, tout comme la qualité du code qui peut être mesurée. La réduction drastique de la dette technique permet aux développeurs d’analyser plus rapidement l’impact de leur modifications et ainsi de focaliser davantage leurs efforts sur la conception et le développement des fonctionnalités de l’application. L’évolutivité du code est clairement facilitée et mise en avant grâce à cette approche.
+| Outres ces avantages en temps, efficacité et productivité, WS est emmené quotidiennement à gérer des quantités importantes d’argent, l’intégration de cette approche dans notre processus de développement est donc apparue comme une nécessité afin de garantir le maintien de la fiabilité de notre système.</p>
+</div>
+<div class="section" id="workflow-de-la-chaine-ci-cd">
+<h2><span class="section-number">2.3. </span>Workflow de la chaine CI/CD<a class="headerlink" href="#workflow-de-la-chaine-ci-cd" title="Lien permanent vers ce titre"></a></h2>
+<p>Le code de Winy Sloth est hébergé sur la plateforme GitHub. GitHub Action est une fonctionnalité de GitHub permettant le développement de workflows d’une chaine CI/CD. L’ensemble du workflow s’exécute sur une VM distante, désignée runner. Notre workflow actuel se décompose en deux parties, chacune permettant de jouer des tests :</p>
+<ul class="simple">
+<li><p>des tests dynamiques, permettant de tester le bon fonctionnement de l’application</p></li>
+<li><p>des tests statiques, permettant d’analyser la qualité du code</p></li>
+</ul>
+<div class="line-block">
+<div class="line">Les tests dynamiques intégrent deux types de tests fonctionnels : les tests unitaires et les tests de validation. Sur chacune des plateformes d’échanges de cryptomonnaies, une API permet de s’interfacer avec la plateforme. Pour chaque API, les services nécessaires à notre application ont été encapsulés. Les tests unitaires testent ces services encapsulés.</div>
+<div class="line">Le framework pytest a été utilisé pour implémenter les scripts de tests et sert également pour générer le fichier de résultat au format JUnit. Les scénarios des tests unitaires ainsi que les résultats de la dernière campagne de tests unitaires sont disponibles à la page suivante <a class="reference internal" href="Tests.html#tests"><span class="std std-ref">Tests</span></a></div>
+<div class="line"><br /></div>
+<div class="line">Les tests d’intégration testent eux l’application toute entière. De même que pour les tests unitaires, unittest a été utilisé pour implémenter les tests. Le framework Multiprocessing de Python a également été utilisé. Le Multiprocessing nous permet stimuler WS (passage d’un ordre d’achat/vente) en parallèle de son exécution.</div>
+<div class="line">Les scénarios des tests d’intégration ainsi que les résultats de la dernière campagne de tests d’intégration sont disponibles à la page suivante <a class="reference internal" href="Tests.html#tests"><span class="std std-ref">Tests</span></a></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="General.html" class="btn btn-neutral float-left" title="1. General" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="Tests.html" class="btn btn-neutral float-right" title="3. Tests" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Xispa33.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

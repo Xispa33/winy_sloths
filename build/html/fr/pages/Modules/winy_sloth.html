@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>winy_sloth module &mdash; Documentation Winy Sloths </title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/libs/html/datatables.min.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/common.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/layouts.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/modern.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-needs/styles.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sphinx-test-results/common.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/translations.js"></script>
+        <script src="../../_static/sphinx-needs/libs/html/datatables.min.js"></script>
+        <script src="../../_static/sphinx-needs/libs/html/datatables_loader.js"></script>
+        <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Recherche" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Winy Sloths
+          </a>
+              <div class="version">
+                2.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table des matières</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../General.html">1. General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CI.html">2. CI/CD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Tests.html">3. Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modules.html">4. Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Licence.html">5. Licence</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Winy Sloths</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>winy_sloth module</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/Xispa33/winy_sloths/blob/feature_binance/docs/pages/Modules/winy_sloth.rst" class="fa fa-github"> Éditer sur GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="winy-sloth-module">
+<h1>winy_sloth module<a class="headerlink" href="#winy-sloth-module" title="Lien permanent vers ce titre"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">winy_sloth.</span></span><span class="sig-name descname"><span class="pre">WinySloth</span></span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases : <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Description:
+A class used to represent WinySloth main object. The general behaviour of Winy Sloth is described in Documentation.</p>
+<p>Attributes:
+strategies_folder_path : Path of the folder containing all strategies</p>
+<p>strategies : List containing StrategyFile objects</p>
+<p>mode : Variable specifiying WS mode of execution. 
+In DEBUG mode, WS is executed during 40s only. 
+In RUN mode, WS runs nominally.</p>
+<p>init_return outputs the return of initialization. If init_return is equal to 1, 
+it means a problem occurred during initialization and the program exits. 
+If 0, init was OK and WS enters in main.</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WinySloth__CopyMasterToSlave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">master_api</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.WinySloth__CopyMasterToSlave"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WinySloth__FindAllStrategiesFiles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.WinySloth__FindAllStrategiesFiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : WinySloth__FindAllStrategiesFiles()</p>
+<p>Parameters :</p>
+<dl class="simple">
+<dt>Description<span class="classifier">Function that returns all strategy file of a</span></dt><dd><p>WinySloth object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WinySloth__FindNbStrategies</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.WinySloth__FindNbStrategies"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : WinySloth__FindNbStrategies()</p>
+<p>Parameters :</p>
+<dl class="simple">
+<dt>Description<span class="classifier">Function that returns the number of strategies of a</span></dt><dd><p>WinySloth object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WinySloth__Init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.WinySloth__Init"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : WinySloth__Init()</p>
+<p>Parameters :</p>
+<p>Description : Initialisation of a WinySloth object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WinySloth__Main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.WinySloth__Main"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : WinySloth__Main()</p>
+<p>Parameters :</p>
+<p>Description : Main function of a Winy_Sloth object. This function is going         through each strategy in the strategy list. For each strategy, the master’s         position in the strategy file is compared with the master’s position given         from the CEP. In case of difference, the position of each slave is updated         copying the master’s position. If a position changes or if any error occurs,         an email is sent.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WinySloth__ReadArguments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.WinySloth__ReadArguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : WinySloth__ReadArguments()</p>
+<p>Parameters :</p>
+<p>Description :</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WinySloth__SaveTrade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symbol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engaged_balance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.WinySloth__SaveTrade"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WinySloth__SlaveManagement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_update_master</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.WinySloth__SlaveManagement"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : WinySloth__SlaveManagement(strategy)</p>
+<dl class="simple">
+<dt>Parameters<span class="classifier"></span></dt><dd><dl class="simple">
+<dt>strategy<span class="classifier">StrategyFile</span></dt><dd><p>StrategyFile object to manage</p>
+</dd>
+</dl>
+</dd>
+<dt>Description<span class="classifier">This function determines the appropriate function</span></dt><dd><p>to call to change the slave’s side.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WinySloth__Update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy_current_side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.WinySloth__Update"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : WinySloth__Update(strategy, strategy_current_side, idx=0)</p>
+<dl class="simple">
+<dt>Parameters<span class="classifier"></span></dt><dd><dl class="simple">
+<dt>strategy<span class="classifier">StrategyFile</span></dt><dd><p>StrategyFile object to be updated</p>
+</dd>
+<dt>strategy_current_side<span class="classifier">str</span></dt><dd><p>New side of the strategy for the master</p>
+</dd>
+</dl>
+</dd>
+<dt>Description<span class="classifier">Function that updates all needed information for a </span></dt><dd><p>master</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WinySloth__UpdatePositionSide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy_current_side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.WinySloth__UpdatePositionSide"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : WinySloth__UpdatePositionSide(strategy, strategy_current_side, idx=0)</p>
+<dl class="simple">
+<dt>Parameters<span class="classifier"></span></dt><dd><dl class="simple">
+<dt>strategy<span class="classifier">StrategyFile</span></dt><dd><p>StrategyFile object to be updated</p>
+</dd>
+<dt>strategy_current_side<span class="classifier">str</span></dt><dd><p>New side of the strategy</p>
+</dd>
+<dt>idx<span class="classifier">int (optionnal)</span></dt><dd><p>Index of the strategy. This parameter indicates the line
+of the strategy file in which the master/slave is. If the 
+master has to be updated, idx = 0, else, idx = 1 + slave_idx</p>
+</dd>
+</dl>
+</dd>
+<dt>Description<span class="classifier">Function updating the position side of a strategy object</span></dt><dd><p>during the code execution</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WinySloth__UpdateStrategyFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy_file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy_current_side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.WinySloth__UpdateStrategyFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Name : WinySloth__UpdateStrategyFile(strategy_file_path, strategy_current_side, idx=0)</p>
+<dl class="simple">
+<dt>Parameters<span class="classifier"></span></dt><dd><dl class="simple">
+<dt>strategy_file_path<span class="classifier">str</span></dt><dd><p>Path of the folder containing all strategies</p>
+</dd>
+<dt>strategy_current_side<span class="classifier">str</span></dt><dd><p>New side of the strategy</p>
+</dd>
+<dt>idx<span class="classifier">int (optionnal)</span></dt><dd><p>Index of the strategy. This parameter indicates the line
+to modify in the strategy file. If the master has to be
+updated, idx = 0, else, idx = 1 + slave_idx</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Description : Function updating a strategy file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WinySloths__Printf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.WinySloths__Printf"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">Winy_Sloth__RunDebugMode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.Winy_Sloth__RunDebugMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">Winy_Sloth__RunNominalMode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.Winy_Sloth__RunNominalMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">Winy_Sloth__SendEmail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exec_trade_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_update_master</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_update_slave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ep_platform_found</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.Winy_Sloth__SendEmail"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/winy_sloth.html#WinySloth.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Xispa33.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
