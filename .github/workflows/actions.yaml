@@ -1,0 +1,119 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Winy Sloths Continuous Integration
+
+on: 
+  push:
+    branches: [ feature_binance ]
+    inputs:
+        test_type:
+          description: 'Test type (TU, TV or ALL)'
+          required: true
+          default: 'TU'
+        symbol:
+          description: 'Symbol (BTC, ETH or BNB)'
+          required: true
+          default: 'BTC'
+        platform:
+          description: 'Exchange platform (BINANCE, BYBIT or ALL)'
+          required: true
+          default: 'BINANCE'
+        contract:
+          description: 'Contract (SPOT, FUTURES or ALL)'
+          required: true
+          default: 'SPOT'
+jobs:
+  DOCUMENTATION:
+    name: Documentation generation
+    #needs: [UML]
+    if: success()
+    # The type of runner that the job will run on
+    runs-on: self-hosted
+    steps:
+      #- uses: actions/download-artifact@master
+      #  with:
+      #      name: tu_reports
+      # Runs a set of commands using the runners shell
+      - name: Prepare matrix for pipeline
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Generate sphinx documentation
+        run: |
+          #cd docs ; sphinx-apidoc -o . .. ; make html; cd ..
+          cd docs ; sphinx-build -b html . _build/html/fr -D language='fr'; cd ..
+
+  #QUALITY:
+  #  name: Quality analysis
+  #  needs: TV_BINANCE
+  #  if: success()
+    # The type of runner that the job will run on
+  #  runs-on: self-hosted
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+  #  steps:
+  #    - name: Generate code quality analysis
+  #      run: |
+          #docker stop $(docker ps -a -q); docker rm $(docker ps -a -q)
+  #        echo " =============================================== "
+  #        echo " ============== Sonar Scan launch ============== "
+  #        echo " =============================================== "
+  #        echo " SonarQube cannot be launched because it needs to open the VM ports"
+          #docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest; docker run --network=host --rm -v "${PWD}:/usr/src" sonarsource/sonar-scanner-cli -X
+  
+  ARTEFACTS:
+    name: Publish artefacts 📣
+    #needs: [TV_BINANCE, UML, QUALITY, DOCUMENTATION]
+    needs: DOCUMENTATION
+    # The type of runner that the job will run on
+    runs-on: self-hosted
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    #  - name: Publish code artefacts 
+    #    uses: actions/upload-artifact@v2
+    #    with:
+    #      path: ${{ github.workspace }}
+    #      name: code
+      
+    #  - name : Publish test reports
+    #    uses: mikepenz/action-junit-report@v2
+    #    if: always() # always run even if the previous step fails
+    #    with: 
+    #      report_paths: |
+    #        ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BTCUSDT.xml
+    #        ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BTCUSDT.xml
+    #        ${{ github.workspace }}/build/tu/futures/tu_futures_bybit_BTCUSDT.xml
+    #        ${{ github.workspace }}/build/tu/spot/tu_spot_bybit_BTCUSDT.xml
+    #        ${{ github.workspace }}/build/tv/futures/tv_futures_binance_BTCUSDT.xml
+    #        ${{ github.workspace }}/build/tv/spot/tv_spot_binance_BTCUSDT.xml
+      
+      - name: Deploy 🚀
+        #uses: JamesIves/github-pages-deploy-action@4.1.7
+        #with:
+        #  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #  branch: feature_binance # The branch the action should deploy to.
+        #  folder: docs # The folder the action should deploy.
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: .
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  # Add traduction sphinx
+  
+  #sonarqube:
+  #  needs: TV_BINANCE
+  #  name: SonarQube
+  #  runs-on: self-hosted
+  #  steps:
+      #- uses: actions/checkout@v2
+      #  with:
+      #    fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+  #    - name: SonarCloud Scan
+        #uses: SonarSource/sonarcloud-github-action@master
+  #      run: |
+  #      env:
+  #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+  #        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
