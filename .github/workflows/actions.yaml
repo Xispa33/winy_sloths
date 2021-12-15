@@ -4,7 +4,7 @@ name: Winy Sloths Continuous Integration
 
 on: 
   workflow_dispatch:
-    branches: [ feature_binance ]
+    branches: [ develop ]
     inputs:
         test_type:
           description: 'Test type (TU, TV or ALL)'
