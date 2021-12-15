@@ -1,13 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="8" hostname="bl-VirtualBox" name="pytest" skipped="0" tests="11" time="80.310" timestamp="2021-12-15T11:36:52.716884"><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_compute_side_futures_account" time="9.477" /><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_futures_change_leverage" time="8.466"><failure message="AssertionError: 1 is not an instance of &lt;class 'dict'&gt;">self = &lt;futures_tests.TestFuturesBinance testMethod=test_futures_change_leverage&gt;
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="2" hostname="bl-VirtualBox" name="pytest" skipped="0" tests="11" time="39.177" timestamp="2021-12-15T12:34:24.846112"><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_compute_side_futures_account" time="1.899"><failure message="AssertionError: 'SHORT' != 'OUT'&#10;- SHORT&#10;+ OUT">self = &lt;futures_tests.TestFuturesBinance testMethod=test_compute_side_futures_account&gt;
 
-    def test_futures_change_leverage(self):
+    def test_compute_side_futures_account(self):
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
-                self.obj_binance.cep__futures_change_leverage, \
-                self.symbol, 5), retry=3, retry_period=2)
-&gt;       self.assertIsInstance(ret,dict)
-E       AssertionError: 1 is not an instance of &lt;class 'dict'&gt;
+                self.obj_binance.cep__futures_account_trades, \
+                self.symbol), retry=3, retry_period=2)
+        pos = self.obj_binance.cep__compute_side_futures_account(self.account,ret)
+&gt;       self.assertEqual(pos, OUT)
+E       AssertionError: 'SHORT' != 'OUT'
+E       - SHORT
+E       + OUT
 
-tests/tu/binance/futures_tests.py:100: AssertionError</failure></testcase><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_futures_change_position_mode" time="8.115"><failure message="AssertionError: 1 is not an instance of &lt;class 'dict'&gt;">self = &lt;futures_tests.TestFuturesBinance testMethod=test_futures_change_position_mode&gt;
+tests/tu/binance/futures_tests.py:73: AssertionError</failure></testcase><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_futures_change_leverage" time="1.117" /><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_futures_change_position_mode" time="7.694"><failure message="AssertionError: 1 is not an instance of &lt;class 'dict'&gt;">self = &lt;futures_tests.TestFuturesBinance testMethod=test_futures_change_position_mode&gt;
 
     def test_futures_change_position_mode(self):
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
@@ -16,92 +19,4 @@ tests/tu/binance/futures_tests.py:100: AssertionError</failure></testcase><testc
 &gt;       self.assertIsInstance(ret, dict)
 E       AssertionError: 1 is not an instance of &lt;class 'dict'&gt;
 
-tests/tu/binance/futures_tests.py:87: AssertionError</failure></testcase><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_futures_open_orders" time="7.925"><failure message="AssertionError: 1 is not an instance of &lt;class 'list'&gt;">self = &lt;futures_tests.TestFuturesBinance testMethod=test_futures_open_orders&gt;
-
-    def test_futures_open_orders(self):
-        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
-                self.obj_binance.cep__get_futures_open_orders, self.symbol), \
-                retry=3, retry_period=2)
-&gt;       self.assertIsInstance(ret, list)
-E       AssertionError: 1 is not an instance of &lt;class 'list'&gt;
-
-tests/tu/binance/futures_tests.py:39: AssertionError</failure></testcase><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_futures_position_mode" time="7.560"><failure message="AssertionError: 1 is not an instance of &lt;class 'dict'&gt;">self = &lt;futures_tests.TestFuturesBinance testMethod=test_futures_position_mode&gt;
-
-    def test_futures_position_mode(self):
-        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
-                self.obj_binance.cep__futures_position_mode), \
-                retry=3, retry_period=2)
-&gt;       self.assertIsInstance(ret,dict)
-E       AssertionError: 1 is not an instance of &lt;class 'dict'&gt;
-
-tests/tu/binance/futures_tests.py:80: AssertionError</failure></testcase><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_get_futures_account_balance" time="7.155"><failure message="AssertionError: 1 is not an instance of &lt;class 'dict'&gt;">self = &lt;futures_tests.TestFuturesBinance testMethod=test_get_futures_account_balance&gt;
-
-    def test_get_futures_account_balance(self):
-        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
-                self.obj_binance.cep__get_futures_account_balance, \
-                self.asset), retry=3, retry_period=2)
-&gt;       self.assertIsInstance(ret, dict)
-E       AssertionError: 1 is not an instance of &lt;class 'dict'&gt;
-
-tests/tu/binance/futures_tests.py:47: AssertionError</failure></testcase><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_get_futures_account_trades" time="8.469"><failure message="AssertionError: 1 is not an instance of &lt;class 'list'&gt;">self = &lt;futures_tests.TestFuturesBinance testMethod=test_get_futures_account_trades&gt;
-
-    def test_get_futures_account_trades(self):
-        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
-                self.obj_binance.cep__futures_account_trades, \
-                self.symbol), retry=3, retry_period=2)
-&gt;       self.assertIsInstance(ret, list)
-E       AssertionError: 1 is not an instance of &lt;class 'list'&gt;
-
-tests/tu/binance/futures_tests.py:55: AssertionError</failure></testcase><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_get_futures_time" time="2.119" /><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_get_symbol_price_futures" time="1.881" /><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_open_close_long_futures" time="8.944"><failure message="ValueError: bin_ret variable is bad.&#10;Type is:&lt;class 'int'&gt;&#10;Value is:1">self = &lt;futures_tests.TestFuturesBinance testMethod=test_open_close_long_futures&gt;
-
-    @unittest.skipIf(open_close_flag==False, "This test was skipped because the account position side is not out.")
-    def test_open_close_long_futures(self):
-        precision = self.obj_binance.ALL_SYMBOLS_DICT[self.symbol][PRECISION_IDX]
-        asset = self.obj_binance.ALL_SYMBOLS_DICT[self.symbol][ASSET_IDX]
-        leverage = 10
-        engaged_balance = 4
-        price = self.obj_binance.CEP__BaseFunction(functools.partial( \
-                self.obj_binance.cep__get_symbol_price_futures, \
-                self.symbol), retry=3, retry_period=2)
-    
-    
-        bin_ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
-                self.obj_binance.cep__get_futures_account_balance, \
-                self.asset), retry=3, retry_period=2)
-        if (isinstance(bin_ret, list)):
-            for dic in bin_ret:
-                if dic[ASSET] == USDT:
-                    ret = dic
-        elif (isinstance(bin_ret, dict)):
-            ret = bin_ret
-        else:
-            raise ValueError("bin_ret variable is bad.\nType is:{}\nValue is:{}\n".format( \
-&gt;               type(bin_ret), bin_ret))
-E           ValueError: bin_ret variable is bad.
-E           Type is:&lt;class 'int'&gt;
-E           Value is:1
-
-tests/tu/binance/futures_tests.py:131: ValueError</failure></testcase><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_open_close_short_futures" time="9.859"><failure message="AssertionError: 1 != 0">self = &lt;futures_tests.TestFuturesBinance testMethod=test_open_close_short_futures&gt;
-
-    @unittest.skipIf(open_close_flag==False, "This test was skipped because the account position side is not out.")
-    def test_open_close_short_futures(self):
-        leverage = 6
-        engaged_balance = -3
-        price = self.obj_binance.CEP__BaseFunction(functools.partial( \
-                self.obj_binance.cep__get_symbol_price_futures, \
-                self.symbol), \
-                retry=MAX_RETRY, \
-                retry_period=2)
-    
-        time.sleep(1)
-    
-        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
-                self.obj_binance.cep__open_short, \
-                self.symbol, leverage, engaged_balance, \
-                float(price[PRICE]), 1), \
-                retry=3, \
-                retry_period=2)
-&gt;       self.assertEqual(ret, 0)
-E       AssertionError: 1 != 0
-
-tests/tu/binance/futures_tests.py:206: AssertionError</failure></testcase></testsuite></testsuites>
+tests/tu/binance/futures_tests.py:87: AssertionError</failure></testcase><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_futures_open_orders" time="0.329" /><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_futures_position_mode" time="0.411" /><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_get_futures_account_balance" time="1.931" /><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_get_futures_account_trades" time="1.734" /><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_get_futures_time" time="1.431" /><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_get_symbol_price_futures" time="1.950" /><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_open_close_long_futures" time="8.901" /><testcase classname="tests.tu.binance.futures_tests.TestFuturesBinance" name="test_open_close_short_futures" time="11.513" /></testsuite></testsuites>
