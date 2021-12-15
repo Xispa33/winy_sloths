@@ -1,1 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="0" hostname="bl-VirtualBox" name="pytest" skipped="0" tests="8" time="16.699" timestamp="2021-12-15T01:27:56.944719"><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_compute_side" time="1.289" /><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_get_asset_balance" time="1.338" /><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_get_exchange_info" time="1.218" /><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_get_order_book" time="1.226" /><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_get_spot_account_trades" time="1.384" /><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_get_symbol_price" time="1.360" /><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_get_symbol_price_ticker" time="1.302" /><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_open_close_order" time="7.446" /></testsuite></testsuites>
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="1" hostname="bl-VirtualBox" name="pytest" skipped="0" tests="8" time="28.835" timestamp="2021-12-15T11:51:28.508121"><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_compute_side" time="5.227" /><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_get_asset_balance" time="5.495" /><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_get_exchange_info" time="1.221" /><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_get_order_book" time="1.284" /><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_get_spot_account_trades" time="1.246" /><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_get_symbol_price" time="1.315" /><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_get_symbol_price_ticker" time="1.368" /><testcase classname="tests.tu.bybit.spot_tests.TestSpotBybit" name="test_open_close_order" time="11.376"><failure message="AssertionError: 1 != 0">self = &lt;spot_tests.TestSpotBybit testMethod=test_open_close_order&gt;
+
+    @unittest.skipIf(open_close_flag==False, "This test was skipped because the account position side is not out.")
+    def test_open_close_order(self):
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__open_long_spot, \
+                self.symbol, False, 1), \
+                retry=10, \
+                retry_period=0.5)
+&gt;       self.assertEqual(ret, 0)
+E       AssertionError: 1 != 0
+
+tests/tu/bybit/spot_tests.py:112: AssertionError</failure></testcase></testsuite></testsuites>

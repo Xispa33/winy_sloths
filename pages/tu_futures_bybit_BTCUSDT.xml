@@ -1,1 +1,40 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="0" hostname="bl-VirtualBox" name="pytest" skipped="0" tests="8" time="22.526" timestamp="2021-12-15T01:26:04.750506"><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_change_futures_leverage" time="3.039" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_compute_side_futures_account" time="1.304" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_futures_account_balance" time="1.360" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_futures_account_trades" time="1.820" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_futures_time" time="1.245" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_my_futures_position" time="0.250" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_symbol_price_futures" time="1.600" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_open_close_long_futures" time="11.304" /></testsuite></testsuites>
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="2" hostname="bl-VirtualBox" name="pytest" skipped="0" tests="8" time="18.690" timestamp="2021-12-15T11:50:57.007225"><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_change_futures_leverage" time="2.650" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_compute_side_futures_account" time="0.219"><failure message="AssertionError: 'SHORT' != 'OUT'&#10;- SHORT&#10;+ OUT">self = &lt;futures_tests.TestFuturesBybit testMethod=test_compute_side_futures_account&gt;
+
+    def test_compute_side_futures_account(self):
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__futures_account_trades, \
+                self.symbol), \
+                retry=MAX_RETRY, \
+                retry_period=2)
+        self.assertIsInstance(ret, list)
+    
+        pos = self.obj_bybit.cep__compute_side_futures_account(self.account, ret)
+&gt;       self.assertEqual(pos, OUT)
+E       AssertionError: 'SHORT' != 'OUT'
+E       - SHORT
+E       + OUT
+
+tests/tu/bybit/futures_tests.py:83: AssertionError</failure></testcase><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_futures_account_balance" time="1.235" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_futures_account_trades" time="1.278" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_futures_time" time="1.269" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_my_futures_position" time="0.230" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_symbol_price_futures" time="2.999" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_open_close_long_futures" time="8.501"><failure message="AssertionError: 1 != 0">self = &lt;futures_tests.TestFuturesBybit testMethod=test_open_close_long_futures&gt;
+
+    @unittest.skipIf(open_close_flag==False, "This test was skipped because the account position side is not out.")
+    def test_open_close_long_futures(self):
+        leverage = 20
+        engaged_balance = 7
+        price = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__get_symbol_price_futures, \
+                self.symbol), \
+                retry=MAX_RETRY, \
+                retry_period=2)
+    
+        time.sleep(1)
+    
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__open_long_futures, \
+                self.symbol, leverage, engaged_balance, \
+                float(price[PRICE]), 1), \
+                retry=3, \
+                retry_period=2)
+&gt;       self.assertEqual(ret, 0)
+E       AssertionError: 1 != 0
+
+tests/tu/bybit/futures_tests.py:124: AssertionError</failure></testcase></testsuite></testsuites>

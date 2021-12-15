@@ -184,7 +184,7 @@
 </ul>
 <h3><span class="section-number">3.4.1. </span>pytest<a class="headerlink" href="#binance" title="Lien permanent vers ce titre"></a></h3>
 <p>Tests: 9, Failures: 0, Errors: 0, Skips: -1</p>
-<p>Time: 20.463</p>
+<p>Time: 736.995</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 20%" />
@@ -269,8 +269,8 @@
 <li><p>Futures</p></li>
 </ul>
 <h3><span class="section-number">3.4.1. </span>pytest<a class="headerlink" href="#binance" title="Lien permanent vers ce titre"></a></h3>
-<p>Tests: 11, Failures: 0, Errors: 0, Skips: -1</p>
-<p>Time: 35.959</p>
+<p>Tests: 11, Failures: 8, Errors: 0, Skips: -1</p>
+<p>Time: 80.31</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 20%" />
@@ -293,47 +293,101 @@
 
 </p></td>
 </tr>
-<tr class="tr_passed row-odd"><td class="tr_passed class"><p class="tr_passed">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
-<td class="tr_passed name"><p class="tr_passed">test_futures_change_leverage</p></td>
-<td class="tr_passed status"><p class="tr_passed">passed</p></td>
-<td class="tr_passed reason"><p class="tr_passed">
+<tr class="tr_failure row-odd"><td class="tr_failure class"><p class="tr_failure">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
+<td class="tr_failure name"><p class="tr_failure">test_futures_change_leverage</p></td>
+<td class="tr_failure status"><p class="tr_failure">failure</p></td>
+<td class="tr_failure reason"><p class="tr_failure">
 
-</p></td>
+self = &lt;futures_tests.TestFuturesBinance testMethod=test_futures_change_leverage&gt;
+
+    def test_futures_change_leverage(self):
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__futures_change_leverage, \
+                self.symbol, 5), retry=3, retry_period=2)
+&gt;       self.assertIsInstance(ret,dict)
+E       AssertionError: 1 is not an instance of &lt;class “dict”&gt;
+
+tests/tu/binance/futures_tests.py:100: AssertionError</p></td>
 </tr>
-<tr class="tr_passed row-even"><td class="tr_passed class"><p class="tr_passed">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
-<td class="tr_passed name"><p class="tr_passed">test_futures_change_position_mode</p></td>
-<td class="tr_passed status"><p class="tr_passed">passed</p></td>
-<td class="tr_passed reason"><p class="tr_passed">
+<tr class="tr_failure row-even"><td class="tr_failure class"><p class="tr_failure">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
+<td class="tr_failure name"><p class="tr_failure">test_futures_change_position_mode</p></td>
+<td class="tr_failure status"><p class="tr_failure">failure</p></td>
+<td class="tr_failure reason"><p class="tr_failure">
 
-</p></td>
+self = &lt;futures_tests.TestFuturesBinance testMethod=test_futures_change_position_mode&gt;
+
+    def test_futures_change_position_mode(self):
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__futures_change_position_mode, \
+                TRUE), retry=3, retry_period=2)
+&gt;       self.assertIsInstance(ret, dict)
+E       AssertionError: 1 is not an instance of &lt;class “dict”&gt;
+
+tests/tu/binance/futures_tests.py:87: AssertionError</p></td>
 </tr>
-<tr class="tr_passed row-odd"><td class="tr_passed class"><p class="tr_passed">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
-<td class="tr_passed name"><p class="tr_passed">test_futures_open_orders</p></td>
-<td class="tr_passed status"><p class="tr_passed">passed</p></td>
-<td class="tr_passed reason"><p class="tr_passed">
+<tr class="tr_failure row-odd"><td class="tr_failure class"><p class="tr_failure">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
+<td class="tr_failure name"><p class="tr_failure">test_futures_open_orders</p></td>
+<td class="tr_failure status"><p class="tr_failure">failure</p></td>
+<td class="tr_failure reason"><p class="tr_failure">
 
-</p></td>
+self = &lt;futures_tests.TestFuturesBinance testMethod=test_futures_open_orders&gt;
+
+    def test_futures_open_orders(self):
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__get_futures_open_orders, self.symbol), \
+                retry=3, retry_period=2)
+&gt;       self.assertIsInstance(ret, list)
+E       AssertionError: 1 is not an instance of &lt;class “list”&gt;
+
+tests/tu/binance/futures_tests.py:39: AssertionError</p></td>
 </tr>
-<tr class="tr_passed row-even"><td class="tr_passed class"><p class="tr_passed">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
-<td class="tr_passed name"><p class="tr_passed">test_futures_position_mode</p></td>
-<td class="tr_passed status"><p class="tr_passed">passed</p></td>
-<td class="tr_passed reason"><p class="tr_passed">
+<tr class="tr_failure row-even"><td class="tr_failure class"><p class="tr_failure">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
+<td class="tr_failure name"><p class="tr_failure">test_futures_position_mode</p></td>
+<td class="tr_failure status"><p class="tr_failure">failure</p></td>
+<td class="tr_failure reason"><p class="tr_failure">
 
-</p></td>
+self = &lt;futures_tests.TestFuturesBinance testMethod=test_futures_position_mode&gt;
+
+    def test_futures_position_mode(self):
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__futures_position_mode), \
+                retry=3, retry_period=2)
+&gt;       self.assertIsInstance(ret,dict)
+E       AssertionError: 1 is not an instance of &lt;class “dict”&gt;
+
+tests/tu/binance/futures_tests.py:80: AssertionError</p></td>
 </tr>
-<tr class="tr_passed row-odd"><td class="tr_passed class"><p class="tr_passed">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
-<td class="tr_passed name"><p class="tr_passed">test_get_futures_account_balance</p></td>
-<td class="tr_passed status"><p class="tr_passed">passed</p></td>
-<td class="tr_passed reason"><p class="tr_passed">
+<tr class="tr_failure row-odd"><td class="tr_failure class"><p class="tr_failure">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
+<td class="tr_failure name"><p class="tr_failure">test_get_futures_account_balance</p></td>
+<td class="tr_failure status"><p class="tr_failure">failure</p></td>
+<td class="tr_failure reason"><p class="tr_failure">
 
-</p></td>
+self = &lt;futures_tests.TestFuturesBinance testMethod=test_get_futures_account_balance&gt;
+
+    def test_get_futures_account_balance(self):
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__get_futures_account_balance, \
+                self.asset), retry=3, retry_period=2)
+&gt;       self.assertIsInstance(ret, dict)
+E       AssertionError: 1 is not an instance of &lt;class “dict”&gt;
+
+tests/tu/binance/futures_tests.py:47: AssertionError</p></td>
 </tr>
-<tr class="tr_passed row-even"><td class="tr_passed class"><p class="tr_passed">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
-<td class="tr_passed name"><p class="tr_passed">test_get_futures_account_trades</p></td>
-<td class="tr_passed status"><p class="tr_passed">passed</p></td>
-<td class="tr_passed reason"><p class="tr_passed">
+<tr class="tr_failure row-even"><td class="tr_failure class"><p class="tr_failure">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
+<td class="tr_failure name"><p class="tr_failure">test_get_futures_account_trades</p></td>
+<td class="tr_failure status"><p class="tr_failure">failure</p></td>
+<td class="tr_failure reason"><p class="tr_failure">
 
-</p></td>
+self = &lt;futures_tests.TestFuturesBinance testMethod=test_get_futures_account_trades&gt;
+
+    def test_get_futures_account_trades(self):
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__futures_account_trades, \
+                self.symbol), retry=3, retry_period=2)
+&gt;       self.assertIsInstance(ret, list)
+E       AssertionError: 1 is not an instance of &lt;class “list”&gt;
+
+tests/tu/binance/futures_tests.py:55: AssertionError</p></td>
 </tr>
 <tr class="tr_passed row-odd"><td class="tr_passed class"><p class="tr_passed">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
 <td class="tr_passed name"><p class="tr_passed">test_get_futures_time</p></td>
@@ -349,19 +403,71 @@
 
 </p></td>
 </tr>
-<tr class="tr_passed row-odd"><td class="tr_passed class"><p class="tr_passed">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
-<td class="tr_passed name"><p class="tr_passed">test_open_close_long_futures</p></td>
-<td class="tr_passed status"><p class="tr_passed">passed</p></td>
-<td class="tr_passed reason"><p class="tr_passed">
+<tr class="tr_failure row-odd"><td class="tr_failure class"><p class="tr_failure">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
+<td class="tr_failure name"><p class="tr_failure">test_open_close_long_futures</p></td>
+<td class="tr_failure status"><p class="tr_failure">failure</p></td>
+<td class="tr_failure reason"><p class="tr_failure">
 
-</p></td>
+self = &lt;futures_tests.TestFuturesBinance testMethod=test_open_close_long_futures&gt;
+
+    &#64;unittest.skipIf(open_close_flag==False, « This test was skipped because the account position side is not out. »)
+    def test_open_close_long_futures(self):
+        precision = self.obj_binance.ALL_SYMBOLS_DICT[self.symbol][PRECISION_IDX]
+        asset = self.obj_binance.ALL_SYMBOLS_DICT[self.symbol][ASSET_IDX]
+        leverage = 10
+        engaged_balance = 4
+        price = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__get_symbol_price_futures, \
+                self.symbol), retry=3, retry_period=2)
+    
+    
+        bin_ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__get_futures_account_balance, \
+                self.asset), retry=3, retry_period=2)
+        if (isinstance(bin_ret, list)):
+            for dic in bin_ret:
+                if dic[ASSET] == USDT:
+                    ret = dic
+        elif (isinstance(bin_ret, dict)):
+            ret = bin_ret
+        else:
+            raise ValueError(« bin_ret variable is bad.\nType is:{}\nValue is:{}\n ».format( \
+&gt;               type(bin_ret), bin_ret))
+E           ValueError: bin_ret variable is bad.
+E           Type is:&lt;class “int”&gt;
+E           Value is:1
+
+tests/tu/binance/futures_tests.py:131: ValueError</p></td>
 </tr>
-<tr class="tr_passed row-even"><td class="tr_passed class"><p class="tr_passed">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
-<td class="tr_passed name"><p class="tr_passed">test_open_close_short_futures</p></td>
-<td class="tr_passed status"><p class="tr_passed">passed</p></td>
-<td class="tr_passed reason"><p class="tr_passed">
+<tr class="tr_failure row-even"><td class="tr_failure class"><p class="tr_failure">tests.tu.binance.futures_tests.TestFuturesBinance</p></td>
+<td class="tr_failure name"><p class="tr_failure">test_open_close_short_futures</p></td>
+<td class="tr_failure status"><p class="tr_failure">failure</p></td>
+<td class="tr_failure reason"><p class="tr_failure">
 
-</p></td>
+self = &lt;futures_tests.TestFuturesBinance testMethod=test_open_close_short_futures&gt;
+
+    &#64;unittest.skipIf(open_close_flag==False, « This test was skipped because the account position side is not out. »)
+    def test_open_close_short_futures(self):
+        leverage = 6
+        engaged_balance = -3
+        price = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__get_symbol_price_futures, \
+                self.symbol), \
+                retry=MAX_RETRY, \
+                retry_period=2)
+    
+        time.sleep(1)
+    
+        ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
+                self.obj_binance.cep__open_short, \
+                self.symbol, leverage, engaged_balance, \
+                float(price[PRICE]), 1), \
+                retry=3, \
+                retry_period=2)
+&gt;       self.assertEqual(ret, 0)
+E       AssertionError: 1 != 0
+
+tests/tu/binance/futures_tests.py:206: AssertionError</p></td>
 </tr>
 </tbody>
 </table>
@@ -372,8 +478,8 @@
 <li><p>Spot</p></li>
 </ul>
 <h3><span class="section-number">3.4.2. </span>pytest<a class="headerlink" href="#bybit" title="Lien permanent vers ce titre"></a></h3>
-<p>Tests: 8, Failures: 0, Errors: 0, Skips: -1</p>
-<p>Time: 16.699</p>
+<p>Tests: 8, Failures: 1, Errors: 0, Skips: -1</p>
+<p>Time: 28.835</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 20%" />
@@ -438,12 +544,24 @@
 
 </p></td>
 </tr>
-<tr class="tr_passed row-odd"><td class="tr_passed class"><p class="tr_passed">tests.tu.bybit.spot_tests.TestSpotBybit</p></td>
-<td class="tr_passed name"><p class="tr_passed">test_open_close_order</p></td>
-<td class="tr_passed status"><p class="tr_passed">passed</p></td>
-<td class="tr_passed reason"><p class="tr_passed">
+<tr class="tr_failure row-odd"><td class="tr_failure class"><p class="tr_failure">tests.tu.bybit.spot_tests.TestSpotBybit</p></td>
+<td class="tr_failure name"><p class="tr_failure">test_open_close_order</p></td>
+<td class="tr_failure status"><p class="tr_failure">failure</p></td>
+<td class="tr_failure reason"><p class="tr_failure">
 
-</p></td>
+self = &lt;spot_tests.TestSpotBybit testMethod=test_open_close_order&gt;
+
+    &#64;unittest.skipIf(open_close_flag==False, « This test was skipped because the account position side is not out. »)
+    def test_open_close_order(self):
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__open_long_spot, \
+                self.symbol, False, 1), \
+                retry=10, \
+                retry_period=0.5)
+&gt;       self.assertEqual(ret, 0)
+E       AssertionError: 1 != 0
+
+tests/tu/bybit/spot_tests.py:112: AssertionError</p></td>
 </tr>
 </tbody>
 </table>
@@ -451,8 +569,8 @@
 <li><p>Futures</p></li>
 </ul>
 <h3><span class="section-number">3.4.2. </span>pytest<a class="headerlink" href="#bybit" title="Lien permanent vers ce titre"></a></h3>
-<p>Tests: 8, Failures: 0, Errors: 0, Skips: -1</p>
-<p>Time: 22.526</p>
+<p>Tests: 8, Failures: 2, Errors: 0, Skips: -1</p>
+<p>Time: 18.69</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 20%" />
@@ -475,12 +593,28 @@
 
 </p></td>
 </tr>
-<tr class="tr_passed row-odd"><td class="tr_passed class"><p class="tr_passed">tests.tu.bybit.futures_tests.TestFuturesBybit</p></td>
-<td class="tr_passed name"><p class="tr_passed">test_compute_side_futures_account</p></td>
-<td class="tr_passed status"><p class="tr_passed">passed</p></td>
-<td class="tr_passed reason"><p class="tr_passed">
+<tr class="tr_failure row-odd"><td class="tr_failure class"><p class="tr_failure">tests.tu.bybit.futures_tests.TestFuturesBybit</p></td>
+<td class="tr_failure name"><p class="tr_failure">test_compute_side_futures_account</p></td>
+<td class="tr_failure status"><p class="tr_failure">failure</p></td>
+<td class="tr_failure reason"><p class="tr_failure">
 
-</p></td>
+self = &lt;futures_tests.TestFuturesBybit testMethod=test_compute_side_futures_account&gt;
+
+    def test_compute_side_futures_account(self):
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__futures_account_trades, \
+                self.symbol), \
+                retry=MAX_RETRY, \
+                retry_period=2)
+        self.assertIsInstance(ret, list)
+    
+        pos = self.obj_bybit.cep__compute_side_futures_account(self.account, ret)
+&gt;       self.assertEqual(pos, OUT)
+E       AssertionError: “SHORT” != “OUT”
+E       - SHORT
+E       + OUT
+
+tests/tu/bybit/futures_tests.py:83: AssertionError</p></td>
 </tr>
 <tr class="tr_passed row-even"><td class="tr_passed class"><p class="tr_passed">tests.tu.bybit.futures_tests.TestFuturesBybit</p></td>
 <td class="tr_passed name"><p class="tr_passed">test_get_futures_account_balance</p></td>
@@ -517,12 +651,35 @@
 
 </p></td>
 </tr>
-<tr class="tr_passed row-odd"><td class="tr_passed class"><p class="tr_passed">tests.tu.bybit.futures_tests.TestFuturesBybit</p></td>
-<td class="tr_passed name"><p class="tr_passed">test_open_close_long_futures</p></td>
-<td class="tr_passed status"><p class="tr_passed">passed</p></td>
-<td class="tr_passed reason"><p class="tr_passed">
+<tr class="tr_failure row-odd"><td class="tr_failure class"><p class="tr_failure">tests.tu.bybit.futures_tests.TestFuturesBybit</p></td>
+<td class="tr_failure name"><p class="tr_failure">test_open_close_long_futures</p></td>
+<td class="tr_failure status"><p class="tr_failure">failure</p></td>
+<td class="tr_failure reason"><p class="tr_failure">
 
-</p></td>
+self = &lt;futures_tests.TestFuturesBybit testMethod=test_open_close_long_futures&gt;
+
+    &#64;unittest.skipIf(open_close_flag==False, « This test was skipped because the account position side is not out. »)
+    def test_open_close_long_futures(self):
+        leverage = 20
+        engaged_balance = 7
+        price = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__get_symbol_price_futures, \
+                self.symbol), \
+                retry=MAX_RETRY, \
+                retry_period=2)
+    
+        time.sleep(1)
+    
+        ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
+                self.obj_bybit.cep__open_long_futures, \
+                self.symbol, leverage, engaged_balance, \
+                float(price[PRICE]), 1), \
+                retry=3, \
+                retry_period=2)
+&gt;       self.assertEqual(ret, 0)
+E       AssertionError: 1 != 0
+
+tests/tu/bybit/futures_tests.py:124: AssertionError</p></td>
 </tr>
 </tbody>
 </table>
