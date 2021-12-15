@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="2" hostname="bl-VirtualBox" name="pytest" skipped="0" tests="8" time="21.743" timestamp="2021-12-15T12:35:50.719794"><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_change_futures_leverage" time="2.890" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_compute_side_futures_account" time="0.334"><failure message="AssertionError: 'SHORT' != 'OUT'&#10;- SHORT&#10;+ OUT">self = &lt;futures_tests.TestFuturesBybit testMethod=test_compute_side_futures_account&gt;
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="2" hostname="bl-VirtualBox" name="pytest" skipped="0" tests="8" time="46.538" timestamp="2021-12-15T20:32:12.209124"><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_change_futures_leverage" time="3.325" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_compute_side_futures_account" time="0.275"><failure message="AssertionError: 'LONG' != 'OUT'&#10;- LONG&#10;+ OUT">self = &lt;futures_tests.TestFuturesBybit testMethod=test_compute_side_futures_account&gt;
 
     def test_compute_side_futures_account(self):
         ret = self.obj_bybit.CEP__BaseFunction(functools.partial( \
@@ -10,11 +10,11 @@
     
         pos = self.obj_bybit.cep__compute_side_futures_account(self.account, ret)
 &gt;       self.assertEqual(pos, OUT)
-E       AssertionError: 'SHORT' != 'OUT'
-E       - SHORT
+E       AssertionError: 'LONG' != 'OUT'
+E       - LONG
 E       + OUT
 
-tests/tu/bybit/futures_tests.py:83: AssertionError</failure></testcase><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_futures_account_balance" time="1.287" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_futures_account_trades" time="1.330" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_futures_time" time="1.371" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_my_futures_position" time="0.308" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_symbol_price_futures" time="1.611" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_open_close_long_futures" time="12.049"><failure message="AssertionError: 'SHORT' != 'OUT'&#10;- SHORT&#10;+ OUT">self = &lt;futures_tests.TestFuturesBybit testMethod=test_open_close_long_futures&gt;
+tests/tu/bybit/futures_tests.py:83: AssertionError</failure></testcase><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_futures_account_balance" time="1.244" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_futures_account_trades" time="1.326" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_futures_time" time="1.300" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_my_futures_position" time="0.344" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_get_symbol_price_futures" time="1.664" /><testcase classname="tests.tu.bybit.futures_tests.TestFuturesBybit" name="test_open_close_long_futures" time="36.439"><failure message="AssertionError: 'SHORT' != 'OUT'&#10;- SHORT&#10;+ OUT">self = &lt;futures_tests.TestFuturesBybit testMethod=test_open_close_long_futures&gt;
 
     @unittest.skipIf(open_close_flag==False, "This test was skipped because the account position side is not out.")
     def test_open_close_long_futures(self):

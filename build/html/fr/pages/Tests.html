@@ -184,7 +184,7 @@
 </ul>
 <h3><span class="section-number">3.4.1. </span>pytest<a class="headerlink" href="#binance" title="Lien permanent vers ce titre"></a></h3>
 <p>Tests: 9, Failures: 0, Errors: 0, Skips: -1</p>
-<p>Time: 22.75</p>
+<p>Time: 24.433</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 20%" />
@@ -270,7 +270,7 @@
 </ul>
 <h3><span class="section-number">3.4.1. </span>pytest<a class="headerlink" href="#binance" title="Lien permanent vers ce titre"></a></h3>
 <p>Tests: 11, Failures: 2, Errors: 0, Skips: -1</p>
-<p>Time: 39.177</p>
+<p>Time: 37.13</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 20%" />
@@ -299,8 +299,8 @@ self = &lt;futures_tests.TestFuturesBinance testMethod=test_compute_side_futures
                 self.symbol), retry=3, retry_period=2)
         pos = self.obj_binance.cep__compute_side_futures_account(self.account,ret)
 &gt;       self.assertEqual(pos, OUT)
-E       AssertionError: “SHORT” != “OUT”
-E       - SHORT
+E       AssertionError: “LONG” != “OUT”
+E       - LONG
 E       + OUT
 
 tests/tu/binance/futures_tests.py:73: AssertionError</p></td>
@@ -394,7 +394,7 @@ tests/tu/binance/futures_tests.py:87: AssertionError</p></td>
 </ul>
 <h3><span class="section-number">3.4.2. </span>pytest<a class="headerlink" href="#bybit" title="Lien permanent vers ce titre"></a></h3>
 <p>Tests: 8, Failures: 0, Errors: 0, Skips: -1</p>
-<p>Time: 17.759</p>
+<p>Time: 18.372</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 20%" />
@@ -473,7 +473,7 @@ tests/tu/binance/futures_tests.py:87: AssertionError</p></td>
 </ul>
 <h3><span class="section-number">3.4.2. </span>pytest<a class="headerlink" href="#bybit" title="Lien permanent vers ce titre"></a></h3>
 <p>Tests: 8, Failures: 2, Errors: 0, Skips: -1</p>
-<p>Time: 21.743</p>
+<p>Time: 46.538</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 20%" />
@@ -513,8 +513,8 @@ self = &lt;futures_tests.TestFuturesBybit testMethod=test_compute_side_futures_a
     
         pos = self.obj_bybit.cep__compute_side_futures_account(self.account, ret)
 &gt;       self.assertEqual(pos, OUT)
-E       AssertionError: “SHORT” != “OUT”
-E       - SHORT
+E       AssertionError: “LONG” != “OUT”
+E       - LONG
 E       + OUT
 
 tests/tu/bybit/futures_tests.py:83: AssertionError</p></td>
