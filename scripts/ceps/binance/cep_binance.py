@@ -245,9 +245,10 @@ class CEP__Binance(CryptoExchangePlatform):
         #balance=ret[WITHDRAW_AVAILABLE]
         balance = ret[MAX_WITHDRAW_AMOUNT]
 
-        quantity=round(((float(balance)*engaged_balance/float(entryPrice)) - \
-                                                    (5*10**(-precision-1))),precision)
-        
+        #quantity=round(((float(balance)*engaged_balance/float(entryPrice)) - \
+        #                                            (5*10**(-precision-1))),precision)
+        quantity = float(balance)*engaged_balance/float(entryPrice)
+        quantity = int(quantity*10**precision)/10**precision
         if (pct > 1):
             raise ValueError("Parameter pct has to be less than 1")
         
@@ -294,8 +295,11 @@ class CEP__Binance(CryptoExchangePlatform):
         #balance=ret[WITHDRAW_AVAILABLE]
         balance = ret[MAX_WITHDRAW_AMOUNT]
         
-        quantity = round(((float(balance)*abs(engaged_balance)/float(entryPrice)) - \
-                                                    (5*10**(-precision - 1))), precision)
+        #quantity = round(((float(balance)*abs(engaged_balance)/float(entryPrice)) - \
+        #                                            (5*10**(-precision - 1))), precision)
+        quantity = float(balance)*abs(engaged_balance)/float(entryPrice)
+        quantity = int(quantity*10**precision)/10**precision
+
         if (pct > 1):
             raise ValueError("Parameter pct has to be less than 1")
         quantity = quantity*pct
@@ -328,7 +332,9 @@ class CEP__Binance(CryptoExchangePlatform):
                 found = True
 
         if (found):
-            position_amt = round(float(ret[POSITION_AMT])*pct, precision)
+            #position_amt = round(float(ret[POSITION_AMT])*pct, precision)
+            position_amt = float(ret[POSITION_AMT])*pct
+            position_amt = int(position_amt*10**precision)/10**precision
         else:
             position_amt = 0.0
 
@@ -355,7 +361,9 @@ class CEP__Binance(CryptoExchangePlatform):
             #    if dic[POSITION_SIDE] == SHORT:
             #        ret = dic
         
-            quantity = round(abs(float(last_trade[0][POSITION_AMT])*pct), precision)
+            #quantity = round(abs(float(last_trade[0][POSITION_AMT])*pct), precision)
+            quantity = abs(float(last_trade[0][POSITION_AMT])*pct)
+            quantity = int(quantity*10**precision)/10**precision
 
             if (quantity != 0.0):
                 binance_return = self.futures_create_order(symbol=symbol, \
@@ -447,7 +455,9 @@ class CEP__Binance(CryptoExchangePlatform):
 
         asset_qty = float(self.cep__get_asset_balance(curr_asset)[FREE])  
         while (binance_return['status'] != 'FILLED'):
-            asset_round = round(float(self.cep__get_asset_balance(curr_asset)[FREE])*pct, precision)
+            #asset_round = round(float(self.cep__get_asset_balance(curr_asset)[FREE])*pct, precision)
+            asset_round = float(self.cep__get_asset_balance(curr_asset)[FREE])*pct
+            asset_round = int(asset_round*10**(precision))/10**(precision)
             binance_return = self.spot_create_order(symbol, SELL, MARKET, asset_round)
             if (compute_avg_price == True):
                 for elt in binance_return['fills']:

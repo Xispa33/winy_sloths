@@ -17,38 +17,21 @@ import csv
 
 class WinySloth:
     """
-    A class used to represent WinySloth main object. The general behaviour \
-    of Winy Sloth is described in Documentation.
+    Description:
+    A class used to represent WinySloth main object. The general behaviour of Winy Sloth is described in Documentation.
 
-    Attributes
-    ----------
-    strategies_folder_path : str
-        Path of the folder containing all strategies
+    Attributes:
+    strategies_folder_path : Path of the folder containing all strategies
     
-    strategies : list
-        List containing StrategyFile objects
+    strategies : List containing StrategyFile objects
     
-    mode : str
-        Variable specifiying WS mode of execution.
-        In DEBUG mode, WS is executed during 40s only.
-        In RUN mode, WS runs nominally.
+    mode : Variable specifiying WS mode of execution. 
+    In DEBUG mode, WS is executed during 40s only. 
+    In RUN mode, WS runs nominally.
 
-    init_return outputs the return of initialization. If init_return is equal to 1, \
-    it means a problem occurred during initialization and the program exits. \
+    init_return outputs the return of initialization. If init_return is equal to 1, 
+    it means a problem occurred during initialization and the program exits. 
     If 0, init was OK and WS enters in main. 
-    
-    Methods
-    -------
-    WinySloth__ReadArguments()
-    WinySloth__FindNbStrategies()
-    WinySloth__FindAllStrategiesFiles()
-    WinySloth__Init()
-    WinySloth__UpdateStrategyFile()
-    WinySloth__UpdatePositionSide()
-    WinySloth__Update()
-    Winy_Sloth__SendEmail()
-    WinySloth__SlaveManagement()
-    WinySloth__Main()
     """
     def __init__(self):
         (self.mode, \
@@ -62,8 +45,14 @@ class WinySloth:
             print("Init was not good.\n")
             sys.exit()
         else:
-            print("Init was good.\nThere are {} strategies running.\
+            self.WinySloths__Printf("Init was good.\nThere are {} strategies running.\
             \n".format(len(self.strategies)))
+
+    def WinySloths__Printf(self, message):
+        if (self.mode == RUN):
+            print(message)
+        else:
+            pass
 
     def WinySloth__ReadArguments(self):
         """
@@ -500,33 +489,34 @@ class WinySloth:
         start_time = time.time()
         end_time = time.time()
         
-        while (end_time - start_time < 40.0):
+        while (end_time - start_time < 10.0):
             self.WinySloth__Main()
             end_time = time.time()
         print("0")
     
     def Winy_Sloth__RunNominalMode(self):
-        try:
-            self.WinySloth__Main()
-        except:
-            message = "An error occured. An email should have been sent around {}\n \
-            {}\n {}\n".format(str(datetime.now()), sys.exc_info(), \
-            traceback.format_exc())
-            print(message)
-            
-            with open(ERRORS_FILE, "a+") as error_file:
-                mail_msg = "WARNING : \
-                    Winy Sloth had to restart.\nThe error raised the following \
-                    message: \nsys.exc_info() = {}. traceback.format_exc() = {}. \
-                    ".format(sys.exc_info(), traceback.format_exc())
+        while (1):
+            try:
+                self.WinySloth__Main()
+            except:
+                message = "An error occured. An email should have been sent around {}\n \
+                {}\n {}\n".format(str(datetime.now()), sys.exc_info(), \
+                traceback.format_exc())
+                self.WinySloths__Printf(message)
+                
+                with open(ERRORS_FILE, "a+") as error_file:
+                    mail_msg = "WARNING : \
+                        Winy Sloth had to restart.\nThe error raised the following \
+                        message: \nsys.exc_info() = {}. traceback.format_exc() = {}. \
+                        ".format(sys.exc_info(), traceback.format_exc())
 
-                error = Errors(enable=self.enable_emails, \
-                               error_messages=mail_msg, \
-                               error_criticity=HIGH_C)
-                Errors.Errors__SendEmail(error)
-                error_file.write(message)
-                error_file.close()
-        time.sleep(2)
+                    error = Errors(enable=self.enable_emails, \
+                                error_messages=mail_msg, \
+                                error_criticity=HIGH_C)
+                    Errors.Errors__SendEmail(error)
+                    error_file.write(message)
+                    error_file.close()
+            time.sleep(2)
 
     def run(self):
         {DEBUG: self.Winy_Sloth__RunDebugMode, 

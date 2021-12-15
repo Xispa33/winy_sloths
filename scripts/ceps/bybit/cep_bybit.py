@@ -147,8 +147,9 @@ class CEP__Bybit(CryptoExchangePlatform):
             available_asset = 1*10**(-precision)
 
         while (available_asset > min_asset):
-            available_asset = round(float(available_asset)*pct - 5*10**(-precision-1),precision+1)
-        
+            #available_asset = round(float(available_asset)*pct - 5*10**(-precision-1),precision+1)
+            available_asset = float(available_asset)*pct
+            available_asset = int(available_asset*10**precision)/10**precision
             bybit_response = self.create_spot_order(symbol=symbol, \
                             side=SELL, _type=MARKET, qty=str(available_asset))
             time.sleep(0.3)
@@ -158,7 +159,7 @@ class CEP__Bybit(CryptoExchangePlatform):
         
         return 0
 
-    def cep__spot_account_trades(self, symbol, limit):
+    def cep__spot_account_trades(self, symbol, limit='1'):
         self.called_function_name = "cep__spot_account_trades"
         
         request_parameters = {SYMBOL:symbol, LIMIT:str(limit), \
@@ -316,8 +317,10 @@ class CEP__Bybit(CryptoExchangePlatform):
                 retry_period=1)
 
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
-        quantity=round(((float(balance)*engaged_balance/entryPrice) - \
-                                                (5*10**(-precision - 1))), precision)
+        #quantity=round(((float(balance)*engaged_balance/entryPrice) - \
+        #                                        (5*10**(-precision - 1))), precision)
+        quantity = float(balance)*engaged_balance/entryPrice
+        quantity = int(quantity*10**precision)/10**precision
         if (quantity < (1*10**(-precision))):
             quantity = 1*10**(-precision)
         
@@ -331,8 +334,10 @@ class CEP__Bybit(CryptoExchangePlatform):
             
             balance = self.cep__get_futures_account_balance(USDT)['available_balance']
             precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
-            quantity=round(((float(balance)*engaged_balance/entryPrice) - \
-                                                    (5*10**(-precision - 1))), precision)
+            #quantity=round(((float(balance)*engaged_balance/entryPrice) - \
+            #                                        (5*10**(-precision - 1))), precision)
+            quantity = float(balance)*engaged_balance/entryPrice
+            quantity = int(quantity*10**precision)/10**precision
             if (quantity < (1*10**(-precision))):
                 quantity = 1*10**(-precision)
             quantity = quantity*pct
@@ -379,8 +384,10 @@ class CEP__Bybit(CryptoExchangePlatform):
                 retry_period=1)
         
         precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
-        quantity=round(((float(balance)*abs(engaged_balance)/entryPrice) - \
-                                                (5*10**(-precision - 1))), precision)
+        #quantity=round(((float(balance)*abs(engaged_balance)/entryPrice) - \
+        #                                        (5*10**(-precision - 1))), precision)
+        quantity = float(balance)*abs(engaged_balance)/entryPrice
+        quantity = int(quantity*10**precision)/10**precision
         if (quantity < (1*10**(-precision))):
             quantity = 1*10**(-precision)
         
@@ -394,8 +401,10 @@ class CEP__Bybit(CryptoExchangePlatform):
             
             balance = self.cep__get_futures_account_balance(USDT)['available_balance']
             precision = self.ALL_SYMBOLS_DICT[symbol][PRECISION_IDX]
-            quantity=round(((float(balance)*engaged_balance/entryPrice) - \
-                                                    (5*10**(-precision - 1))), precision)
+            #quantity=round(((float(balance)*engaged_balance/entryPrice) - \
+            #                                        (5*10**(-precision - 1))), precision)
+            quantity = float(balance)*engaged_balance/entryPrice
+            quantity = int(quantity*10**precision)/10**precision
             if (quantity < (1*10**(-precision))):
                 quantity = 1*10**(-precision)
             quantity = quantity*pct

@@ -5,3 +5,4 @@ winy\_sloth module
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:

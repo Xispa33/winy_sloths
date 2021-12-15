@@ -39,7 +39,7 @@ else
     
 fi
 
-rm -rf build/
+#rm -rf build/
 path="./tests/"
 if [ $SYMBOL != "ALL" ]; then
     cmd_symbol=${SYMBOL}${ASSET}
@@ -83,13 +83,15 @@ if [ ${TEST_TYPE} == "TU" ]; then
                 SCRIPT_DIR=${PWD}/scripts/ CEPS_DIR=${PWD}/scripts/ceps/ \
                 SYMBOL=${cmd_symbol} ASSET=${ASSET} \
                 python3 -m pytest --junitxml ${output_file} ${file_path} -v
+                cp ${output_file} ./docs/pages
             done
 
             #Gather all .xml in one
-            output_file="${build_dir}/${test_type}_${contract_type}.xml"
-            xmlmerge ${build_dir}/*.xml > ${output_file}
+            #output_file="${build_dir}/${test_type}_${contract_type}.xml"
+            #echo "Merging : ${contract_type}"
+            #xmlmerge ${build_dir}/* > ${output_file}
 
-            cp ${output_file} ./docs/pages
+            
         done
     done
 
@@ -101,60 +103,66 @@ elif [ ${TEST_TYPE} == "TV" ]; then
     #Créer arbo en début de test
     for platform in "${platform_list[@]}"
     do
+        build_dir="build/${test_type}/${contract_type}/"
+        mkdir -p ${build_dir}
+        mkdir -p ${PWD}/build/coverage
         for contract_type in "${contract_type_list[@]}"
         do
             mkdir -p ${PWD}/tests/tv/TESTS/${platform}/${contract_type}
             master=${platform}
-            if [ ${platform}=="binance" ]; then
+            strat_filename="strat_test.txt"
+            if [ ${platform} == "binance" ]; then
                 master="Binance"
                 slave="Bybit"
-                API_KEY_MASTER=`echo ${API_KEY_MASTER_SPOT_1}`
-                API_SECRET_KEY_MASTER=$(echo ${API_KEY_MASTER_SECRET_SPOT_1})
-                API_KEY_SLAVE=$(echo ${API_KEY_MASTER_SPOT_2})
-                API_SECRET_KEY_SLAVE=$(echo ${API_KEY_MASTER_SECRET_SPOT_2})
+                API_KEY_MASTER_SPOT=`echo ${API_KEY_MASTER_SPOT_1}`
+                API_SECRET_KEY_MASTER_SPOT=$(echo ${API_KEY_MASTER_SECRET_SPOT_1})
+                API_KEY_MASTER_FUTURES=`echo ${API_KEY_MASTER_FUTURES_1}`
+                API_SECRET_KEY_MASTER_FUTURES=$(echo ${API_KEY_MASTER_SECRET_FUTURES_1})
+                API_KEY_SLAVE_SPOT=$(echo ${API_KEY_MASTER_SPOT_2})
+                API_SECRET_KEY_SLAVE_SPOT=$(echo ${API_KEY_MASTER_SECRET_SPOT_2})
+                API_KEY_SLAVE_FUTURES=$(echo ${API_KEY_MASTER_SPOT_2})
+                API_SECRET_KEY_SLAVE_FUTURES=$(echo ${API_KEY_MASTER_SECRET_SPOT_2})
             else
                 master="Bybit"
                 slave="Binance"
-                API_KEY_MASTER=$(echo ${API_KEY_MASTER_SPOT_2})
-                API_SECRET_KEY_MASTER=$(echo ${API_KEY_MASTER_SECRET_SPOT_2})
-                API_KEY_SLAVE=${API_KEY_MASTER_SPOT_1}
-                API_SECRET_KEY_SLAVE=$(echo ${API_KEY_MASTER_SECRET_SPOT_1})
+                API_KEY_MASTER_SPOT=$(echo ${API_KEY_MASTER_SPOT_2})
+                API_SECRET_KEY_MASTER_SPOT=$(echo ${API_KEY_MASTER_SECRET_SPOT_2})
+                API_KEY_MASTER_FUTURES=$(echo ${API_KEY_MASTER_SPOT_2})
+                API_SECRET_KEY_MASTER_FUTURES=$(echo ${API_KEY_MASTER_SECRET_SPOT_2})
+                API_KEY_SLAVE_SPOT=${API_KEY_MASTER_SPOT_1}
+                API_SECRET_KEY_SLAVE_SPOT=$(echo ${API_KEY_MASTER_SECRET_SPOT_1})
+                API_KEY_SLAVE_FUTURES=`echo ${API_KEY_MASTER_FUTURES_1}`
+                API_SECRET_KEY_SLAVE_FUTURES=$(echo ${API_KEY_MASTER_SECRET_FUTURES_1})
             fi
-            #echo "API_KEY_MASTER = ${API_KEY_MASTER}"
+            # This account is always slave
+            API_KEY_SLAVE_FUTURES_BINANCE=$(echo ${API_KEY_SLAVE_FUTURES_1})
+            API_SECRET_KEY_SLAVE_FUTURES_BINANCE=$(echo ${API_KEY_SLAVE_SECRET_FUTURES_1})
             contract=$(convert2upper ${contract_type})
-            echo -e "${master} ${API_KEY_MASTER} ${API_SECRET_KEY_MASTER} OUT ${contract} BTCUSDT\n0\n${slave} ${API_KEY_SLAVE} ${API_SECRET_KEY_SLAVE} OUT" > ${PWD}/tests/tv/TESTS/${platform}/${contract_type}/strat_test.txt
-            cat ${PWD}/tests/tv/TESTS/${platform}/${contract_type}/strat_test.txt
+            if [ ${contract} == SPOT ]; then
+                API_KEY_MASTER=${API_KEY_MASTER_SPOT}
+                API_SECRET_KEY_MASTER=${API_SECRET_KEY_MASTER_SPOT}
+                API_KEY_SLAVE=${API_KEY_SLAVE_SPOT}
+                API_SECRET_KEY_SLAVE=${API_SECRET_KEY_SLAVE_SPOT}
+            else
+                API_KEY_MASTER=${API_KEY_MASTER_FUTURES}
+                API_SECRET_KEY_MASTER=${API_SECRET_KEY_MASTER_FUTURES}
+                API_KEY_SLAVE=${API_KEY_SLAVE_FUTURES}
+                API_SECRET_KEY_SLAVE=${API_SECRET_KEY_SLAVE_FUTURES}
+            fi
+            echo -e "${master} ${API_KEY_MASTER} ${API_SECRET_KEY_MASTER} OUT ${contract} BTCUSDT\n0\n${slave} ${API_KEY_SLAVE} ${API_SECRET_KEY_SLAVE} OUT" > ${PWD}/tests/tv/TESTS/${platform}/${contract_type}/${strat_filename}
+            #\n${master} ${API_KEY_SLAVE_FUTURES_BINANCE} ${API_SECRET_KEY_SLAVE_FUTURES_BINANCE} OUT
+            chmod 777 ${PWD}/tests/tv/TESTS/${platform}/${contract_type}/${strat_filename}
+            file_path="./tests/${test_type}/${contract_type}_tests.py"
+            output_file="${build_dir}/${test_type}_${contract_type}_${platform}_${cmd_symbol}.xml"
+            SCRIPT_DIR=${PWD}/scripts/ CEPS_DIR=${PWD}/scripts/ceps/ PLATFORM=${platform} \
+            STRAT_FILENAME=${strat_filename} PYTHONPATH=${PWD}/conf coverage run \
+            --rcfile=${PWD}/conf/.coveragerc -m pytest --junitxml \
+            ${output_file} ${file_path} -vx
+            
         done
     done
-    
-
-    #Supprimer arbo
-    #for platform in "${platform_list[@]}"
-    #do
-    #    for contract_type in "${contract_type_list[@]}"
-    #    do
-    #        rm -rf ${PWD}/tests/tv/TESTS/*
-    #    done
-    #done
-    echo "TV to play"
+    mv .coverage* build/coverage
+    cd build/coverage; coverage combine; coverage xml -i; 
+    sed -i "s|/home/bl/actions-runner/_work/winy_sloths/winy_sloths/||g" coverage.xml
+    cd ../..
 fi
-
-#SCRIPT_DIR=$PWD/scripts/ CEPS_DIR=$PWD/scripts/ceps/ SYMBOL=BTCUSDT ASSET=USDT python3 -m pytest tests/tu/binance/spot_tests.py -v
-
-#OLD
-#TU
-#python3 -m pytest --junitxml tests/results/tu_spot.xml tests/tu/spot_tests.py -vxk "not test_compute_side"
-#python3 -m pytest --junitxml tests/results/tu_futures.xml tests/tu/futures_tests.py -vxk "not test_compute_side"
-#rm .coverage.cloud*
-
-#TV
-#coverage run -m pytest --junitxml tests/results/tv_spot.xml tests/tv/spot_tests.py -vxk "not test_compute_side"
-#coverage run -m pytest --junitxml tests/results/tv_futures.xml tests/tv/futures_tests.py -vxk "not test_compute_side"
-#coverage combine; coverage report
-#rm .coverage
-
-# GENERATE DOC
-# DEPENDANCES
-#pip3 install -U sphinx; pip3 install sphinx_rtd_theme;pip3 install sphinx-test-reports
-
-#cd docs; sphinx-apidoc -o . .. ; make html; cd ..
