@@ -145,7 +145,7 @@ jobs:
       - name: Generate sphinx documentation
         run: |
           #cd docs ; sphinx-apidoc -o . .. ; make html; cd ..
-          cd docs ; sphinx-build -b html . _build/html/fr -D language='fr'; cd ..
+          cd docs ; sphinx-build -b html . build/html/fr -D language='fr'; cd ..
 
   QUALITY:
     name: Quality analysis 🔬
