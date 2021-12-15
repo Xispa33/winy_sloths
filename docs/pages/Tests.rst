@@ -4,175 +4,128 @@
 Tests
 =====
 
-
 Tests unitaires
 ===============
 
-Scénarios de test
------------------
-Les comptes de type SPOT et FUTURES sont testés.
+Les comptes de type SPOT et FUTURES sont testés. Ces tests visent à tester unitairement l'ensemble des fonctions permettant de communiquer avec les plateformes d'échanges. Plus précisement, Binance et Bybit sont testés.
 
-* SPOT 
-
-    * Test 1 et 2:
-
-    Les tests 1 et 2 visent à vérifier que le compte n'est pas en position d'achat en BTC ni en ETH.
-    
-    Le test 1 le vérifie sur le BTC et le test 2 sur l'ETH.
-    
-    .. table:: Scénarios tests 1 et 2
-        :widths: auto
-
-        ==================================== =======
-        Commande effectuée                   Attendu
-        ==================================== =======
-        1 - Requête position du compte          OUT
-        ==================================== =======
-
-    * Test 3 et 4:
-    Le test 3 passe un ordre d'achat en LONG, puis le ferme quelques secondes plus tard.
-    Ce test permet donc de tester la fonction permettant de passer en LONG et celle permettant de fermer la position pour un compte de type SPOT.
-    
-    Le BTC est testé au test 3 et l'ETH au test 4.
-
-    .. table:: Scénarios tests 3 et 4
-        :widths: auto
-
-        ==================================== ==========
-        Commande effectuée                   Attendu
-        ==================================== ==========
-        1 - Requête ouverture LONG              SUCCESS
-        2 - Requête position du compte             LONG
-        3 - Requête fermeture LONG              SUCCESS
-        4 - Requête position du compte              OUT
-        ==================================== ==========
-
-Résultats de test
------------------
-
-.. test-results:: pages/tu_spot.xml
-
-* FUTURES
-
- Test 1 et 2:
-
-    Les tests 1 et 2 visent à vérifier que le compte n'est pas en position d'achat en BTC ni en ETH.
-    Le test 1 le vérifie sur le BTC et le test 2 sur l'ETH.
-    
-    .. table:: Scénarios tests 1 et 2
-        :widths: auto
-
-        ==================================== =======
-        Commande effectuée                   Attendu
-        ==================================== =======
-        1 - Requête position du compte          OUT
-        ==================================== =======
-
-    * Test 3 et 4:
-    Le test 3 passe un ordre d'achat en LONG, puis le ferme quelques secondes plus tard.
-    Ce test permet donc de tester la fonction permettant de passer en LONG et celle permettant de fermer la position pour un compte de type FUTURES.
-    
-    Le BTC est testé au test 3 et l'ETH au test 4.
-    
-    AJOUTER LEVIER + TEST SL
-
-    .. table:: Scénarios tests 3 et 4
-        :widths: auto
-
-        ==================================== ==========
-        Commande effectuée                   Attendu
-        ==================================== ==========
-        1 - Requête ouverture LONG              SUCCESS
-        2 - Requête position du compte             LONG
-        3 - Requête fermeture LONG              SUCCESS
-        4 - Requête position du compte              OUT
-        ==================================== ==========
-
-    * Test 5 et 6:
-    Le test 5 passe un ordre de vente en SHORT, puis le ferme quelques secondes plus tard.
-    Ce test permet donc de tester la fonction permettant de passer en SHORT et celle permettant de fermer la position pour un compte de type FUTURES.
-    
-    Le BTC est testé au test 5 et l'ETH au test 6.
-    
-    AJOUTER LEVIER + TEST SL
-
-    .. table:: Scénarios tests 3 et 4
-        :widths: auto
-
-        ==================================== ===========
-        Commande effectuée                   Attendu
-        ==================================== ===========
-        1 - Requête ouverture SHORT              SUCCESS
-        2 - Requête position du compte             SHORT
-        3 - Requête fermeture SHORT              SUCCESS
-        4 - Requête position du compte               OUT
-        ==================================== ===========
-
-Résultats de test
------------------
-
-.. test-results:: pages/tu_futures.xml
-
+| Chacune de ces deux plateformes disposent d'un testnet, permettant ainsi de simuler des échanges avec des actifs virtuels. Tous les tests sont effectués en échangeant du bitcoin (BTC).
 
 Tests de validation
 ===================
 
+Les comptes de type SPOT et FUTURES sont également testés ici. WS est lancé dans un subprocess, le master est stimulé avant le démarrage du subprocess le master. La réaction de WS a cette stimulation est ensuite étudiée.
+
+| Pour ces tests, le master est toujours répertorié sur Binance et gère 2 slaves : 1 sur Binance, l'autre sur Bybit.
+
+| De même que pour les TU, les tests sont effectués sur le testnet avec du bitcoin.
+
 Scénarios de test
------------------
+===================
 
-Les comptes de type SPOT et FUTURES sont testés.
-Pour ces tests, le multiprocessing Python est utilisé. WS est lancé dans un
-subprocess et un autre process en parallèle stimule le master. La réaction 
-de WS a cette stimulation est ensuite étudiée.
-
-* SPOT 
-    * Test 1 et 2:
-
-    Les tests 1 et 2 visent à vérifier que lorsque le compte SPOT master n'est pas excité, les comptes slaves ne changent pas de positions.
+.. tabs::
     
-    Le test 1 le vérifie sur le BTC et le test 2 sur l'ETH.
+    .. tab:: Tests unitaires
+
+        .. tabs::
+
+            .. tab:: BINANCE
+
+                .. tabs::
+
+                    .. tab:: SPOT
+
+                    .. tab:: FUTURES
+        
+            .. tab:: BYBIT
+                
+                .. tabs::
+
+                    .. tab:: SPOT
+
+                    .. tab:: FUTURES
+
+    .. tab:: Tests de validation
+
+        .. tabs::
+
+            .. tab:: SPOT
+
+            .. tab:: FUTURES
+
+
+* TESTS SPOT 
     
-    .. table:: Scénarios tests 1 et 2
+    * Informations sur les tests
+
+    .. table:: Informations tests des plateformes d'échanges SPOT
         :widths: auto
 
-        ======================================= =======
-        Commande effectuée                      Attendu
-        ======================================= =======
-        1 - Requête position du compte master       OUT
-        2 - Requête position des comptes slaves     OUT
-        ======================================= =======
+        ==================================== ================
+        Plateforme d'échange                 Nb tests attendus
+        ==================================== ================
+        1 - Binance                          9
+        2 - Bybit                            8
+        ==================================== ================
 
-Résultats de test
------------------
+* TESTS FUTURES
+    
+    * Informations sur les tests
 
-.. test-results:: pages/tu_results.xml
+    .. table:: Informations tests des plateformes d'échanges FUTURES
+        :widths: auto
+
+        ==================================== ================
+        Plateforme d'échange                 Nb tests attendus
+        ==================================== ================
+        1 - Binance                          11
+        2 - Bybit                            8
+        ==================================== ================
+
+Résultats de test unitaires
+===========================
+
+BINANCE
+-------
+
+* Spot
+
+.. test-results:: pages/tu_spot_binance_BTCUSDT.xml
+
+* Futures
+
+.. test-results:: pages/tu_futures_binance_BTCUSDT.xml
+
+BYBIT
+-----
+
+* Spot
+
+.. test-results:: pages/tu_spot_bybit_BTCUSDT.xml
+
+* Futures
+
+.. test-results:: pages/tu_futures_bybit_BTCUSDT.xml
+
+
+* Résultats de test de validation
+---------------------------------
+
+* SPOT
+
+.. test-results:: pages/tv_spot_binance_BTCUSDT.xml
 
 * FUTURES
-    * Test 1 et 2:
 
-    Les tests 1 et 2 visent à vérifier que lorsque le compte FUTURES master n'est pas excité, les comptes slaves ne changent pas de positions.
-    
-    Le test 1 le vérifie sur le BTC et le test 2 sur l'ETH.
-    
-    .. table:: Scénarios tests 1 et 2
-        :widths: auto
+.. test-results:: pages/tv_futures_binance_BTCUSDT.xml 
 
-        ======================================= =======
-        Commande effectuée                      Attendu
-        ======================================= =======
-        1 - Requête position du compte master       OUT
-        2 - Requête position des comptes slaves     OUT
-        ======================================= =======
 
-Résultats de test
------------------
+Qualité de code et couverture
+=============================
 
-.. test-results:: pages/tu_results.xml
+Les résultats de tests sont également disponibles dans SonarQube. Une analyse complète de la couverture de code ainsi que de la qualité de code y figurent également. 
 
-.. contents::
-   :local:
-   :backlinks: top
-
+| Le logiciel est contenu dans un Docker, son utilisation permet de profiter pleinement de SonarQube gratuitement. L'intégration du Docker SonarQube dans le pipeline Github Action n'a pas été effectué, il faut donc lancer SonarQube manuellement.
 
 Pour plus d'info pour remplir ce document : 
 https://readthedocs.org/projects/sphinx-test-reports/downloads/pdf/latest/

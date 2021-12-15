@@ -13,34 +13,19 @@ from datetime import *
 class Errors():
     """
     Description :
-        A class used to store errors information
+    A class used to store errors information
     
     Attributes
-    ----------
-    error_messages : str
-        Message giving information about the nature of the error
+    error_messages : Message giving information about the nature of the error
     
-    error_function : str
-        Function called that raised the error
+    error_function : Function called that raised the error
     
-    error_criticity : int
-        Criticity of the error message : INFO_C = INFO = 1
-                                         MEDIUM_C = WARNING = 2
-                                         HIGH_C = ERROR = 3
+    error_criticity : Criticity of the error message : 
+    INFO_C = INFO = 1
+    MEDIUM_C = WARNING = 2
+    HIGH_C = ERROR = 3
     
-    enable : str
-        enable of execution. If DEBUG enable is active, no emails should be sent.
-    Methods
-    -------
-    Errors__AddMessages()
-    Errors__ClearMessages()
-    Errors__AddFunction()
-    Errors__UpdateCriticity()
-    Errors__FillErrors()
-
-    Static
-    Errors__GetRawExceptionInfo(info)
-    Errors__SendEmail(errors_object)
+    enable : enable of execution. If DEBUG enable is active, no emails should be sent.
     """
     def __init__(self, enable, error_messages=None, error_function=None, error_criticity=None):
         self.error_messages   = str() if error_messages == None else error_messages
@@ -145,38 +130,39 @@ class Errors():
         Description : This function sends an email featuring the errors'
                       information
         """
-        if (errors_object.enable != DEBUG):
-            msg = MIMEMultipart(ALTERNATIVE)
-            msg[SUBJECT] = "WINY SLOTHS UPDATE: {} NOTIFICATION".format(CORRESPONDANCE_DICT[errors_object.error_criticity]) 
-            msg[FROM] = EMITTOR
+        msg = MIMEMultipart(ALTERNATIVE)
+        msg[SUBJECT] = "WINY SLOTHS UPDATE: {} NOTIFICATION".format(CORRESPONDANCE_DICT[errors_object.error_criticity]) 
+        msg[FROM] = EMITTOR
 
-            text = errors_object.error_messages
+        text = errors_object.error_messages
 
-            part1 = MIMEText(text, PLAIN)
+        part1 = MIMEText(text, PLAIN)
 
-            msg.attach(part1)
+        msg.attach(part1)
 
-            ret = 1
+        ret = 1
 
-            for receiver in RECEIVERS:
-                msg[TO] = receiver
-                context = ssl.create_default_context()
-                print("Starting to send")
-                while ret == 1:
-                    try:
+        for receiver in RECEIVERS:
+            msg[TO] = receiver
+            context = ssl.create_default_context()
+            #print("Starting to send")
+            while ret == 1:
+                try:
+                    if (errors_object.enable != FALSE):
                         with smtplib.SMTP_SSL(STMP_URL, PORT, context=context) as server:
                             server.login(EMITTOR, EMITTOR_PASSWORD)
                             server.sendmail(EMITTOR, receiver, msg.as_string())
                         ret = 0
-                    except:
-                        ret = 1
-                        sleep(1)
-                ret = 1
-                print("sent email!")
-            
-            errors_object.error_criticity = NO_C
-            errors_object.error_messages = ""
-        else:
-            ret = 0
+                    else:
+                        ret = 0
+                except:
+                    ret = 1
+                    sleep(1)
+            ret = 1
+            #print("sent email!")
+        
+        errors_object.error_criticity = NO_C
+        errors_object.error_messages = ""
+        
         return ret
 

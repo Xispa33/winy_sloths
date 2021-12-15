@@ -1,0 +1,1258 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2021, Xispa33
+# This file is distributed under the same license as the Winy Sloths
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Winy Sloths \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-12-14 16:48+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: ../../pages/CI.rst:3
+msgid "CI/CD"
+msgstr ""
+
+#: ../../pages/CI.rst:5
+msgid ""
+"Une approche CI/CD (Continuous Integration/Continuous Delivery) a été "
+"mise en place dans le cadre du développement de WS. Cette partie vise à "
+"présenter cette approche, expliciter son intérêt et présenter les jobs "
+"mis en place."
+msgstr ""
+
+#: ../../pages/CI.rst:8
+msgid "Qu'est-ce que l'approche CI/CD ?"
+msgstr ""
+
+#: ../../pages/CI.rst:10
+msgid ""
+"L’approche CI/CD (Continuous Integration/Continuous Delivery) est un "
+"processus permettant d’accélérer le déploiement et la mise en production "
+"des applications en automatisant le développement des applications. Ceci "
+"est rendu possible grâce à la mise en place d'outils/programmes "
+"permettant de tester l'application et de vérifier que le programme "
+"fonctionne correctement."
+msgstr ""
+
+#: ../../pages/CI.rst:12
+msgid ""
+"L'intégration continue (CI) est une pratique de génie logiciel permettant"
+" d'intégrer le travail effectué continuellement."
+msgstr ""
+
+#: ../../pages/CI.rst:13
+msgid ""
+"La livraison continue (CD) n'est dans notre cas pas exploitée pour le "
+"moment. Cette pratique permet néanmoins de gérer le déploiement des "
+"logiciels pour la mise en production."
+msgstr ""
+
+#: ../../pages/CI.rst:16
+msgid "Quels sont les avantages de cette approche ?"
+msgstr ""
+
+#: ../../pages/CI.rst:17
+msgid ""
+"Dans notre cas, le processus de CI/CD est entièrement géré par un "
+"ordinateur. | Après chaque modification de code, l'ensemble de "
+"l'application peut être testée de manière automatique, tout comme la "
+"qualité du code qui peut être mesurée. La réduction drastique de la dette"
+" technique permet aux développeurs d'analyser plus rapidement l'impact de"
+" leur modifications et ainsi de focaliser davantage leurs efforts sur la "
+"conception et le développement des fonctionnalités de l’application. "
+"L'évolutivité du code est clairement facilitée et mise en avant grâce à "
+"cette approche. | Outres ces avantages en temps, efficacité et "
+"productivité, WS est emmené quotidiennement à gérer des quantités "
+"importantes d'argent, l'intégration de cette approche dans notre "
+"processus de développement est donc apparue comme une nécessité afin de "
+"garantir le maintien de la fiabilité de notre système."
+msgstr ""
+
+#: ../../pages/CI.rst:22
+msgid "Workflow de la chaine CI/CD"
+msgstr ""
+
+#: ../../pages/CI.rst:23
+msgid ""
+"Le code de Winy Sloth est hébergé sur la plateforme GitHub. GitHub Action"
+" est une fonctionnalité de GitHub permettant le développement de "
+"workflows d'une chaine CI/CD. L'ensemble du workflow s'exécute sur une VM"
+" distante, désignée runner. Notre workflow actuel se décompose en deux "
+"parties, chacune permettant de jouer des tests :"
+msgstr ""
+
+#: ../../pages/CI.rst:25
+msgid ""
+"des tests dynamiques, permettant de tester le bon fonctionnement de "
+"l'application"
+msgstr ""
+
+#: ../../pages/CI.rst:26
+msgid "des tests statiques, permettant d'analyser la qualité du code"
+msgstr ""
+
+#: ../../pages/CI.rst:28
+msgid ""
+"Les tests dynamiques intégrent deux types de tests fonctionnels : les "
+"tests unitaires et les tests de validation. Sur chacune des plateformes "
+"d'échanges de cryptomonnaies, une API permet de s'interfacer avec la "
+"plateforme. Pour chaque API, les services nécessaires à notre application"
+" ont été encapsulés. Les tests unitaires testent ces services encapsulés."
+msgstr ""
+
+#: ../../pages/CI.rst:29
+msgid ""
+"Le framework pytest a été utilisé pour implémenter les scripts de tests "
+"et sert également pour générer le fichier de résultat au format JUnit. "
+"Les scénarios des tests unitaires ainsi que les résultats de la dernière "
+"campagne de tests unitaires sont disponibles à la page suivante "
+":ref:`Tests`"
+msgstr ""
+
+#: ../../pages/CI.rst:31
+msgid ""
+"Les tests d'intégration testent eux l'application toute entière. De même "
+"que pour les tests unitaires, unittest a été utilisé pour implémenter les"
+" tests. Le framework Multiprocessing de Python a également été utilisé. "
+"Le Multiprocessing nous permet stimuler WS (passage d'un ordre "
+"d'achat/vente) en parallèle de son exécution."
+msgstr ""
+
+#: ../../pages/CI.rst:32
+msgid ""
+"Les scénarios des tests d'intégration ainsi que les résultats de la "
+"dernière campagne de tests d'intégration sont disponibles à la page "
+"suivante :ref:`Tests`"
+msgstr ""
+
+#: ../../pages/General.rst:3
+msgid "General"
+msgstr ""
+
+#: ../../pages/General.rst:10
+msgid "Cette partie présente de manière générale le projet Winy Sloths."
+msgstr ""
+
+#: ../../pages/General.rst:13
+msgid "Qu'est-ce que Winy Sloths ?"
+msgstr ""
+
+#: ../../pages/General.rst:14
+msgid ""
+"Winy Sloths (WS) est un algorithme de copy-trading de cryptomonnaies. Il "
+"permet de passer des ordres d'achat de Bitcoin, Ethereum et BNB sur des "
+"plateformes d'échange de cryptomonnaies. A ce jour, des ordres peuvent "
+"être passés sur Binance et Bybit, deux plateformes d'échanges parmi les 5"
+" plus importantes. L'algorithme a été rendu générique afin que d'autres "
+"plateformes d'échanges puissent être ajoutées. Mexc et Kucoin sont "
+"notamment en cours d'ajout."
+msgstr ""
+
+#: ../../pages/General.rst:17
+msgid "A quel besoin repond-il ?"
+msgstr ""
+
+#: ../../pages/General.rst:19
+msgid ""
+"Le copy-trading est une branche du trading social, où les positions d'une"
+" personne sont copiées sur les comptes d'autres personnes. L'ouverture ou"
+" la fermeture d'une position peuvent aussi bien être déclenchée par un "
+"trade, que par une alerte. Le copy-trading est une pratique très répandue"
+" et conseillé aux personnes débutantes en trading."
+msgstr ""
+
+#: ../../pages/General.rst:21
+msgid ""
+"WS répond ainsi à un besoin pour un particulier de copier les trades "
+"d'une personne de confiance et pour un trader un besoin de monétiser ses "
+"ordres d'achats ou de vente passés. Tous deux ont un intérêt lucratif "
+"dans l'utilisation de ce programme."
+msgstr ""
+
+#: ../../pages/General.rst:23
+msgid ""
+"Contrairement à d'autres systèmes de gestion d'actifs, à tout moment, le "
+"particulier est en pleine possession de son capital et peut le retirer "
+"s'il le souhaite."
+msgstr ""
+
+#: ../../pages/General.rst:26
+msgid "Comment fonctionne WS ?"
+msgstr ""
+
+#: ../../pages/General.rst:27
+msgid ""
+"WS s'execute en parallele d'une intelligence (trader, intelligence "
+"artificielle ou autre) qui détermine les trades à effectuer. WS et cette "
+"intelligence forment le système global."
+msgstr ""
+
+#: ../../pages/General.rst:29
+msgid ""
+"Le système global se compose également de plusieurs comptes associés à "
+"une plateforme d'échange. Un compte appelé \"maître\", géré par "
+"l'intelligence et plusieurs comptes \"esclaves\" contrôlés par WS. En "
+"parallèle de l'execution de l'intelligence, WS se charge lui, en "
+"continue, d'observer l'historique du compte maître."
+msgstr ""
+
+#: ../../pages/General.rst:31
+msgid ""
+"Lorsque l'historique du compte maitre évolue (émission d'un ordre d'achat"
+" ou de vente), tous les comptes esclaves sont mis à jour par WS de la "
+"même manière que le compte maître."
+msgstr ""
+
+#: ../../pages/General.rst:37
+msgid "Figure : Schéma fonctionnement WS"
+msgstr ""
+
+#: ../../pages/General.rst:40
+msgid "Aspects techniques"
+msgstr ""
+
+#: ../../pages/General.rst:41
+msgid ""
+"L'algorithme Python est implémenté en Python, v3.7. Pour chacune des "
+"plateformes d'échanges supportées, des APIs permettent de contrôler le "
+"compte et la copie de l'ordre passé se fait grâce à une paire de clés "
+"API."
+msgstr ""
+
+#: ../../pages/General.rst:43
+msgid ""
+"Un logiciel de copy-trading est emmené à gérer des sommes d'argents "
+"conséquentes, de différentes personnes. La qualité du code ainsi que sa "
+"fiabilité doivent ainsi être étudié de près. Pour cette raison, un "
+"environnement DevOps a été mis au point sur GitHub grâce à GitHub "
+"Actions."
+msgstr ""
+
+#: ../../pages/General.rst:45
+msgid ""
+"Des tests unitaires unitaires et de validations sont présents et sont "
+"rejoués à chaque modification de code dans un environnement Dockerisé. Le"
+" framework unittest est utilisé pour les tests unitaires et pytest pour "
+"les tests de validation. Les scénarios ainsi que les derniers résultats "
+"de ces tests sont présents dans l'onglet Tests. Une mesure de couverture "
+"est également calculée à la fin de ces tests grâce au module coverage. La"
+" qualité du code est suivie de près grâce à SonarCloud."
+msgstr ""
+
+#: ../../pages/General.rst:51
+msgid "Figure : Diagramme UML"
+msgstr ""
+
+#: ../../pages/General.rst:55
+msgid "Ajout d'une plateforme d'échange dans Winy Sloths"
+msgstr ""
+
+#: ../../pages/General.rst:56
+msgid "Pour ajouter une plateforme d'échange :"
+msgstr ""
+
+#: ../../pages/General.rst:58
+msgid "Créer un dossier du nom de la plateforme d'échange en minuscule"
+msgstr ""
+
+#: ../../pages/General.rst:62
+msgid "Dans ce dossier, ajouter deux fichiers:"
+msgstr ""
+
+#: ../../pages/General.rst:61
+msgid "un fichier contenant les constantes"
+msgstr ""
+
+#: ../../pages/General.rst:62
+msgid ""
+"un fichier contenant qui implémente l'interface entre WS et la plateforme"
+" d'échange"
+msgstr ""
+
+#: ../../pages/General.rst:64
+msgid ""
+"Dans tests/tu, ajouter un fichier de tests de toutes les fonctions de "
+"l'interface"
+msgstr ""
+
+#: ../../pages/General.rst:69
+msgid "Dans run_test.bash:"
+msgstr ""
+
+#: ../../pages/General.rst:67
+msgid ""
+"ajouter une paire de clé associée au testnet de la nouvelle plateforme "
+"d'échange."
+msgstr ""
+
+#: ../../pages/General.rst:68
+msgid ""
+"ajouter cette plateforme d'échange en tant que slave des TV spot et "
+"futures"
+msgstr ""
+
+#: ../../pages/General.rst:72
+msgid "Améliorations"
+msgstr ""
+
+#: ../../pages/General.rst:73
+msgid ""
+"Un module de gestion des bénéfices/pertes est également envisagé en "
+"complément de WS afin que les traders puissent s'assurer du versement de "
+"leurs bénéfices. L'approvisionnement en cas de pertes permettrait "
+"également d'être effectué grâce à l'ajout d'un tel module."
+msgstr ""
+
+#: ../../pages/General.rst:75
+msgid ""
+"L'implémentation d'un dashboard permettant de suivre l'évolution des "
+"résultats de chacunes des stratégies et pour chaque utilisateur est "
+"envisagée. Ce dashboard serait implémenté en javascript à l'aide des "
+"Framework React, Node Js et Bootstrap. A ce jour, l'historique des trades"
+" est écrit dans un fichier au format CSV. Le dashboard permettrait "
+"d'avoir un affichage graphique des résultats."
+msgstr ""
+
+#: ../../pages/Licence.rst:3
+msgid "Licence"
+msgstr ""
+
+#: ../../pages/Licence.rst:4
+msgid "Copyright 2021 Xispa33"
+msgstr ""
+
+#: ../../pages/Licence.rst:6
+msgid ""
+"Permission is hereby granted, free of charge, to any person obtaining a "
+"copy of this software and associated documentation files (the "
+"\"Software\"), to deal in the Software without restriction, including "
+"without limitation the rights to use, copy, modify, merge, publish, "
+"distribute, sublicense, and/or sell copies of the Software, and to permit"
+" persons to whom the Software is furnished to do so, subject to the "
+"following conditions:"
+msgstr ""
+
+#: ../../pages/Licence.rst:10
+msgid ""
+"The above copyright notice and this permission notice shall be included "
+"in all copies or substantial portions of the Software."
+msgstr ""
+
+#: ../../pages/Licence.rst:12
+msgid ""
+"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS"
+" OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF "
+"MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN"
+" NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,"
+" DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR "
+"OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE"
+" USE OR OTHER DEALINGS IN THE SOFTWARE."
+msgstr ""
+
+#: ../../pages/Modules/Modules.rst:3
+msgid "Modules"
+msgstr ""
+
+#: ../../pages/Modules/Modules.rst:8
+msgid "This explains everything."
+msgstr ""
+
+#: ../../pages/Modules/Modules.rst:11
+msgid "strategy_file.py"
+msgstr ""
+
+#: ../../pages/Modules/strategy_file.rst:2
+msgid "strategy\\_file module"
+msgstr ""
+
+#: errors.Errors:1 of strategy_file.Account:1 strategy_file.ApiKey:1
+#: strategy_file.StrategyFile:1 winy_sloth.WinySloth:1
+msgid "Bases: :class:`object`"
+msgstr ""
+
+#: of strategy_file.Account:1
+msgid ""
+"Description : A class used to represent an account on a crypto exchange "
+"platform. Either a slave or a master, but this is an abstract class."
+msgstr ""
+
+#: of strategy_file.Account:4
+msgid "Attributes: api_key: Account API key basic information"
+msgstr ""
+
+#: of strategy_file.Account:7
+msgid "account_rtype: Type of the account. Either master or slave"
+msgstr ""
+
+#: of strategy_file.Account:9
+msgid "side: Account side. Can be either LONG/SHORT/OUT"
+msgstr ""
+
+#: of strategy_file.Account.close_long:1
+msgid "Name : close_long(master_api)"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__CLOSE_LONG:8
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_ACCOUNT_HISTORY:11
+#: errors.Errors.Errors__AddFunction:5 errors.Errors.Errors__AddMessages:5
+#: errors.Errors.Errors__FillErrors:10
+#: errors.Errors.Errors__GetRawExceptionInfo:5
+#: errors.Errors.Errors__SendEmail:5 errors.Errors.Errors__UpdateCriticity:4 of
+#: strategy_file.Account.close_long:5 strategy_file.Account.close_short:5
+#: strategy_file.Account.open_long:5
+#: strategy_file.Account.open_long_from_short:5
+#: strategy_file.Account.open_short:5
+#: strategy_file.Account.open_short_from_long:5
+#: strategy_file.StrategyFile.StrategyFile__InitSlaves:5
+#: winy_sloth.WinySloth.WinySloth__SlaveManagement:5
+#: winy_sloth.WinySloth.WinySloth__Update:8
+#: winy_sloth.WinySloth.WinySloth__UpdatePositionSide:13
+#: winy_sloth.WinySloth.WinySloth__UpdateStrategyFile:13
+msgid "Parameters"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__CLOSE_LONG:8 of
+#: strategy_file.Account.close_long:5 strategy_file.Account.close_short:5
+#: strategy_file.Account.open_long:5
+#: strategy_file.Account.open_long_from_short:5
+#: strategy_file.Account.open_short:5
+#: strategy_file.Account.open_short_from_long:5
+msgid "master_api"
+msgstr ""
+
+#: of
+msgid "ApiKeyMaster"
+msgstr ""
+
+#: of strategy_file.Account.close_long:5 strategy_file.Account.close_short:5
+#: strategy_file.Account.open_long:5
+#: strategy_file.Account.open_long_from_short:5
+#: strategy_file.Account.open_short:5
+#: strategy_file.Account.open_short_from_long:5
+msgid "Api key of the slave's master"
+msgstr ""
+
+#: of strategy_file.Account.close_long:7
+msgid "Description : Function that closes an opened long trade"
+msgstr ""
+
+#: of strategy_file.Account.close_short:1
+msgid "Name : close_short(master_api)"
+msgstr ""
+
+#: of strategy_file.Account.close_short:7
+msgid "Description : Function that closes an opened short trade"
+msgstr ""
+
+#: of strategy_file.Account.open_long:1
+msgid "Name : open_long(master_api)"
+msgstr ""
+
+#: of strategy_file.Account.open_long:7
+msgid "Description : Function that opens a long trade"
+msgstr ""
+
+#: of strategy_file.Account.open_long_from_short:1
+msgid "Name : open_long_from_short(master_api)"
+msgstr ""
+
+#: of strategy_file.Account.open_long_from_short:7
+msgid "Description : Function that opens a long trade from a short trade"
+msgstr ""
+
+#: of strategy_file.Account.open_short:1
+msgid "Name : open_short(master_api)"
+msgstr ""
+
+#: of strategy_file.Account.open_short:7
+msgid "Description : Function that opens a short trade"
+msgstr ""
+
+#: of strategy_file.Account.open_short_from_long:1
+msgid "Name : open_short_from_long(master_api)"
+msgstr ""
+
+#: of strategy_file.Account.open_short_from_long:7
+msgid "Description : Function that opens a short trade from a long trade"
+msgstr ""
+
+#: of strategy_file.ApiKey:1
+msgid ""
+"Description :  A class used to gather all important information about an "
+"API key"
+msgstr ""
+
+#: of strategy_file.ApiKey:4
+msgid ""
+"Attributes: exchange_platform_name: Name of the exchange platform linked "
+"to the API key"
+msgstr ""
+
+#: of strategy_file.ApiKey:7
+msgid "_api_key: Api key string word"
+msgstr ""
+
+#: of strategy_file.ApiKey:9
+msgid "_api_secret_key: Api key secret code string word"
+msgstr ""
+
+#: of strategy_file.ApiKey:11
+msgid "exchange_platform_obj: Crypto exchange platform object"
+msgstr ""
+
+#: of strategy_file.MasterAccount:1 strategy_file.SlaveAccount:1
+msgid "Bases: :class:`strategy_file.Account`"
+msgstr ""
+
+#: of strategy_file.MasterAccount:1
+msgid ""
+"Description : A class used to represent a master's account. Inherits from"
+" Account class"
+msgstr ""
+
+#: of strategy_file.MasterAccount:4 strategy_file.SlaveAccount:4
+msgid "Attributes: Same as Account class"
+msgstr ""
+
+#: of strategy_file.SlaveAccount:1
+msgid ""
+"Description : A class used to represent a slave's account. Inherits from "
+"Account class"
+msgstr ""
+
+#: of strategy_file.StrategyFile:1
+msgid "Description :  A class gathering all information about a strategy file"
+msgstr ""
+
+#: of strategy_file.StrategyFile:4
+msgid "Attributes: strategy_file_path : Path of the strategy file"
+msgstr ""
+
+#: of strategy_file.StrategyFile:7
+msgid "master_api : MasterAccount object representing the master of a strategy"
+msgstr ""
+
+#: of strategy_file.StrategyFile:9
+msgid ""
+"slave_apis : List containing all SlaveAccount of a strategy. SlaveAccount"
+" represents a slave of a strategy."
+msgstr ""
+
+#: of strategy_file.StrategyFile.StrategyFile__InitSlaves:1
+msgid "Name : StrategyFile__InitSlaves(info_strategy_file_slave)"
+msgstr ""
+
+#: of strategy_file.StrategyFile.StrategyFile__InitSlaves:5
+msgid "info_strategy_file_slave"
+msgstr ""
+
+#: of
+msgid "str"
+msgstr ""
+
+#: of strategy_file.StrategyFile.StrategyFile__InitSlaves:5
+msgid "Information about all slaves"
+msgstr ""
+
+#: of strategy_file.StrategyFile.StrategyFile__InitSlaves:7
+msgid ""
+"Description : Function that retrieves all slaves of a strategy and  "
+"gather then into a list"
+msgstr ""
+
+#: ../../pages/Modules/Modules.rst:16
+msgid "constants.py"
+msgstr ""
+
+#: ../../pages/Modules/constants.rst:2
+msgid "constants module"
+msgstr ""
+
+#: constants:1 of
+msgid "Example Google style docstrings."
+msgstr ""
+
+#: ../../pages/Modules/Modules.rst:21
+msgid "winy_sloth.py"
+msgstr ""
+
+#: ../../pages/Modules/winy_sloth.rst:2
+msgid "winy\\_sloth module"
+msgstr ""
+
+#: of winy_sloth.WinySloth:1
+msgid ""
+"Description: A class used to represent WinySloth main object. The general"
+" behaviour of Winy Sloth is described in Documentation."
+msgstr ""
+
+#: of winy_sloth.WinySloth:4
+msgid ""
+"Attributes: strategies_folder_path : Path of the folder containing all "
+"strategies"
+msgstr ""
+
+#: of winy_sloth.WinySloth:7
+msgid "strategies : List containing StrategyFile objects"
+msgstr ""
+
+#: of winy_sloth.WinySloth:9
+msgid ""
+"mode : Variable specifiying WS mode of execution.  In DEBUG mode, WS is "
+"executed during 40s only.  In RUN mode, WS runs nominally."
+msgstr ""
+
+#: of winy_sloth.WinySloth:13
+msgid ""
+"init_return outputs the return of initialization. If init_return is equal"
+" to 1,  it means a problem occurred during initialization and the program"
+" exits.  If 0, init was OK and WS enters in main."
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__FindAllStrategiesFiles:1
+msgid "Name : WinySloth__FindAllStrategiesFiles()"
+msgstr ""
+
+#: errors.Errors.Errors__ClearMessages:3 of
+#: winy_sloth.WinySloth.WinySloth__FindAllStrategiesFiles:3
+#: winy_sloth.WinySloth.WinySloth__FindNbStrategies:3
+#: winy_sloth.WinySloth.WinySloth__Init:3
+#: winy_sloth.WinySloth.WinySloth__Main:3
+#: winy_sloth.WinySloth.WinySloth__ReadArguments:3
+msgid "Parameters :"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__CLOSE_LONG:12
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_ACCOUNT_HISTORY:15
+#: errors.Errors.Errors__AddFunction:7 errors.Errors.Errors__AddMessages:7
+#: errors.Errors.Errors__ClearMessages:5 errors.Errors.Errors__SendEmail:7
+#: errors.Errors.Errors__UpdateCriticity:6 of
+#: winy_sloth.WinySloth.WinySloth__FindAllStrategiesFiles:5
+#: winy_sloth.WinySloth.WinySloth__FindNbStrategies:5
+#: winy_sloth.WinySloth.WinySloth__SlaveManagement:7
+#: winy_sloth.WinySloth.WinySloth__Update:10
+#: winy_sloth.WinySloth.WinySloth__UpdatePositionSide:15
+msgid "Description"
+msgstr ""
+
+#: of
+msgid "Function that returns all strategy file of a"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__FindAllStrategiesFiles:6
+#: winy_sloth.WinySloth.WinySloth__FindNbStrategies:6
+msgid "WinySloth object."
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__FindNbStrategies:1
+msgid "Name : WinySloth__FindNbStrategies()"
+msgstr ""
+
+#: of
+msgid "Function that returns the number of strategies of a"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__Init:1
+msgid "Name : WinySloth__Init()"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__Init:5
+msgid "Description : Initialisation of a WinySloth object"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__Main:1
+msgid "Name : WinySloth__Main()"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__Main:5
+msgid ""
+"Description : Main function of a Winy_Sloth object. This function is "
+"going         through each strategy in the strategy list. For each "
+"strategy, the master's         position in the strategy file is compared "
+"with the master's position given         from the CEP. In case of "
+"difference, the position of each slave is updated         copying the "
+"master's position. If a position changes or if any error occurs,         "
+"an email is sent."
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__ReadArguments:1
+msgid "Name : WinySloth__ReadArguments()"
+msgstr ""
+
+#: errors.Errors.Errors__GetRawExceptionInfo:7 of
+#: winy_sloth.WinySloth.WinySloth__ReadArguments:5
+msgid "Description :"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__SlaveManagement:1
+msgid "Name : WinySloth__SlaveManagement(strategy)"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__SlaveManagement:5
+#: winy_sloth.WinySloth.WinySloth__Update:5
+#: winy_sloth.WinySloth.WinySloth__UpdatePositionSide:5
+msgid "strategy"
+msgstr ""
+
+#: of
+msgid "StrategyFile"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__SlaveManagement:5
+msgid "StrategyFile object to manage"
+msgstr ""
+
+#: of
+msgid "This function determines the appropriate function"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__SlaveManagement:8
+msgid "to call to change the slave's side."
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__Update:1
+msgid "Name : WinySloth__Update(strategy, strategy_current_side, idx=0)"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__Update:5
+#: winy_sloth.WinySloth.WinySloth__UpdatePositionSide:5
+msgid "StrategyFile object to be updated"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__Update:8
+#: winy_sloth.WinySloth.WinySloth__UpdatePositionSide:8
+#: winy_sloth.WinySloth.WinySloth__UpdateStrategyFile:8
+msgid "strategy_current_side"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__Update:8
+msgid "New side of the strategy for the master"
+msgstr ""
+
+#: of
+msgid "Function that updates all needed information for a"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__Update:11
+msgid "master"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__UpdatePositionSide:1
+msgid ""
+"Name : WinySloth__UpdatePositionSide(strategy, strategy_current_side, "
+"idx=0)"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__UpdatePositionSide:8
+#: winy_sloth.WinySloth.WinySloth__UpdateStrategyFile:8
+msgid "New side of the strategy"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__UpdatePositionSide:13
+#: winy_sloth.WinySloth.WinySloth__UpdateStrategyFile:13
+msgid "idx"
+msgstr ""
+
+#: of
+msgid "int (optionnal)"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__UpdatePositionSide:11
+msgid ""
+"Index of the strategy. This parameter indicates the line of the strategy "
+"file in which the master/slave is. If the  master has to be updated, idx "
+"= 0, else, idx = 1 + slave_idx"
+msgstr ""
+
+#: of
+msgid "Function updating the position side of a strategy object"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__UpdatePositionSide:16
+msgid "during the code execution"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__UpdateStrategyFile:1
+msgid ""
+"Name : WinySloth__UpdateStrategyFile(strategy_file_path, "
+"strategy_current_side, idx=0)"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__UpdateStrategyFile:5
+msgid "strategy_file_path"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__UpdateStrategyFile:5
+msgid "Path of the folder containing all strategies"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__UpdateStrategyFile:11
+msgid ""
+"Index of the strategy. This parameter indicates the line to modify in the"
+" strategy file. If the master has to be updated, idx = 0, else, idx = 1 +"
+" slave_idx"
+msgstr ""
+
+#: of winy_sloth.WinySloth.WinySloth__UpdateStrategyFile:15
+msgid "Description : Function updating a strategy file"
+msgstr ""
+
+#: ../../pages/Modules/Modules.rst:26
+msgid "crypto_exchange_platform.py"
+msgstr ""
+
+#: ../../pages/Modules/crypto_exchange_platform.rst:2
+msgid "crypto\\_exchange\\_platform module"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform:1 of
+msgid "Bases: :class:`abc.ABC`"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform:1 of
+msgid ""
+"A class used to represent a cryptocurrency exchange platform.  This class"
+" is abstract."
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform:9 of
+msgid "name"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform:7 of
+msgid "Name of the cryptocurrency exchange platform"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__CLOSE_LONG:1 of
+msgid "Name : I__CLOSE_LONG()"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__CLOSE_LONG:5
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_ACCOUNT_HISTORY:5
+#: of
+msgid "client"
+msgstr ""
+
+#: of
+msgid "binance.client"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__CLOSE_LONG:5
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_ACCOUNT_HISTORY:5
+#: of
+msgid "Client used to connect to Binance server"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__CLOSE_LONG:8 of
+msgid "Binance account handled by EC"
+msgstr ""
+
+#: of
+msgid "Function closing an open trade depending on"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__CLOSE_LONG:11 of
+msgid ""
+"the accounts type (SPOT/FUTURES). Client contains the API key credentials"
+" allowing to connect to Binance server."
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_ACCOUNT_HISTORY:1
+#: of
+msgid "Name : I__GET_ACCOUNT_HISTORY()"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_ACCOUNT_HISTORY:8
+#: of
+msgid "account_type"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_ACCOUNT_HISTORY:8
+#: of
+msgid "Type of account, either 'SPOT' or 'FUTURES'"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_ACCOUNT_HISTORY:11
+#: of
+msgid "symbol"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_ACCOUNT_HISTORY:11
+#: of
+msgid "Currency traded"
+msgstr ""
+
+#: of
+msgid "Gets a symbol's trade history, depending on the"
+msgstr ""
+
+#: crypto_exchange_platform.CryptoExchangePlatform.CEP__GET_ACCOUNT_HISTORY:14
+#: of
+msgid ""
+"account_type.  Client contains the API key credentials allowing  to "
+"connect to Binance server"
+msgstr ""
+
+#: ../../pages/Modules/Modules.rst:31
+msgid "errors.py"
+msgstr ""
+
+#: ../../pages/Modules/errors.rst:2
+msgid "errors module"
+msgstr ""
+
+#: errors.Errors:1 of
+msgid "Description : A class used to store errors information"
+msgstr ""
+
+#: errors.Errors:4 of
+msgid ""
+"Attributes error_messages : Message giving information about the nature "
+"of the error"
+msgstr ""
+
+#: errors.Errors:7 of
+msgid "error_function : Function called that raised the error"
+msgstr ""
+
+#: errors.Errors:9 of
+msgid ""
+"error_criticity : Criticity of the error message :  INFO_C = INFO = 1 "
+"MEDIUM_C = WARNING = 2 HIGH_C = ERROR = 3"
+msgstr ""
+
+#: errors.Errors:14 of
+msgid ""
+"enable : enable of execution. If DEBUG enable is active, no emails should"
+" be sent."
+msgstr ""
+
+#: errors.Errors.Errors__AddFunction:1 of
+msgid "Name : Errors__AddFunction()"
+msgstr ""
+
+#: errors.Errors.Errors__AddFunction:5 of
+msgid "function"
+msgstr ""
+
+#: errors.Errors.Errors__AddFunction:5 errors.Errors.Errors__FillErrors:4 of
+msgid "Function in which an error was raised"
+msgstr ""
+
+#: of
+msgid "This function fills the error_function field"
+msgstr ""
+
+#: errors.Errors.Errors__AddFunction:8 errors.Errors.Errors__AddMessages:8
+#: errors.Errors.Errors__ClearMessages:6 of
+msgid "of an Error object"
+msgstr ""
+
+#: errors.Errors.Errors__AddMessages:1 of
+msgid "Name : Errors__AddMessages()"
+msgstr ""
+
+#: errors.Errors.Errors__AddMessages:5 errors.Errors.Errors__FillErrors:7 of
+msgid "message"
+msgstr ""
+
+#: errors.Errors.Errors__AddMessages:5 errors.Errors.Errors__FillErrors:7 of
+msgid "Field storing the error information"
+msgstr ""
+
+#: of
+msgid "This function fills the error_messages field"
+msgstr ""
+
+#: errors.Errors.Errors__ClearMessages:1 of
+msgid "Name : Errors__ClearMessages()"
+msgstr ""
+
+#: of
+msgid "This function clears the error_messages field"
+msgstr ""
+
+#: errors.Errors.Errors__FillErrors:1 of
+msgid "Name : Errors__FillErrors(function, message, error_criticity)"
+msgstr ""
+
+#: errors.Errors.Errors__FillErrors:10 of
+msgid "error_criticity"
+msgstr ""
+
+#: of
+msgid "int"
+msgstr ""
+
+#: errors.Errors.Errors__FillErrors:10 errors.Errors.Errors__UpdateCriticity:4
+#: of
+msgid "Criticity of the error"
+msgstr ""
+
+#: errors.Errors.Errors__FillErrors:12 of
+msgid "Description : Function filling all fields of an error object"
+msgstr ""
+
+#: errors.Errors.Errors__GetRawExceptionInfo:1 of
+msgid "Name : Errors__GetRawExceptionInfo()"
+msgstr ""
+
+#: of
+msgid "info"
+msgstr ""
+
+#: of
+msgid "list"
+msgstr ""
+
+#: errors.Errors.Errors__GetRawExceptionInfo:4 of
+msgid "List containing all information about a raised  exception"
+msgstr ""
+
+#: errors.Errors.Errors__SendEmail:1 of
+msgid "Name : Errors__SendEmail(errors_object)"
+msgstr ""
+
+#: of
+msgid "errors_object"
+msgstr ""
+
+#: of
+msgid "Error"
+msgstr ""
+
+#: errors.Errors.Errors__SendEmail:4 of
+msgid "Object containing all information about the error raised"
+msgstr ""
+
+#: of
+msgid "This function sends an email featuring the errors'"
+msgstr ""
+
+#: errors.Errors.Errors__SendEmail:8 of
+msgid "information"
+msgstr ""
+
+#: errors.Errors.Errors__UpdateCriticity:1 of
+msgid "Name : Errors__UpdateCriticity()"
+msgstr ""
+
+#: of
+msgid "criticity"
+msgstr ""
+
+#: of
+msgid "This function fills the error_criticity field"
+msgstr ""
+
+#: errors.Errors.Errors__UpdateCriticity:7 of
+msgid "of an Error object."
+msgstr ""
+
+#: ../../pages/Tests.rst:5
+msgid "Tests"
+msgstr ""
+
+#: ../../pages/Tests.rst:8 ../../pages/Tests.rst:28
+msgid "Tests unitaires"
+msgstr ""
+
+#: ../../pages/Tests.rst:10
+msgid ""
+"Les comptes de type SPOT et FUTURES sont testés. Ces tests visent à "
+"tester unitairement l'ensemble des fonctions permettant de communiquer "
+"avec les plateformes d'échanges. Plus précisement, Binance et Bybit sont "
+"testés."
+msgstr ""
+
+#: ../../pages/Tests.rst:12
+msgid ""
+"Chacune de ces deux plateformes disposent d'un testnet, permettant ainsi "
+"de simuler des échanges avec des actifs virtuels. Tous les tests sont "
+"effectués en échangeant du bitcoin (BTC)."
+msgstr ""
+
+#: ../../pages/Tests.rst:15 ../../pages/Tests.rst:48
+msgid "Tests de validation"
+msgstr ""
+
+#: ../../pages/Tests.rst:17
+msgid ""
+"Les comptes de type SPOT et FUTURES sont également testés ici. WS est "
+"lancé dans un subprocess, le master est stimulé avant le démarrage du "
+"subprocess le master. La réaction de WS a cette stimulation est ensuite "
+"étudiée."
+msgstr ""
+
+#: ../../pages/Tests.rst:19
+msgid ""
+"Pour ces tests, le master est toujours répertorié sur Binance et gère 2 "
+"slaves : 1 sur Binance, l'autre sur Bybit."
+msgstr ""
+
+#: ../../pages/Tests.rst:21
+msgid ""
+"De même que pour les TU, les tests sont effectués sur le testnet avec du "
+"bitcoin."
+msgstr ""
+
+#: ../../pages/Tests.rst:24
+msgid "Scénarios de test"
+msgstr ""
+
+#: ../../pages/Tests.rst:32 ../../pages/Tests.rst:89
+msgid "BINANCE"
+msgstr ""
+
+#: ../../pages/Tests.rst:36 ../../pages/Tests.rst:44 ../../pages/Tests.rst:52
+#: ../../pages/Tests.rst:114
+msgid "SPOT"
+msgstr ""
+
+#: ../../pages/Tests.rst:38 ../../pages/Tests.rst:46 ../../pages/Tests.rst:54
+#: ../../pages/Tests.rst:118
+msgid "FUTURES"
+msgstr ""
+
+#: ../../pages/Tests.rst:40 ../../pages/Tests.rst:100
+msgid "BYBIT"
+msgstr ""
+
+#: ../../pages/Tests.rst:57
+msgid "TESTS SPOT"
+msgstr ""
+
+#: ../../pages/Tests.rst:59 ../../pages/Tests.rst:73
+msgid "Informations sur les tests"
+msgstr ""
+
+#: ../../pages/Tests.rst:61
+msgid "Informations tests des plateformes d'échanges SPOT"
+msgstr ""
+
+#: ../../pages/Tests.rst:65 ../../pages/Tests.rst:79
+msgid "Plateforme d'échange"
+msgstr ""
+
+#: ../../pages/Tests.rst:65 ../../pages/Tests.rst:79
+msgid "Nb tests attendus"
+msgstr ""
+
+#: ../../pages/Tests.rst:67 ../../pages/Tests.rst:81
+msgid "1 - Binance"
+msgstr ""
+
+#: ../../pages/Tests.rst:67
+msgid "9"
+msgstr ""
+
+#: ../../pages/Tests.rst:68 ../../pages/Tests.rst:82
+msgid "2 - Bybit"
+msgstr ""
+
+#: ../../pages/Tests.rst:68 ../../pages/Tests.rst:82
+msgid "8"
+msgstr ""
+
+#: ../../pages/Tests.rst:71
+msgid "TESTS FUTURES"
+msgstr ""
+
+#: ../../pages/Tests.rst:75
+msgid "Informations tests des plateformes d'échanges FUTURES"
+msgstr ""
+
+#: ../../pages/Tests.rst:81
+msgid "11"
+msgstr ""
+
+#: ../../pages/Tests.rst:86
+msgid "Résultats de test unitaires"
+msgstr ""
+
+#: ../../pages/Tests.rst:91 ../../pages/Tests.rst:102
+msgid "Spot"
+msgstr ""
+
+#: ../../pages/Tests.rst:94 ../../pages/Tests.rst:98 ../../pages/Tests.rst:105
+#: ../../pages/Tests.rst:110 ../../pages/Tests.rst:117
+#: ../../pages/Tests.rst:122
+msgid "pytest"
+msgstr ""
+
+#: ../../pages/Tests.rst:94 ../../pages/Tests.rst:117 ../../pages/Tests.rst:122
+msgid "Tests: 9, Failures: 0, Errors: 0, Skips: -1"
+msgstr ""
+
+#: ../../pages/Tests.rst:94
+msgid "Time: 39.549"
+msgstr ""
+
+#: ../../pages/Tests.rst:95 ../../pages/Tests.rst:106
+msgid "Futures"
+msgstr ""
+
+#: ../../pages/Tests.rst:98
+msgid "Tests: 11, Failures: 0, Errors: 0, Skips: -1"
+msgstr ""
+
+#: ../../pages/Tests.rst:98
+msgid "Time: 45.172"
+msgstr ""
+
+#: ../../pages/Tests.rst:105 ../../pages/Tests.rst:110
+msgid "Tests: 8, Failures: 0, Errors: 0, Skips: -1"
+msgstr ""
+
+#: ../../pages/Tests.rst:105
+msgid "Time: 23.188"
+msgstr ""
+
+#: ../../pages/Tests.rst:110
+msgid "Time: 26.268"
+msgstr ""
+
+#: ../../pages/Tests.rst:111
+msgid "Résultats de test de validation"
+msgstr ""
+
+#: ../../pages/Tests.rst:117 ../../pages/Tests.rst:122
+msgid "Time: 24.319"
+msgstr ""
+
+#: ../../pages/Tests.rst:124
+msgid "Qualité de code et couverture"
+msgstr ""
+
+#: ../../pages/Tests.rst:126
+msgid ""
+"Les résultats de tests sont également disponibles dans SonarQube. Une "
+"analyse complète de la couverture de code ainsi que de la qualité de code"
+" y figurent également."
+msgstr ""
+
+#: ../../pages/Tests.rst:128
+msgid ""
+"Le logiciel est contenu dans un Docker, son utilisation permet de "
+"profiter pleinement de SonarQube gratuitement. L'intégration du Docker "
+"SonarQube dans le pipeline Github Action n'a pas été effectué, il faut "
+"donc lancer SonarQube manuellement."
+msgstr ""
+
+#: ../../pages/Tests.rst:130
+msgid ""
+"Pour plus d'info pour remplir ce document : "
+"https://readthedocs.org/projects/sphinx-test-"
+"reports/downloads/pdf/latest/"
+msgstr ""
+

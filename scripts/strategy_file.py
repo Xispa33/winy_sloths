@@ -12,26 +12,17 @@ from cep_bybit import *
 
 class ApiKey:
     """
+    Description : 
     A class used to gather all important information about an API key
     
-    Attributes
-    ----------
-    exchange_platform_name : str
-        Name of the exchange platform linked to the API key
+    Attributes:
+    exchange_platform_name: Name of the exchange platform linked to the API key
     
-    _api_key : list
-        Api key
+    _api_key: Api key string word
     
-    _api_secret_key : str
-        Api key secret code
+    _api_secret_key: Api key secret code string word
     
-    exchange_platform_obj : CryptoExchangePlatform
-        Crypto exchange platform object
-    
-    Methods
-    -------
-    find_exchange_platform_class()
-    
+    exchange_platform_obj: Crypto exchange platform object
     """
     def __init__(self, info_strategy_file, mode=DEBUG):
         self.exchange_platform_name = info_strategy_file[ \
@@ -50,29 +41,15 @@ class ApiKey:
 class Account():
     """
     Description :
-        A class used to represent an account on a 
-        crypto exchange platform. Either a slave or a 
-        master, but this is an abstract class.
+    A class used to represent an account on a crypto exchange platform. Either a slave or a master, but this is an abstract class.
 
-    Attributes
-    ----------
-    api_key : ApiKey
-        Account API key basic information
+    Attributes:
+    api_key: Account API key basic information
     
-    account_rtype : str
-        Type of the account. Either master or slave
+    account_rtype: Type of the account. Either master or slave
     
-    side : str
-        Account side. Can be either LONG/SHORT/OUT
-    
-    Methods
-    -------
-    close_long()
-    close_short()
-    open_long()
-    open_short()
-    open_long_from_short()
-    open_short_from_long()
+    side: Account side. Can be either LONG/SHORT/OUT
+
     """
     def __init__(self, info_strategy_file, rtype=None, \
                 account_contract_type=None, symbol=None, mode=DEBUG):
@@ -189,14 +166,10 @@ class Account():
 class SlaveAccount(Account):
     """
     Description :
-        A class used to represent a slave's account. Inherits from Account class
+    A class used to represent a slave's account. Inherits from Account class
     
-    Attributes
-    ----------
-
-    Methods
-    -------
-    
+    Attributes:
+    Same as Account class
     """
     def __init__(self, info_strategy_file, account_contract_type, symbol, mode=DEBUG):
         super().__init__(info_strategy_file, rtype=SLAVE, \
@@ -206,14 +179,10 @@ class SlaveAccount(Account):
 class MasterAccount(Account):
     """
     Description :
-        A class used to represent a master's account. Inherits from Account class
+    A class used to represent a master's account. Inherits from Account class
     
-    Attributes
-    ----------
-
-    Methods
-    -------
-    
+    Attributes:
+    Same as Account class
     """
     def __init__(self, info_strategy_file, mode=DEBUG):
         super().__init__(info_strategy_file, rtype=MASTER, mode=mode)
@@ -221,24 +190,14 @@ class MasterAccount(Account):
 class StrategyFile:
     """
     Description : 
-        A class gathering all information about a strategy file
+    A class gathering all information about a strategy file
 
-    Attributes
-    ----------
-    strategy_file_path : str
-        Path of the strategy file
+    Attributes:
+    strategy_file_path : Path of the strategy file
     
-    master_api : MasterAccount
-        MasterAccount object representing the master of a strategy
+    master_api : MasterAccount object representing the master of a strategy
     
-    slave_apis : list
-        List containing all SlaveAccount of a strategy.
-        SlaveAccount represents a slave of a strategy. 
-
-    Methods
-    -------
-    StrategyFile__InitSlaves()
-
+    slave_apis : List containing all SlaveAccount of a strategy. SlaveAccount represents a slave of a strategy. 
     """
     def __init__(self, strategy_file_path, info_strategy_file_master, \
                 info_strategy_file_slave, mode=DEBUG):
@@ -257,8 +216,8 @@ class StrategyFile:
                       info_strategy_file_slave : str
                         Information about all slaves
 
-        Description : Function that retrieves all slaves of a strategy 
-                      and gather then into a list
+        Description : Function that retrieves all slaves of a strategy and 
+        gather then into a list
 
         """
         slaves_list = []

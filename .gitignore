@@ -4,8 +4,7 @@ __pycache__
 docs
 scripts/password.py
 strategies
-tests/tv/TEST_SPOT/TEST_OUT_BTCUSDT
-tests/tv/TEST_SPOT/TEST_OUT_BTCUSDT
+tests/tv/TESTS/
 nohup.out
 stats/history.csv
 errors.txt

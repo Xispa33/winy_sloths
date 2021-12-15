@@ -2,7 +2,6 @@
 
 name: Winy Sloths Continuous Integration
 
-# Controls when the action will run. 
 on: 
   workflow_dispatch:
     branches: [ feature_binance ]
@@ -23,169 +22,187 @@ on:
           description: 'Contract (SPOT, FUTURES or ALL)'
           required: true
           default: 'SPOT'
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
-jobs: 
-      #- uses: actions/upload-artifact@master
-      #  with:
-      #        name: tu_reports
-      #        path: |
-      #            ${{ github.workspace }}/docs/pages/tu_spot.xml
-      #            ${{ github.workspace }}/docs/pages/tu_futures.xml
-      #            ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BTCUSDT.xml
-      #            ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BTCUSDT.xml
-  LINTER:
-    name: Pylint analysis
+jobs:
+  MATRIX_PREPARATION:
+    name : Matrix preparation 🔎 
     runs-on: self-hosted
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - run: |
-         echo "Running Pylint analysis"; exit 0
+    - name: Prepare matrix for pipeline
+      uses: actions/checkout@v2
+    - id: set-matrix
+      run: |  
+        #matrix=$(jq --arg branchName "$branchName" 'map(. | select((.runOn==$branchName) or (.runOn=="always")) )' .github/workflows/matrix_includes.json)                
+        #matrix=$(jq '[.[0] | {"symbol": "${{ github.event.inputs.symbol }}", "contrat": "${{ github.event.inputs.contract }}"}]')
+        if [ ${{ github.event.inputs.contract }} == 'ALL' ]; then
+          matrix=$(echo "[{\"contract\":\"SPOT\"}, {\"contract\":\"FUTURES\"}]" | jq .)
+        else
+          matrix=$(echo "[{\"contract\":\"${{ github.event.inputs.contract }}\"}]" | jq .)
+        fi
+        #echo "[{\"symbol\":\"symbol\", \"contract\":\"contract\"}]" > .github/workflows/matrix_includes.json
+        #${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}
+        echo "MATRIX = $matrix"
+        echo ::set-output name=matrix::{\"include\":$(echo $matrix)}\"
 
-  UML_GENERATION:
-    name: UML diagram generation
+  BUILD:
+    name: Repository clone 🛎️
+    # The type of runner that the job will run on
     runs-on: self-hosted
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - uses: actions/checkout@v2
       - run: |
-         echo "Creating UML diagram"; exit 0
+          echo " ========================= "
+          echo " ==== Cloning sources ==== "
+          echo " ========================= "
+          pwd
+          ls -al
 
-  TU_BINANCE_SPOT:
-      name: Binance spot unitary tests
-      needs: [UML_GENERATION, LINTER]
-      env:
-        API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
-        API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
-      if: ${{  (github.event.inputs.platform == 'BINANCE' || github.event.inputs.platform == 'ALL') && (github.event.inputs.contract == 'ALL' || github.event.inputs.contract == 'SPOT')}}
-      runs-on: self-hosted
-      steps:
-        - run: |
-            echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
-            ./tests/run_test.bash TU SPOT ${{ github.event.inputs.symbol }} USDT BINANCE
-            exit 0
-  
-  TU_BINANCE_FUTURES:
-      name: Binance futures unitary tests 
-      needs: [UML_GENERATION, LINTER]
-      env:
+  TU_BINANCE:
+    runs-on: self-hosted
+    needs: [BUILD, MATRIX_PREPARATION]
+    env:
         API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
         API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
-      if: ${{  (github.event.inputs.platform == 'BINANCE' || github.event.inputs.platform == 'ALL') && (github.event.inputs.contract == 'ALL' || github.event.inputs.contract == 'FUTURES')}}
-      runs-on: self-hosted
-      steps:
-        - run: |
-            echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
-            ./tests/run_test.bash TU FUTURES ${{ github.event.inputs.symbol }} USDT BINANCE
-            exit 0
+        API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
+        API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
+    strategy:
+      matrix: ${{fromJson(needs.MATRIX_PREPARATION.outputs.matrix)}}
+    if: ${{ (github.event.inputs.platform == 'BINANCE' || github.event.inputs.platform == 'ALL') }}
+    steps:
+      - uses: actions/setup-node@v2
+      - run: |
+          echo "Running TU on PLATFORM = ${{ github.event.inputs.platform }} with SYMBOL = ${{ github.event.inputs.symbol }} and CONTRACT = ${{ matrix.contract }}"
+          ./tests/run_test.bash TU ${{ matrix.contract }} ${{ github.event.inputs.symbol }} USDT BINANCE
 
-  TU_BYBIT_SPOT: 
-      name: Bybit spot unitary tests
-      needs: [UML_GENERATION, LINTER]
-      env:
+  TU_BYBIT:
+    runs-on: self-hosted
+    needs: [BUILD, MATRIX_PREPARATION]
+    env:
         API_KEY_MASTER_SPOT_2: ${{ secrets.API_KEY_MASTER_SPOT_2 }}
         API_KEY_MASTER_SECRET_SPOT_2: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_2 }}
-      if: ${{  (github.event.inputs.platform == 'BYBIT' || github.event.inputs.platform == 'ALL') && (github.event.inputs.contract == 'ALL' || github.event.inputs.contract == 'SPOT')}}
-      runs-on: self-hosted
-      steps:
-        - run: |
-            echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
-            ./tests/run_test.bash TU SPOT ${{ github.event.inputs.symbol }} USDT BYBIT
-            exit 0
-  
-  TU_BYBIT_FUTURES: 
-      name: Bybit futures unitary tests
-      needs: [UML_GENERATION, LINTER]
-      env:
         API_KEY_MASTER_FUTURES_2: ${{ secrets.API_KEY_MASTER_FUTURES_2 }}
         API_KEY_MASTER_SECRET_FUTURES_2: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_2 }}
-      if: ${{  (github.event.inputs.platform == 'BYBIT' || github.event.inputs.platform == 'ALL') && (github.event.inputs.contract == 'ALL' || github.event.inputs.contract == 'FUTURES')}}
-      runs-on: self-hosted
-      steps:
-        - run: |
-            echo "Running TU Bybit with SYMBOL = ${{ github.event.inputs.symbol }}, CONTRACT = ${{ github.event.inputs.contract }}, PLATFORM = ${{ github.event.inputs.platform }}"
-            ./tests/run_test.bash TU FUTURES ${{ github.event.inputs.symbol }} USDT BYBIT
-            exit 0
-  
-  TV_BINANCE_SPOT:
-      name: Binance spot validation tests
-      needs: [ TU_BINANCE_SPOT, TU_BINANCE_SPOT ]
-      if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BINANCE' && github.event.inputs.contract == 'SPOT' }} 
-      runs-on: self-hosted
-      steps:
-        - run: echo "This should correspond to validation tests"; exit 0;
-  
-  TV_BINANCE_FUTURES:
-      name: Binance futures validation tests
-      needs: [ TU_BINANCE_FUTURES ]
-      if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BINANCE' && github.event.inputs.contract == 'FUTURES' }} 
-      runs-on: self-hosted
-      steps:
-        - run: echo "This should correspond to validation tests"; exit 0;
-  
-  TV_BYBIT_SPOT:
-      name: Bybit spot validation tests
-      needs: [ TU_BYBIT_SPOT ]
-      if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BYBIT' && github.event.inputs.contract == 'SPOT' }} 
-      runs-on: self-hosted
-      steps:
-        - run: echo "This should correspond to validation tests"; exit 0;
+    strategy:
+      matrix: ${{fromJson(needs.MATRIX_PREPARATION.outputs.matrix)}}
+    if: ${{ (github.event.inputs.platform == 'BYBIT' || github.event.inputs.platform == 'ALL') }}
+    steps:
+      - uses: actions/setup-node@v2
+      - run: |
+          echo "Running TU on PLATFORM = ${{ github.event.inputs.platform }} with SYMBOL = ${{ github.event.inputs.symbol }} and CONTRACT = ${{ matrix.contract }}"
+          ./tests/run_test.bash TU ${{ matrix.contract }} ${{ github.event.inputs.symbol }} USDT BYBIT
 
-  TV_BYBIT_FUTURES:
-      name: Bybit futures validation tests
-      needs: [ TU_BYBIT_FUTURES ]
-      if: ${{ github.event.inputs.test_type == 'TV' && github.event.inputs.platform == 'BYBIT' && github.event.inputs.contract == 'FUTURES' }} 
-      runs-on: self-hosted
-      steps:
-        - run: echo "This should correspond to validation tests"; exit 0;
+  TV_BINANCE:
+    runs-on: self-hosted
+    needs: [TU_BINANCE, TU_BYBIT, MATRIX_PREPARATION, BUILD]
+    env:
+        API_KEY_MASTER_SPOT_1: ${{ secrets.API_KEY_MASTER_SPOT_1 }}
+        API_KEY_MASTER_SECRET_SPOT_1: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_1 }}
+        API_KEY_MASTER_SPOT_2: ${{ secrets.API_KEY_MASTER_SPOT_2 }}
+        API_KEY_MASTER_SECRET_SPOT_2: ${{ secrets.API_KEY_MASTER_SECRET_SPOT_2 }}
+        API_KEY_MASTER_FUTURES_2: ${{ secrets.API_KEY_MASTER_FUTURES_2 }}
+        API_KEY_MASTER_SECRET_FUTURES_2: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_2 }}
+        API_KEY_MASTER_FUTURES_1: ${{ secrets.API_KEY_MASTER_FUTURES_1 }}
+        API_KEY_MASTER_SECRET_FUTURES_1: ${{ secrets.API_KEY_MASTER_SECRET_FUTURES_1 }}
+    if: success() && (${{ (github.event.inputs.test_type == 'TV' || github.event.inputs.test_type == 'ALL') }})
+    strategy:
+      matrix: ${{fromJson(needs.MATRIX_PREPARATION.outputs.matrix)}}
+    steps:
+      - uses: actions/setup-node@v2
+        #with:
+        #  contrat: ${{ matrix.contract_elt }}
+      - run: |
+          echo "Running TV on PLATFORM = ${{ github.event.inputs.platform }} with SYMBOL = ${{ github.event.inputs.symbol }} and CONTRACT = ${{ matrix.contract }}"
+          ./tests/run_test.bash TV ${{ matrix.contract }} ${{ github.event.inputs.symbol }} USDT BINANCE
 
-  Documentation:
-    name: Documentation generation
-    needs: [TV_BYBIT_SPOT, TV_BYBIT_FUTURES, TV_BINANCE_SPOT, TV_BINANCE_FUTURES]
+  UML:
+    name: UML generation
+    needs: TV_BINANCE
     if: success()
     # The type of runner that the job will run on
     runs-on: self-hosted
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Generate UML diagram
+        run: |
+          echo "Creating UML diagram"
+          pyreverse -o png -p UML -AS scripts/constants.py scripts/crypto_exchange_platform.py scripts/errors.py  scripts/strategy_file.py scripts/winy_sloth.py scripts/main.py scripts/ceps/binance/constants_binance.py scripts/ceps/binance/cep_binance.py scripts/ceps/bybit/constants_bybit.py scripts/ceps/bybit/cep_bybit.py
+          mv classes_UML.png ./docs/pages
 
-      - uses: actions/download-artifact@master
-        with:
-            name: tu_reports
-
+  DOCUMENTATION:
+    name: Documentation generation 📚
+    needs: [UML]
+    if: success()
+    # The type of runner that the job will run on
+    runs-on: self-hosted
+    steps:
+      #- uses: actions/download-artifact@master
+      #  with:
+      #      name: tu_reports
       # Runs a set of commands using the runners shell
       - name: Generate sphinx documentation
         run: |
-          cd docs ; sphinx-apidoc -o . .. ; make html; cd ..
+          #cd docs ; sphinx-apidoc -o . .. ; make html; cd ..
+          cd docs ; sphinx-build -b html . _build/html/fr -D language='fr'; cd ..
+
+  QUALITY:
+    name: Quality analysis 🔬
+    needs: TV_BINANCE
+    if: success()
+    # The type of runner that the job will run on
+    runs-on: self-hosted
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Generate code quality analysis
+        run: |
+          echo " =============================================== "
+          echo " ============== Sonar Scan launch ============== "
+          echo " =============================================== "
+          # ON DOCKER :
+          #echo " SonarQube cannot be launched because it needs to open the VM ports"
+          #docker stop $(docker ps -a -q); docker rm $(docker ps -a -q)
+          #docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest; docker run --network=host --rm -v "${PWD}:/usr/src" sonarsource/sonar-scanner-cli -X
       
-      - name : Publish Test Report
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  
+  ARTEFACTS:
+    name: Publish artefacts 📣
+    needs: [TV_BINANCE, UML, QUALITY, DOCUMENTATION]
+    # The type of runner that the job will run on
+    runs-on: self-hosted
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Publish code artefacts 
+        uses: actions/upload-artifact@v2
+        with:
+          path: ${{ github.workspace }}
+          name: code
+      
+      - name : Publish test reports
         uses: mikepenz/action-junit-report@v2
         if: always() # always run even if the previous step fails
         with: 
           report_paths: |
             ${{ github.workspace }}/build/tu/futures/tu_futures_binance_BTCUSDT.xml
             ${{ github.workspace }}/build/tu/spot/tu_spot_binance_BTCUSDT.xml
+            ${{ github.workspace }}/build/tu/futures/tu_futures_bybit_BTCUSDT.xml
+            ${{ github.workspace }}/build/tu/spot/tu_spot_bybit_BTCUSDT.xml
+            ${{ github.workspace }}/build/tv/futures/tv_futures_binance_BTCUSDT.xml
+            ${{ github.workspace }}/build/tv/spot/tv_spot_binance_BTCUSDT.xml
       
-      #UNCOMMENT TO HAVE DOC AS ARTEFACT
-      #- name: Publish Artifact
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    path: ${{ github.workspace }}/docs/_build/html
-      #    name: doc
-
-  sonarcloud:
-    needs: [TV_BYBIT_SPOT, TV_BYBIT_FUTURES, TV_BINANCE_SPOT, TV_BINANCE_FUTURES]
-    if: success()
-    name: SonarCloud
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
+      - name: Deploy 🚀
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: SonarCloud Scan
-  #      uses: SonarSource/sonarcloud-github-action@master
-        run: |
-          echo "Sonar Scan to add later"
-  #      env:
-  #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-  #        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+  
+  # Add traduction sphinx
+  # Traduction failed

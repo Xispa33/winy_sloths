@@ -20,15 +20,15 @@ Dans notre cas, le processus de CI/CD est entièrement géré par un ordinateur.
 
 Workflow de la chaine CI/CD
 ---------------------------
-Le code de Winy Sloth est hébergé sur la plateforme GitHub. GitHub Action est une fonctionnalité de GitHub permettant le workflow d'une chaine CI/CD. L'ensemble du workflow s'exécute sur une VM distante, désignée runner. Notre workflow actuel se décompose en deux parties, chacune permettant de jouer des tests :
+Le code de Winy Sloth est hébergé sur la plateforme GitHub. GitHub Action est une fonctionnalité de GitHub permettant le développement de workflows d'une chaine CI/CD. L'ensemble du workflow s'exécute sur une VM distante, désignée runner. Notre workflow actuel se décompose en deux parties, chacune permettant de jouer des tests :
 
 * des tests dynamiques, permettant de tester le bon fonctionnement de l'application
 * des tests statiques, permettant d'analyser la qualité du code
 
-| Les tests dynamiques intégrent deux types de tests fonctionnels : les tests unitaires et les tests de validation. Sur chacune des plateformes d'échanges de cryptomonnaies, une API permet de s'interfacer avec la plateformes. Pour chaque API, les services nécessaires à notre application ont été encapsulés. Les tests unitaires testent ces services encapsulés. 
+| Les tests dynamiques intégrent deux types de tests fonctionnels : les tests unitaires et les tests de validation. Sur chacune des plateformes d'échanges de cryptomonnaies, une API permet de s'interfacer avec la plateforme. Pour chaque API, les services nécessaires à notre application ont été encapsulés. Les tests unitaires testent ces services encapsulés. 
 | Le framework pytest a été utilisé pour implémenter les scripts de tests et sert également pour générer le fichier de résultat au format JUnit. Les scénarios des tests unitaires ainsi que les résultats de la dernière campagne de tests unitaires sont disponibles à la page suivante :ref:`Tests`
 | 
-| Les tests d'intégration testent eux l'application toute entière. De même que pour les tests unitaires, pytest a été utilisé pour implémenter les tests. Le framework Multiprocessing de Python a également été utilisé. Le Multiprocessing nous permet stimuler WS (passage d'un ordre d'achat/vente) en parallèle de son exécution.
+| Les tests d'intégration testent eux l'application toute entière. De même que pour les tests unitaires, unittest a été utilisé pour implémenter les tests. Le framework Multiprocessing de Python a également été utilisé. Le Multiprocessing nous permet stimuler WS (passage d'un ordre d'achat/vente) en parallèle de son exécution.
 | Les scénarios des tests d'intégration ainsi que les résultats de la dernière campagne de tests d'intégration sont disponibles à la page suivante :ref:`Tests`
 
 .. contents::

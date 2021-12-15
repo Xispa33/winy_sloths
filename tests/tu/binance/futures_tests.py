@@ -78,18 +78,18 @@ class TestFuturesBinance(unittest.TestCase):
                 self.obj_binance.cep__futures_position_mode), \
                 retry=3, retry_period=2)
         self.assertIsInstance(ret,dict)
-        self.assertEqual(ret['dualSidePosition'],True)
+        self.assertEqual(ret['dualSidePosition'], False)
     
     def test_futures_change_position_mode(self):
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
-                self.obj_binance.cep__futures_change_position_mode), \
-                retry=3, retry_period=2)
+                self.obj_binance.cep__futures_change_position_mode, \
+                TRUE), retry=3, retry_period=2)
         self.assertIsInstance(ret, dict)
         self.assertEqual(ret['msg'], 'success')
 
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
-                self.obj_binance.cep__futures_change_position_mode, \
-                TRUE), retry=3, retry_period=2)
+                self.obj_binance.cep__futures_change_position_mode), \
+                retry=3, retry_period=2)
         self.assertIsInstance(ret, dict)
         self.assertEqual(ret['msg'], 'success')
     
@@ -139,11 +139,12 @@ class TestFuturesBinance(unittest.TestCase):
                 self.obj_binance.cep__open_long_futures, \
                 self.symbol, leverage, engaged_balance, \
                 float(price[PRICE]), pct=1), retry=10, retry_period=2)
-        self.assertIsInstance(ret, dict)
-        self.assertEqual(ret[SIDE], 'BUY')
-        self.assertEqual(ret['positionSide'], LONG)
-        new_qty = float(ret['executedQty'])
-        self.assertAlmostEqual(quantity, new_qty, None, "Not equal", delta)
+        self.assertEqual(ret, 0)
+        #self.assertIsInstance(ret, dict)
+        #self.assertEqual(ret[SIDE], 'BUY')
+        #self.assertEqual(ret['positionSide'], LONG)
+        #new_qty = float(ret['executedQty'])
+        #self.assertAlmostEqual(quantity, new_qty, None, "Not equal", delta)
 
         time.sleep(1)
 
@@ -164,12 +165,13 @@ class TestFuturesBinance(unittest.TestCase):
                 self.symbol), \
                 retry=10, \
                 retry_period=2)
-        self.assertIsInstance(ret, dict)
-        self.assertEqual(ret['status'], 'FILLED')
-        self.assertEqual(ret[SIDE], 'SELL')
-        self.assertEqual(ret['positionSide'], LONG)
-        new_qty = float(ret['executedQty'])
-        self.assertAlmostEqual(quantity, new_qty, None, "Not equal", delta)
+        self.assertEqual(ret, 0)
+        #self.assertIsInstance(ret, dict)
+        #self.assertEqual(ret['status'], 'FILLED')
+        #self.assertEqual(ret[SIDE], 'SELL')
+        #self.assertEqual(ret['positionSide'], LONG)
+        #new_qty = float(ret['executedQty'])
+        #self.assertAlmostEqual(quantity, new_qty, None, "Not equal", delta)
 
         time.sleep(1)
 
@@ -201,7 +203,7 @@ class TestFuturesBinance(unittest.TestCase):
                 float(price[PRICE]), 1), \
                 retry=3, \
                 retry_period=2)
-        self.assertIsInstance(ret, dict)
+        self.assertEqual(ret, 0)
 
         time.sleep(2)
 
@@ -219,10 +221,10 @@ class TestFuturesBinance(unittest.TestCase):
 
         ret = self.obj_binance.CEP__BaseFunction(functools.partial( \
                 self.obj_binance.cep__close_short, \
-                self.symbol), \
+                self.symbol, pct=1), \
                 retry=3, \
                 retry_period=2)
-        self.assertIsInstance(ret, dict)
+        self.assertEqual(ret, 0)
 
         time.sleep(2)
 

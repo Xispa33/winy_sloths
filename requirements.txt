@@ -7,3 +7,10 @@ pip3 install sphinx_rtd_theme;
 pip3 install xmlmerge
 pip3 install -U pytest
 python3.7.7 minimum
+pip3 install coverage
+sudo apt-get install graphviz
+sudo apt-get install pylint
+pip install sphinx-tabs
+sudo apt-get install jq
+sudo apt-get install -y sphinx-intl
+pip3 install GitPython

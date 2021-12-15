@@ -5,10 +5,9 @@ concurrency = multiprocessing
 disable_warnings = no-data-collected
 parallel = True
 omit =
-    utils/*
     sitecustomize.py
-    password.py
-    tests/*
+    ../scripts/password.py
+    ../tests/*
 
 [report]
 # Regexes for lines to exclude from consideration
@@ -17,5 +16,8 @@ exclude_lines =
     if 0:
     if __name__ == .__main__.:
 
+    # Don't complain about abstract methods, they aren't run:
+    @(abc\.)?abstractmethod
+
 [xml]
-output = ./coverage/coverage.xml
+output = ./coverage.xml

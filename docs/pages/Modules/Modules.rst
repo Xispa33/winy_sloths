@@ -21,3 +21,13 @@ winy_sloth.py
 --------------------
 
 .. include:: winy_sloth.rst
+
+crypto_exchange_platform.py
+---------------------------
+
+.. include:: crypto_exchange_platform.rst
+
+errors.py
+--------------------
+
+.. include:: errors.rst
